@@ -5,17 +5,11 @@ import Header from './components/Header/Header';
 import { Button } from 'primereact/button'
 import { Card } from 'primereact/card';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import Patient from './components/Page/Patient'
 import { BreadCrumb } from 'primereact/breadcrumb'
-import Facture from './components/Page/Facture';
-import Client from './components/Page/Client';
 import Accueil from './components/Page/Accueil';
-import Prescripteur from './components/Page/Prescripteur';
-import Examen from './components/Page/Examen';
-
 import Proffesseur from './components/Page/Proffesseur';
 import ElementConst from './components/Page/ElementConst';
-import Classe from './components/Classe';
+import Classe from './components/Page/Classe';
 import Mention from './components/Page/Mention';
 function App() {
   const url = "http://localhost:2000/api/";
@@ -91,11 +85,6 @@ function App() {
                 </div>
                 <div className='col-12'>
                   <Routes>
-                    <Route path='/facture' element={<Facture url={url} />} />
-                    <Route path='/prescripteur' element={<Prescripteur url={url} />} />
-                    <Route path='/client' element={<Client url={url} />} />
-                    <Route path='/examen' element={<Examen url={url} />} />
-                    <Route path='/patient' element={<Patient url={url} />} />
                     <Route path='/proffesseur' element={<Proffesseur url={url} />} />
                     <Route path='/element_constitutifs' element={<ElementConst url={url} />} />
                     <Route path='/classe' element={<Classe url={url} />} />

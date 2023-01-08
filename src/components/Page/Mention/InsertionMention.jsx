@@ -166,12 +166,13 @@ export default function InsertionMention(props) {
                     <Button icon={PrimeIcons.PENCIL} className='p-button-sm p-1 mr-2' style={stylebtnRec} tooltip='Modifier' onClick={() => { setinfoMention({ id_mention:data.id_mention,libmention: data.libmention, nom_mention: data.nom_mention, action: 'modif' }) }} />
                     <Button icon={PrimeIcons.TIMES} className='p-buttom-sm p-1 ' style={stylebtnDetele} tooltip='Supprimer' tooltipOptions={{ position: 'top' }}
                         onClick={() => {
-
                             const accept = () => {
                                 axios.delete(props.url + `supprimerMention/${data.id_mention}`)
                                     .then(res => {
-                                        notificationAction('info', 'Suppression reuissie !', 'Enregistrement bien supprimer !');
-                                        chargeData();
+                                        notificationAction(res.data.etat, res.data.status, res.data.message);
+                                        if (res.data.etat=='info') {
+                                            chargeData();
+                                        }
                                     })
                                     .catch(err => {
                                         notificationAction('error', 'Suppression non reuissie !', 'Enregirement non supprimer !');
@@ -200,8 +201,7 @@ export default function InsertionMention(props) {
     return (
         <div>
 
-
-            <Button icon={PrimeIcons.PLUS_CIRCLE} tooltip='Nouveau' tooltipOptions={{ position: 'top' }} label='Nouveau Mention' className=' mr-2 p-button-secondary' onClick={() => { onClick('displayBasic2'); chargeData() }} />
+            <Button icon={PrimeIcons.PLUS_CIRCLE} tooltip='Mention' tooltipOptions={{ position: 'top' }} label='Mention' className=' mr-2 p-button-secondary' onClick={() => { onClick('displayBasic2'); chargeData() }} />
             <div className='grid w-full '>
                 <Dialog header={renderHeader('displayBasic2')} visible={displayBasic2} className="lg:col-6 md:col-8 col-11 p-0" footer={renderFooter('displayBasic2')} onHide={() => onHide('displayBasic2')}>
                     <Toast ref={toastTR} position="top-right" />
@@ -231,7 +231,7 @@ export default function InsertionMention(props) {
                                 </div>
                             </div>
                         </div>
-                        <DataTable header={header} value={listMention} responsiveLayout="scroll" scrollable scrollHeight="500px" loading={charge} className='bg-white' emptyMessage={'Aucun resultat trouvé'}>
+                        <DataTable header={header} value={listMention} responsiveLayout="scroll" autoLayout={true}  scrollHeight="500px" loading={charge} className='bg-white' emptyMessage={'Aucun resultat trouvé'}>
                             <Column field='nom_mention' header="Mention"></Column>
                             <Column field='libmention' header="Abbreviation"></Column>
                             <Column header="action" body={bodyBoutton} align={'left'}></Column>

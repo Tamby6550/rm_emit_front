@@ -90,12 +90,14 @@ export default function Mention(props) {
                             const accept = () => {
                                 axios.delete(props.url + `supprimerParcours/${data.id_parcours}`)
                                     .then(res => {
-                                        notificationAction('info', 'Suppression reuissie !', 'Enregistrement bien supprimer !');
-                                        setrefreshData(1)
+                                        notificationAction(res.data.etat, res.data.status, res.data.message);
+                                       if (res.data.etat=='info') {
+                                           setrefreshData(1)
+                                       }
                                     })
                                     .catch(err => {
                                         console.log(err);
-                                        notificationAction('error', 'Suppression non reuissie !', 'Enregirement non supprimer !');
+                                        notificationAction(err.data.etat, 'Suppression', err.data.message);
                                     })
                             }
                             const reject = () => {
@@ -142,7 +144,7 @@ export default function Mention(props) {
             <ConfirmDialog />
 
             <div className="flex flex-column justify-content-center">
-                <DataTable header={header} value={listMention} responsiveLayout="scroll" scrollable scrollHeight="500px"   loading={charge} className='bg-white' emptyMessage={'Aucun resultat trouvé'}>
+                <DataTable header={header} value={listMention} responsiveLayout="scroll" autoLayout={true}  scrollHeight="500px"   loading={charge} className='bg-white' emptyMessage={'Aucun resultat trouvé'}>
                     <Column body={bodyParcours} header="Parcours"></Column>
                     <Column body={bodyMention} header="Mention"></Column>
                     <Column header="action" body={bodyBoutton} align={'left'}></Column>

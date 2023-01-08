@@ -111,12 +111,13 @@ export default function ModificationParcours(props) {
             await axios.put(props.url + 'updateParcours', infoMention)
                 .then(res => {
                     //message avy @back
-                    notificationAction(res.data.etat, 'Enregistrement', res.data.message);
+                    notificationAction(res.data.etat, 'Modification', res.data.message);
                     setcharge({ chajoute: false });
                     setTimeout(() => {
                         props.setrefreshData(1);
                         onHide('displayBasic2');
                     }, 300)
+                    console.log(res.data)
                 })
                 .catch(err => {
                     console.log(err);
