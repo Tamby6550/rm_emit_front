@@ -20,3 +20,22 @@
 .p-card.p-component.h-full.p-0.card-custom {
     background-color: #1C1D45;
 } */
+
+.p-button-primary {
+    color: #ffffff;
+    background: #59BAFF;
+    border: 1px solid #59BAFF;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+    border-radius: 3px;
+}
+div.p-button-primary :hover {
+    color: #b72828;
+    background: #59BAFF;
+    border: 1px solid #59BAFF;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+    border-radius: 3px;
+}

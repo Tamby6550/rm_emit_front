@@ -239,6 +239,13 @@ ul.p-submenu-list.p-panelmenu-root-submenu {
   border-width: 0 0 0 6px;
   color: #1ea97c;
 }
+.p-toast .p-toast-message.p-toast-message-info {
+  background: #c6e9faf4;
+  border: solid #0891cf;
+  border-width: 0 0 0 6px;
+  color: #044868;
+}
+
 
 
 /*CSS icon recherhce global dans examennonEff*/

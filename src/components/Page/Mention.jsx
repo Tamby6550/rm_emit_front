@@ -4,9 +4,9 @@ import { Button } from 'primereact/button'
 import { Column } from 'primereact/column'
 import { PrimeIcons } from 'primereact/api'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import Insertion from './Mention/Insertion'
+import InsertionParcours from './Mention/InsertionParcours'
 import InsertionMention from './Mention/InsertionMention'
-import Modification from './Mention/Modification'
+import ModificationParcours from './Mention/ModificationParcours'
 import Recherche from './Mention/Recherche'
 import axios from 'axios';
 import { Toast } from 'primereact/toast';
@@ -17,7 +17,7 @@ export default function Mention(props) {
     //Chargement de données
     const [charge, setCharge] = useState(false);
     const [refreshData, setrefreshData] = useState(0);
-    const [listMention, setlistMention] = useState([{ id_mention: '', nom_mention: '', libmention: '', parcours: '', libparcours: ''}]);
+    const [listMention, setlistMention] = useState([{ nom_mention: '', abbrmention: '', nom_parcours: '', abbrparcours: ''}]);
     const [infoMention, setinfoMention] = useState({ id_mention: '', nom_mention: '', libmention: '', parcours: '', libparcours: ''});
     const onVideInfo = () => {
         setinfoMention({ id_mention: '', nom_mention: '', libmention: '', parcours: '', libparcours: ''});
@@ -56,7 +56,7 @@ export default function Mention(props) {
 
     useEffect(() => {
         setCharge(true);
-        setlistMention([{ stat: 'Chargement de données...' }])
+        // setlistMention([{ stat: 'Chargement de données...' }])
         setTimeout(() => {
             loadData();
         }, 500)
@@ -66,7 +66,7 @@ export default function Mention(props) {
         <div className='flex flex-row justify-content-between align-items-center m-0 '>
             <div className='my-0 flex  py-2'>
                 <InsertionMention url={props.url}  />
-                <Insertion url={props.url} setrefreshData={setrefreshData} />
+                <InsertionParcours url={props.url} setrefreshData={setrefreshData} />
                 <Recherche icon={PrimeIcons.SEARCH} setCharge={setCharge} setlistMention={setlistMention} setrefreshData={setrefreshData} url={props.url} infoMention={infoMention} setinfoMention={setinfoMention} />
             </div>
             {infoMention.id_mention != "" || infoMention.nom != "" ? <Button icon={PrimeIcons.REFRESH} className='p-buttom-sm p-1 p-button-warning ' tooltip='actualiser' tooltipOptions={{ position: 'top' }} onClick={() => setrefreshData(1)} />
@@ -83,12 +83,12 @@ export default function Mention(props) {
         return (
             <div className='flex flex-row justify-content-between align-items-center m-0 '>
                 <div className='my-0  py-2'>
-                    <Modification data={data} url={props.url} setrefreshData={setrefreshData} />
+                    <ModificationParcours data={data} url={props.url} setrefreshData={setrefreshData} nomMention={data.nom_mention+'('+data.abbrmention+')'}  />
                     <Button icon={PrimeIcons.TIMES} className='p-buttom-sm p-1 ' style={stylebtnDetele} tooltip='Supprimer' tooltipOptions={{ position: 'top' }}
                         onClick={() => {
 
                             const accept = () => {
-                                axios.delete(props.url + `deleteClientFact/${data.id_mention}`)
+                                axios.delete(props.url + `supprimerParcours/${data.id_parcours}`)
                                     .then(res => {
                                         notificationAction('info', 'Suppression reuissie !', 'Enregistrement bien supprimer !');
                                         setrefreshData(1)
@@ -100,11 +100,10 @@ export default function Mention(props) {
                             }
                             const reject = () => {
                                 return null;
-
                             }
 
                             confirmDialog({
-                                message: 'Voulez vous supprimer l\'enregistrement : ' + data.libparcours,
+                                message: 'Voulez vous supprimer Parcours : ' + data.abbrparcours,
                                 header: 'Suppression  ',
                                 icon: 'pi pi-exclamation-circle',
                                 acceptClassName: 'p-button-danger',
