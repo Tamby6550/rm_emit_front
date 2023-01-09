@@ -175,7 +175,7 @@ export default function Recherche(props) {
                             </div>
                         </form>
                         <div className='flex mt-3 mr-4 justify-content-end'>
-                            <Button icon={PrimeIcons.SAVE} className='p-button-sm p-button-primary ' label={charge.chajoute ? 'Recherche...' : 'Recherche'} onClick={() => {
+                            <Button icon={PrimeIcons.SAVE} className='p-button-sm p-button-secondary ' label={charge.chajoute ? 'Recherche...' : 'Recherche'} onClick={() => {
                                 if (infoClasse.id_mention == '') {
                                     setverfChamp({ id_mention: true });
                                 } else {

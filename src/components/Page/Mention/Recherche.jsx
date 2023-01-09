@@ -104,7 +104,12 @@ export default function Recherche(props) {
         // console.log(infoMention)
         setverfChamp({ parcours: false, libparcours: false, id_mention: false })
         setcharge({ chajoute: true });
-        await axios.post(props.url + 'recherche', infoMention)
+        await axios.post(props.url + 'recherche', infoMention, {
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                "X-API-KEY":"tamby"
+            },
+        }) 
             .then(res => {
                 //message avy @back
                 props.setlistMention(res.data);

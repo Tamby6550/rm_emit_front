@@ -48,7 +48,12 @@ export default function ModificationClasse(props) {
     //Get List Parcours
     const loadDataP = async (id_parcours) => {
         setchargementDr('Chargement...');
-        await axios.get(props.url + `rechercheMention/${id_parcours}`)
+        await axios.get(props.url + `rechercheMention/${id_parcours}`, {
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                "X-API-KEY":"tamby"
+            },
+        }) 
         .then(
             (result) => {
                     setchargementDr('');
@@ -65,7 +70,12 @@ export default function ModificationClasse(props) {
 
     //Get List Mention
     const loadDataM = async () => {
-        await axios.get(props.url + `getIdMention`)
+        await axios.get(props.url + `getIdMention`, {
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                "X-API-KEY":"tamby"
+            },
+        }) 
             .then(
                 (result) => {
                     setlistMention(result.data);
@@ -141,7 +151,12 @@ export default function ModificationClasse(props) {
         } else {
             setidentique(false)
             setcharge({ chajoute: true });
-            await axios.put(props.url + 'updateClasse', infoClasse)
+            await axios.put(props.url + 'updateClasse', infoClasse, {
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "X-API-KEY":"tamby"
+                },
+            }) 
                 .then(res => {
                     //message avy @back
                     notificationAction(res.data.etat, 'Modification', res.data.message);

@@ -41,15 +41,24 @@ export default function Classe(props) {
 
   //Get List client
   const loadData = async () => {
-    await axios.get(props.url + `getClasseMentionParcours`)
-      .then(
-        (result) => {
-          onVideInfo();
-          setrefreshData(0);
-          setlistClasse(result.data);
-          setCharge(false);
+    try {
+      await axios.get(props.url + `getClasseMentionParcours`, {
+        headers: {
+          'Content-Type': 'text/html',
+          'X-API-KEY': 'tamby'
         }
-      );
+      })
+        .then(
+          (result) => {
+            onVideInfo();
+            setrefreshData(0);
+            setlistClasse(result.data);
+            setCharge(false);
+          }
+        );
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   useEffect(() => {
@@ -70,7 +79,7 @@ export default function Classe(props) {
         :
         <>
           <label >Liste des Classes dans l'EMIT </label>
-          <label className='ml-5 mt-1 ' style={{visibility:'hidden'}} >sdfsdfsdfsdfsdf Liste des Classes d  </label>
+          <label className='ml-5 mt-1 ' style={{ visibility: 'hidden' }} >sdfsdfsdfsdfsdf Liste des Classes d  </label>
         </>
       }
     </div>
@@ -84,7 +93,12 @@ export default function Classe(props) {
         <Button icon={PrimeIcons.TIMES} className='p-buttom-sm p-2 ' style={stylebtnDetele} tooltip='Supprimer' tooltipOptions={{ position: 'top' }}
           onClick={() => {
             const accept = () => {
-              axios.delete(props.url + `supprimerClasse/${data.id_classe}`)
+              axios.delete(props.url + `supprimerClasse/${data.id_classe}`, {
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "X-API-KEY":"tamby"
+                },
+            }) 
                 .then(res => {
                   notificationAction(res.data.etat, res.data.status, res.data.message);
                   if (res.data.etat == 'info') {
@@ -139,7 +153,7 @@ export default function Classe(props) {
       <ConfirmDialog />
 
       <div className="flex flex-column justify-content-center">
-        <DataTable header={header} value={listClasse} autoLayout={true}  loading={charge} className='bg-white' emptyMessage={'Aucun resultat trouvé'}>
+        <DataTable header={header} value={listClasse} autoLayout={true} loading={charge} className='bg-white' emptyMessage={'Aucun resultat trouvé'}>
           <Column field='libelle_classe' header="Classe" ></Column>
           <Column field='nbre_etud' header="Nbre étud" ></Column>
           <Column body={bodyParcours} header="Parcours" ></Column>

@@ -45,7 +45,12 @@ export default function InsertionParcours(props) {
 
     //Get List Parcours
     const loadDataP = async (id_parcours) => {
-        await axios.get(props.url + `rechercheMention/${id_parcours}`)
+        await axios.get(props.url + `rechercheMention/${id_parcours}`, {
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                "X-API-KEY":"tamby"
+            },
+        }) 
             .then(
                 (result) => {
                     setlistParcours(result.data);
@@ -62,7 +67,12 @@ export default function InsertionParcours(props) {
 
     //Get List Mention
     const loadDataM = async () => {
-        await axios.get(props.url + `getIdMention`)
+        await axios.get(props.url + `getIdMention`, {
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                "X-API-KEY":"tamby"
+            },
+        }) 
             .then(
                 (result) => {
                     setlistMention(result.data);
@@ -130,7 +140,12 @@ export default function InsertionParcours(props) {
     //Ajout de donnees vers Laravel
     const onSub = async () => {
         setcharge({ chajoute: true });
-        await axios.post(props.url + 'ajoutClass', infoClasse)
+        await axios.post(props.url + 'ajoutClass', infoClasse, {
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                "X-API-KEY":"tamby"
+            },
+        }) 
             .then(res => {
                 notificationAction(res.data.etat, 'Enregistrement', res.data.message);//message avy @back
                 setcharge({ chajoute: false });

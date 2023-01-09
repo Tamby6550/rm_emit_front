@@ -108,7 +108,12 @@ export default function ModificationParcours(props) {
             setidentique(false)
             setverfChamp({ parcours: false, libparcours: false, id_mention: false })
             setcharge({ chajoute: true });
-            await axios.put(props.url + 'updateParcours', infoMention)
+            await axios.put(props.url + 'updateParcours', infoMention, {
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "X-API-KEY":"tamby"
+                },
+            }) 
                 .then(res => {
                     //message avy @back
                     notificationAction(res.data.etat, 'Modification', res.data.message);

@@ -38,7 +38,12 @@ export default function InsertionParcours(props) {
 
     //Get List mention
     const loadData = async () => {
-        await axios.get(props.url + `getIdMention`)
+        await axios.get(props.url + `getIdMention`, {
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                "X-API-KEY":"tamby"
+            },
+        }) 
             .then(
                 (result) => {
                     setlistMention(result.data);
@@ -95,7 +100,12 @@ export default function InsertionParcours(props) {
     const onSub = async () => {
         setverfChamp({ parcours: false, libparcours: false, id_mention: false })
         setcharge({ chajoute: true });
-        await axios.post(props.url + 'ajoutMentionParcours', infoMention)
+        await axios.post(props.url + 'ajoutMentionParcours', infoMention, {
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                "X-API-KEY":"tamby"
+            },
+        }) 
             .then(res => {
                 notificationAction(res.data.etat, 'Enregistrement', res.data.message);//message avy @back
                 setcharge({ chajoute: false });

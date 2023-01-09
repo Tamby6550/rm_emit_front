@@ -17,10 +17,10 @@ export default function Mention(props) {
     //Chargement de données
     const [charge, setCharge] = useState(false);
     const [refreshData, setrefreshData] = useState(0);
-    const [listMention, setlistMention] = useState([{ nom_mention: '', abbrmention: '', nom_parcours: '', abbrparcours: ''}]);
-    const [infoMention, setinfoMention] = useState({ id_mention: '', nom_mention: '', libmention: '', parcours: '', libparcours: ''});
+    const [listMention, setlistMention] = useState([{ nom_mention: '', abbrmention: '', nom_parcours: '', abbrparcours: '' }]);
+    const [infoMention, setinfoMention] = useState({ id_mention: '', nom_mention: '', libmention: '', parcours: '', libparcours: '' });
     const onVideInfo = () => {
-        setinfoMention({ id_mention: '', nom_mention: '', libmention: '', parcours: '', libparcours: ''});
+        setinfoMention({ id_mention: '', nom_mention: '', libmention: '', parcours: '', libparcours: '' });
     }
     const [totalenrg, settotalenrg] = useState(null)
 
@@ -41,17 +41,27 @@ export default function Mention(props) {
     }
 
 
+
     //Get List client
     const loadData = async () => {
-        await axios.get(props.url + `getMentionParcours`)
-            .then(
-                (result) => {
-                    onVideInfo();
-                    setrefreshData(0);
-                    setlistMention(result.data);
-                    setCharge(false);
+        try {
+            await axios.get(props.url + `getMentionParcours`, {
+                headers: {
+                    'Content-Type': 'text/html',
+                    'X-API-KEY':'tamby'
                 }
-            );
+            })
+                .then(
+                    (result) => {
+                        onVideInfo();
+                        setrefreshData(0);
+                        setlistMention(result.data);
+                        setCharge(false);
+                    }
+                );
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     useEffect(() => {
@@ -65,7 +75,7 @@ export default function Mention(props) {
     const header = (
         <div className='flex flex-row justify-content-between align-items-center m-0 '>
             <div className='my-0 flex  py-2'>
-                <InsertionMention url={props.url}  />
+                <InsertionMention url={props.url} />
                 <InsertionParcours url={props.url} setrefreshData={setrefreshData} />
                 <Recherche icon={PrimeIcons.SEARCH} setCharge={setCharge} setlistMention={setlistMention} setrefreshData={setrefreshData} url={props.url} infoMention={infoMention} setinfoMention={setinfoMention} />
             </div>
@@ -83,17 +93,22 @@ export default function Mention(props) {
         return (
             <div className='flex flex-row justify-content-between align-items-center m-0 '>
                 <div className='my-0  py-2'>
-                    <ModificationParcours data={data} url={props.url} setrefreshData={setrefreshData} nomMention={data.nom_mention+'('+data.abbrmention+')'}  />
+                    <ModificationParcours data={data} url={props.url} setrefreshData={setrefreshData} nomMention={data.nom_mention + '(' + data.abbrmention + ')'} />
                     <Button icon={PrimeIcons.TIMES} className='p-buttom-sm p-1 ' style={stylebtnDetele} tooltip='Supprimer' tooltipOptions={{ position: 'top' }}
                         onClick={() => {
 
                             const accept = () => {
-                                axios.delete(props.url + `supprimerParcours/${data.id_parcours}`)
+                                axios.delete(props.url + `supprimerParcours/${data.id_parcours}`, {
+                                    headers: {
+                                        "Content-Type": "application/json; charset=utf-8",
+                                        "X-API-KEY":"tamby"
+                                    },
+                                }) 
                                     .then(res => {
                                         notificationAction(res.data.etat, res.data.status, res.data.message);
-                                       if (res.data.etat=='info') {
-                                           setrefreshData(1)
-                                       }
+                                        if (res.data.etat == 'info') {
+                                            setrefreshData(1)
+                                        }
                                     })
                                     .catch(err => {
                                         console.log(err);
@@ -123,7 +138,7 @@ export default function Mention(props) {
         return (
             <div className='flex flex-row justify-content-between align-items-center m-0 '>
                 <div className='my-0  py-2'>
-                   <label htmlFor="">{data.nom_mention+'('+data.abbrmention+')'}</label>
+                    <label htmlFor="">{data.nom_mention + '(' + data.abbrmention + ')'}</label>
                 </div>
             </div>
         )
@@ -132,7 +147,7 @@ export default function Mention(props) {
         return (
             <div className='flex flex-row justify-content-between align-items-center m-0 '>
                 <div className='my-0  py-2'>
-                   <label htmlFor="">{data.nom_parcours+'('+data.abbrparcours+')'}</label>
+                    <label htmlFor="">{data.nom_parcours + '(' + data.abbrparcours + ')'}</label>
                 </div>
             </div>
         )
@@ -144,7 +159,7 @@ export default function Mention(props) {
             <ConfirmDialog />
 
             <div className="flex flex-column justify-content-center">
-                <DataTable header={header} value={listMention} responsiveLayout="scroll" autoLayout={true}  scrollHeight="500px"   loading={charge} className='bg-white' emptyMessage={'Aucun resultat trouvé'}>
+                <DataTable header={header} value={listMention} responsiveLayout="scroll" autoLayout={true} scrollHeight="500px" loading={charge} className='bg-white' emptyMessage={'Aucun resultat trouvé'}>
                     <Column body={bodyParcours} header="Parcours"></Column>
                     <Column body={bodyMention} header="Mention"></Column>
                     <Column header="action" body={bodyBoutton} align={'left'}></Column>

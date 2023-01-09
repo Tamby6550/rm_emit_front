@@ -97,7 +97,12 @@ export default function InsertionMention(props) {
     //Get List mention
     const loadData = async () => {
         setCharge(true);
-        await axios.get(props.url + `getMention`)
+        await axios.get(props.url + `getMention`, {
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                "X-API-KEY":"tamby"
+            },
+        }) 
             .then(
                 (result) => {
                     onVideInfo();
@@ -120,7 +125,12 @@ export default function InsertionMention(props) {
     const onSub = async () => {
         setverfChamp({ libmention: false, nom_mention: false })
         setchajout(true);
-        await axios.post(props.url + 'ajoutMention', infoMention)
+        await axios.post(props.url + 'ajoutMention', infoMention, {
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                "X-API-KEY":"tamby"
+            },
+        }) 
             .then(res => {
                 //message avy @back
                 notificationAction(res.data.etat, 'Enregistrement', res.data.message);
@@ -141,7 +151,12 @@ export default function InsertionMention(props) {
     //Modifier de donnees vers Laravel
     const onModif = async () => {
         setchajout(true);
-        await axios.put(props.url + 'updateMention', infoMention)
+        await axios.put(props.url + 'updateMention', infoMention, {
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                "X-API-KEY":"tamby"
+            },
+        }) 
             .then(res => {
                 //message avy @back
                 notificationAction(res.data.etat, 'Modification', res.data.message);
@@ -167,7 +182,12 @@ export default function InsertionMention(props) {
                     <Button icon={PrimeIcons.TIMES} className='p-buttom-sm p-1 ' style={stylebtnDetele} tooltip='Supprimer' tooltipOptions={{ position: 'top' }}
                         onClick={() => {
                             const accept = () => {
-                                axios.delete(props.url + `supprimerMention/${data.id_mention}`)
+                                axios.delete(props.url + `supprimerMention/${data.id_mention}`, {
+                                    headers: {
+                                        "Content-Type": "application/json; charset=utf-8",
+                                        "X-API-KEY":"tamby"
+                                    },
+                                }) 
                                     .then(res => {
                                         notificationAction(res.data.etat, res.data.status, res.data.message);
                                         if (res.data.etat=='info') {
