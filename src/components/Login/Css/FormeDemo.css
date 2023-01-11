@@ -1,0 +1,49 @@
+/* FormDemo.css */
+.form-demo1 {
+   width: 100%;
+   height: 100%;
+   padding-left: 20%;
+   padding-right: 20%;
+   padding-top: 5%;
+   padding-bottom: 5%;
+}
+
+@media screen and (max-width: 960px) {
+    .form-demo1{
+        width: 100%;
+        height: 100%;
+        padding-left: 2%;
+        padding-right: 2%;
+        padding-top: 5%;
+        padding-bottom: 5%;
+    }
+}
+@media screen and (max-width: 640px) {
+    .form-demo1{
+        width: 70%;
+        height: 20%;
+        padding: auto;
+        margin: auto;
+    }
+    .form-demo1 .img{
+        width:100%;
+        height:20%;
+        padding-left: 10%;
+    }
+    
+}/*
+    background-color: var(--surface-a);
+    height: 70px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1100;
+    -webkit-box-shadow: 0 0 4px rgb(0 0 0 / 25%);
+    box-shadow: 0 0 4px rgb(0 0 0 / 25%);
+    border-bottom: 1px solid var(--surface-d);
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 0 35px;*/
