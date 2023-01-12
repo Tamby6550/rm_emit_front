@@ -73,7 +73,7 @@ export default function Classe(props) {
     <div className='flex flex-row justify-content-between align-items-center m-0 '>
       <div className='my-0 flex  py-2'>
         <InsertionClasse url={props.url} setrefreshData={setrefreshData} />
-        <Recherche url={props.url} setrefreshData={setrefreshData} setlistClasse={setlistClasse} setinfoClasse={setinfoClasse} />
+        <Recherche url={props.url} setrefreshData={setrefreshData}  setlistClasse={setlistClasse} setinfoClasse={setinfoClasse} />
       </div>
       {infoClasse.libelle_classe != "" || infoClasse.id_parcours != "" ? <Button icon={PrimeIcons.REFRESH} className='p-buttom-sm p-1 p-button-warning ' tooltip='actualiser' tooltipOptions={{ position: 'top' }} onClick={() => setrefreshData(1)} />
         :
@@ -139,7 +139,7 @@ export default function Classe(props) {
   }
   const bodyParcours = (data) => {
     return (
-      <div className='flex flex-row justify-content-between align-items-center m-0 '>
+      <div className='flex flex-row justify-content-between align-items-center m-0 ' >
         <div className='my-0  py-2'>
           <label htmlFor="">{data.nom_parcours + '(' + data.abbrparcours + ')'}</label>
         </div>

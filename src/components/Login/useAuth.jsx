@@ -1,29 +1,38 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect,useRef } from 'react';
+import { useNavigate,useLocation } from 'react-router-dom';
 import axios from 'axios';
-const useAuth = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const navigate = useNavigate();
+import CryptoJS from 'crypto-js';
 
+const useAuth = () => {
+
+
+    const secret= "tamby6550";
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const { pathname } = useLocation()
+    const navigate = useNavigate();
+    const [chargement, setchargement] = useState(false)
+    const [notif, setnotif] = useState({etat:'',situation : '',message:''})
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
             setIsAuthenticated(true);
+            //Rehefa mbola conncté nefa te hiverina @/login ,tonga de dirigeny 
+            if (pathname=='/login') {
+                navigate('/');
+            }else{
+                navigate(pathname);
+            }
         } else {
             setIsAuthenticated(false);
             navigate('/login');
         }
+
     }, [navigate]);
 
-    const login = async (rm_nom, mention, grad_id, motpasse) => {
+    const login = async (info, url) => {
+        setchargement(true)
         try {
-            await axios.post(props.url + 'getLogin',
-                {
-                    "rm_nom": rm_nom,
-                    "mention": mention,
-                    "grad_id": grad_id,
-                    "motpasse": motpasse
-                },
+            await axios.post(url + 'getLogin', info,
                 {
                     headers: {
                         "Content-Type": "application/json; charset=utf-8",
@@ -31,21 +40,28 @@ const useAuth = () => {
                     },
                 }
             ).then(res => {
-
-                if (res.data.etat=='success') {
+                setnotif(res.data)
+                if (res.data.etat == 'success') {
                     localStorage.setItem('token', res.data.token);
                     setIsAuthenticated(true);
-                    navigate('/home', { state: { userData } });
-                } else {
-                    throw new Error();
+                    const dts=res.data.info;
+                    const infoRm=JSON.stringify(res.data.info);
+                    const infocrypte=CryptoJS.AES.encrypt(infoRm,secret);
+                    
+                    localStorage.setItem('virus', infocrypte.toString());
+
+                    setTimeout(() => {
+                        navigate('/', { state: { dts } });
+                       
+                    }, 500)
                 }
+                setnotif({etat:'',situation : '',message:''});
+                setchargement(false)
             })
                 .catch(err => {
                     console.log(err);
-                    //message avy @back
-                    notificationAction('error', 'Erreur', err.data.message);
-                    setchajout(false);
                 });
+            return 'ind';
         } catch (err) {
             console.error(err);
         }
@@ -53,11 +69,12 @@ const useAuth = () => {
 
     const logout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('virus');
         setIsAuthenticated(false);
         navigate('/login');
     };
 
-    return { isAuthenticated, login, logout };
+    return { isAuthenticated, login,notif,chargement, logout,secret };
 };
 
 export default useAuth;

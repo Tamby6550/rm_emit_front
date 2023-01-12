@@ -1,7 +1,20 @@
 html,body {
   font-size: 12px;
-  
+  font-family: "Montserrat", sans-serif;
+  background: #f6f5f7;
 }
+.ktsypz {
+  top: 150px;
+
+}
+input.fform-invalid{
+  border-color: red;
+}
+select.fform-invalid{
+  border-color: red;
+}
+
+
 .p-toast {
 
   max-width: 28rem;

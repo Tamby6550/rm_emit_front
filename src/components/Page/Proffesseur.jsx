@@ -4,22 +4,28 @@ import { Button } from 'primereact/button'
 import { Column } from 'primereact/column'
 import { PrimeIcons } from 'primereact/api'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import InsertionProff from './Proffesseur/InsertionProff'
-import ModificationProff from './Proffesseur/ModificationProff'
-import Recherche from './Proffesseur/Recherche'
+import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { InputText } from 'primereact/inputtext';
+
 import axios from 'axios';
 import { Toast } from 'primereact/toast';
-
+import useAuth from '../Login/useAuth'
+import CryptoJS from 'crypto-js';
+import Voir from './Proffesseur/Voir'
 
 export default function Proffesseur(props) {
 
+    const { logout, isAuthenticated, secret } = useAuth();
+
+
+    
     //Chargement de données
     const [charge, setCharge] = useState(false);
     const [refreshData, setrefreshData] = useState(0);
-    const [listProff, setlistProff] = useState([{ nom_prof: '', cat_prof: ''}]);
-    const [infoMention, setinfoMention] = useState({ id_mention: '', nom_mention: '', libmention: '', parcours: '', libparcours: ''});
+    const [listProff, setlistProff] = useState([{ prof_id: '', nom_prof: '', prof_contact: '', prof_adresse: ''}]);
+    const [infoProff, setinfoProff] = useState({ prof_id: '', nom_prof: '', prof_contact: '', prof_adresse: '' });
     const onVideInfo = () => {
-        setinfoMention({ id_mention: '', nom_mention: '', libmention: '', parcours: '', libparcours: ''});
+        setinfoProff({ id_mention: '', nom_mention: '', libmention: '', parcours: '', libparcours: '' });
     }
     const [totalenrg, settotalenrg] = useState(null)
 
@@ -31,7 +37,7 @@ export default function Proffesseur(props) {
         fontSize: '1rem', padding: ' 0.8375rem 0.975rem', backgroundColor: 'rgb(195 46 46 / 85%)', border: '1px solid #d32f2fa1'
     };
     const stylebtnVoir = {
-        fontSize: '1rem', padding: ' 0.8375rem 0.975rem', backgroundColor: '#0c7a0f', border: '1px solid #0c7a0f'
+        fontSize: '1rem', padding: ' 0.8375rem 0.975rem', backgroundColor: 'rgb(80 137 191)', border: '1px solid rgb(80 137 191)'
     };
 
     /**Style css */
@@ -42,14 +48,25 @@ export default function Proffesseur(props) {
         toastTR.current.show({ severity: etat, summary: titre, detail: message, life: 10000 });
     }
 
+    const decrypt =  () => {
+        const virus = localStorage.getItem("virus");
+        const token = localStorage.getItem("token");
+        const decryptedData = CryptoJS.AES.decrypt(virus, secret);
+        const dataString = decryptedData.toString(CryptoJS.enc.Utf8);
+        const data = JSON.parse(dataString);
+        return {data,token};
+    }
+
+
 
     //Get List client
-    const loadData = async () => {
-        try {     
-            await axios.get(props.url + `getProff`, {
+    const loadData = async (token,rm_id,mention_nom,grad_id) => {
+        try {
+            await axios.get(props.url + `getProff/${rm_id}/${mention_nom}/${grad_id}`, {
                 headers: {
                     'Content-Type': 'text/html',
-                    'X-API-KEY':'tamby'
+                    'X-API-KEY': 'tamby',
+                    'Authorization':token
                 }
             })
                 .then(
@@ -58,6 +75,7 @@ export default function Proffesseur(props) {
                         setrefreshData(0);
                         setlistProff(result.data);
                         setCharge(false);
+                        initFilters1();
                     }
                 );
         } catch (error) {
@@ -65,85 +83,65 @@ export default function Proffesseur(props) {
         }
     }
 
-    useEffect(() => {
-        setCharge(true);
-        // setlistProff([{ stat: 'Chargement de données...' }])
-        setTimeout(() => {
-            loadData();
-        }, 500)
+    useEffect(async () => {
+        const virus = localStorage.getItem('virus');
+        //Verifiena raha mbola ao le virus
+        if (virus) {
+             decrypt();
+            setCharge(true);
+            setTimeout(() => {
+                console.log(decrypt())
+                loadData(decrypt().token,decrypt().data.rm_id,decrypt().data.mention,decrypt().data.grad_id);
+            }, 500)
+        } else {
+            logout();
+        }
     }, [refreshData]);
 
-    const header = (
-        <div className='flex flex-row justify-content-between align-items-center m-0 '>
-            <div className='my-0 flex  py-2'>
-                <InsertionProff url={props.url} setrefreshData={setrefreshData} />
-                <Recherche icon={PrimeIcons.SEARCH} setCharge={setCharge} setlistProff={setlistProff} setrefreshData={setrefreshData} url={props.url}  />
-            </div>
-             <Button icon={PrimeIcons.REFRESH} className='p-buttom-sm p-1 p-button-warning ' tooltip='actualiser' tooltipOptions={{ position: 'top' }} onClick={() => setrefreshData(1)} />
-               
-        </div>
-    )
-
+ 
     const bodyBoutton = (data) => {
         return (
-            <div className='flex flex-row justify-content-around align-items-center m-0 '>
-                    <ModificationProff data={data} url={props.url} setrefreshData={setrefreshData}   />
-                    <Button icon={PrimeIcons.TIMES} className='p-buttom-sm p-2 ' style={stylebtnDetele} tooltip='Supprimer' tooltipOptions={{ position: 'top' }}
-                        onClick={() => {
-                            const accept = () => {
-                                axios.delete(props.url + `supprimerProff/${data.id_prof}`, {
-                                    headers: {
-                                        "Content-Type": "application/json; charset=utf-8",
-                                        "X-API-KEY":"tamby"
-                                    },
-                                }) 
-                                    .then(res => {
-                                        notificationAction(res.data.etat, res.data.status, res.data.message);
-                                       if (res.data.etat=='info') {
-                                           setrefreshData(1)
-                                       }
-                                    })
-                                    .catch(err => {
-                                        console.log(err);
-                                        notificationAction(err.data.etat, 'Suppression', err.data.message);
-                                    })
-                            }
-                            const reject = () => {
-                                return null;
-                            }
-                            confirmDialog({
-                                message: 'Voulez vous supprimer Parcours : ' + data.nom_prof,
-                                header: 'Suppression  ',
-                                icon: 'pi pi-exclamation-circle',
-                                acceptClassName: 'p-button-danger',
-                                acceptLabel: 'Ok',
-                                rejectLabel: 'Annuler',
-                                accept,
-                                reject
-                            });
-                        }} />
-                        <Button icon={PrimeIcons.EYE} className='p-buttom-sm p-2  ml-3' style={stylebtnVoir} tooltip='Voir' tooltipOptions={{ position: 'top' }} />
+            <div className='flex flex-row justify-content-around align-items-center  mr-5'>
+                <Voir prof_id={data.prof_id} url={props.url} nom={data.nom_prof}  contact={data.prof_contact} />
             </div>
         )
     }
-    const bodyMention = (data) => {
-        return (
-            <div className='flex flex-row justify-content-between align-items-center m-0 '>
-                <div className='my-0  py-2'>
-                   <label htmlFor="">{data.nom_mention+'('+data.abbrmention+')'}</label>
-                </div>
-            </div>
-        )
-    }
-    const bodyParcours = (data) => {
-        return (
-            <div className='flex flex-row justify-content-between align-items-center m-0 '>
-                <div className='my-0  py-2'>
-                   <label htmlFor="">{data.nom_parcours+'('+data.abbrparcours+')'}</label>
-                </div>
-            </div>
-        )
-    }
+ 
+     //Global filters
+    
+     const [filters1, setFilters1] = useState(null);
+     const [globalFilterValue1, setGlobalFilterValue1] = useState('');
+     const onGlobalFilterChange1 = (e) => {
+         const value = e.target.value;
+         let _filters1 = { ...filters1 };
+         _filters1['global'].value = value;
+ 
+         setFilters1(_filters1);
+         setGlobalFilterValue1(value);
+     }
+     const initFilters1 = () => {
+         setFilters1({
+             'global': { value: null, matchMode: FilterMatchMode.CONTAINS }
+         });
+         setGlobalFilterValue1('');
+     }
+     const clearFilter1 = () => {
+         initFilters1();
+     }
+     const renderHeader1 = () => {
+         return (
+             <div className="flex justify-content-between">
+                 <h3 className='m-3'>Liste Professeurs</h3>
+                 <span className="p-input-icon-left global-tamby">
+                     <i className="pi pi-search" />
+                     <InputText value={globalFilterValue1} onChange={onGlobalFilterChange1} placeholder="Recherche global..." />
+                 </span>
+             </div>
+         )
+     }
+     const header1 = renderHeader1();
+ 
+     //Global filters
 
     return (
         <>
@@ -151,12 +149,12 @@ export default function Proffesseur(props) {
             <ConfirmDialog />
 
             <center>
-            {/* <DataTable header={header} value={listClasse} autoLayout={true}  loading={charge} className='bg-white' emptyMessage={'Aucun resultat trouvé'}> */}
 
-                <DataTable header={header} value={listProff}      loading={charge}  emptyMessage={'Aucun resultat trouvé'}>
+                <DataTable value={listProff}  header={header1} globalFilterFields={['nom_prof','prof_contact', 'prof_adresse']}  filters={filters1} rows={10} rowsPerPageOptions={[10, 20, 50]} paginator autoLayout loading={charge} emptyMessage={'Aucun resultat trouvé'}>
                     <Column field='nom_prof' header="Nom"  >  </Column>
-                    <Column body='cat_prof' header="Catégorie"  ></Column>
-                    <Column header="action" body={bodyBoutton} align={'left'}   style={{width:'90px'}}></Column>
+                    <Column field='prof_contact' header="Contact"  ></Column>
+                    <Column field='prof_adresse' header="Adresse"  ></Column>
+                    <Column header="action" body={bodyBoutton} align={'left'} style={{ width: '90px' }}></Column>
                 </DataTable>
             </center>
         </>

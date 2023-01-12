@@ -1,8 +1,11 @@
 import { PrimeIcons } from 'primereact/api'
 import { Card } from 'primereact/card'
-import React from 'react'
-
+import React,{useEffect} from 'react'
+import {useLocation} from 'react-router-dom';
 export default function Accueil() {
+    const location =useLocation();
+   
+    
     return (
         <div className='grid h-full'>
             <div className='col-12 pt-0'>

@@ -12,7 +12,12 @@ import ElementConst from './components/Page/ElementConst';
 import Classe from './components/Page/Classe';
 import Mention from './components/Page/Mention';
 import Signin from './components/Login/Signin';
+import useAuth from './components/Login/useAuth';
+import { useNavigate } from 'react-router-dom'
+import React,{useEffect} from 'react';
 function App() {
+  const {isAuthenticated,logout } = useAuth();
+  const navigate = useNavigate()
   const url = "http://localhost:2000/api/";
   const { pathname } = useLocation();
   const bred = pathname.slice(1);
@@ -31,6 +36,7 @@ function App() {
     { label: "Facture" },
     { label: bred }
   ]
+
   const Home = { icon: 'pi pi-home' }
   return (
     <div className="App p-0" >
@@ -63,7 +69,7 @@ function App() {
                                         }
                                     </div>
                                     <div className='lg:col-3 sm:col-12 col-12 pt-0 flex justify-content-end'>
-                                        <Button label='Se deconnecter' icon='pi pi-power-off' className='p-button-primary p-button-text mt-2'></Button>
+                                        <Button label='Se deconnecter' icon='pi pi-power-off' className='p-button-primary p-button-text mt-2' onClick={logout} ></Button>
                                     </div>
                                 </div>
                             </div>
@@ -80,8 +86,9 @@ function App() {
             <Route path='/element_constitutifs' element={<ElementConst url={url} />} />
             <Route path='/classe' element={<Classe url={url} />} />
             <Route path='/mention' element={<Mention url={url} />} />
+            <Route path='/' element={<Accueil url={url} />} />
         </Route>
-        
+
         <Route path='/login' element={<Signin url={url} />} />
     </Routes>
 </div>
