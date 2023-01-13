@@ -14,9 +14,22 @@ import Mention from './components/Page/Mention';
 import Signin from './components/Login/Signin';
 import useAuth from './components/Login/useAuth';
 import { useNavigate } from 'react-router-dom'
-import React,{useEffect} from 'react';
+import React,{useEffect,useState} from 'react';
+import CryptoJS from 'crypto-js';
+
 function App() {
-  const {isAuthenticated,logout } = useAuth();
+    const { logout, isAuthenticated, secret } = useAuth();
+    const [infoUti, setinfoUti] = useState({nom:'',mention:''})
+    const decrypt = () => {
+        const virus = localStorage.getItem("virus");
+        const token = localStorage.getItem("token");
+        const decryptedData = CryptoJS.AES.decrypt(virus, secret);
+        const dataString = decryptedData.toString(CryptoJS.enc.Utf8);
+        const data = JSON.parse(dataString);
+        setinfoUti({nom:data.nom,mention:data.grad_nom+' '+data.mention})
+      }
+
+
   const navigate = useNavigate()
   const url = "http://localhost:2000/api/";
   const { pathname } = useLocation();
@@ -38,6 +51,11 @@ function App() {
   ]
 
   const Home = { icon: 'pi pi-home' }
+  useEffect(() => {
+    setTimeout(() => {
+        decrypt();
+    }, 500)
+}, [navigate])
   return (
     <div className="App p-0" >
     <Routes>
@@ -45,7 +63,10 @@ function App() {
             <div className='col-12 tete-logo flex justify-content-between h-1em'  >
                 <img src={logo} className=" max-h-4rem flex" />
                 <h1 className='m-1 p-1'>Application de suivie de ...</h1>
-                <h1 style={{ visibility: 'hidden' }}>Ap</h1>
+                <div className='mr-2'>
+                    <h4> <u>Nom utilisateur :</u>  {infoUti.nom} </h4>
+                    <h4> <u>RM  de :</u>  {infoUti.mention} </h4>
+                </div>
             </div>
             <div className='col-12'>
                 <div className='grid p-0'>
@@ -69,7 +90,7 @@ function App() {
                                         }
                                     </div>
                                     <div className='lg:col-3 sm:col-12 col-12 pt-0 flex justify-content-end'>
-                                        <Button label='Se deconnecter' icon='pi pi-power-off' className='p-button-primary p-button-text mt-2' onClick={logout} ></Button>
+                                        <Button label='Se deconnecter' tooltip='Déconnecter' tooltipOptions={{position:'top'}} style={{fontWeight:'600',fontSize:'1.1em'}} icon='pi pi-power-off' className='p-button-primary p-button-text mt-2' onClick={logout} ></Button>
                                     </div>
                                 </div>
                             </div>

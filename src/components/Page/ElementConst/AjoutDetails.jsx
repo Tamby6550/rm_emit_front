@@ -83,7 +83,7 @@ export default function AjoutDetails(props) {
     }
 
     const stylebtnRec = {
-        fontSize: '1rem', padding: ' 0.8375rem 0.975rem', backgroundColor: 'rgb(40 187 96)', border: '1px solid rgb(40 187 96)'
+        fontSize: '1rem', padding: ' 0.8375rem 0.975rem', backgroundColor: 'rgb(72 96 112)', border: '1px solid rgb(72 96 112)'
     };
 
     const choixType = [
@@ -164,7 +164,7 @@ export default function AjoutDetails(props) {
     return (
         <div>
             <Toast ref={toastTR} position="top-right" />
-            <Button icon={PrimeIcons.PLUS} className='p-buttom-sm p-1 ' label='Details' style={stylebtnRec} tooltip='Ajouter details' tooltipOptions={{ position: 'top' }} onClick={() => { onClick('displayBasic2'); idExamen(props.totalenrg) }} />
+            <Button icon={PrimeIcons.PLUS} className='p-buttom-sm p-1 ' label='' style={stylebtnRec} tooltip='Ajouter details' tooltipOptions={{ position: 'top' }} onClick={() => { onClick('displayBasic2'); idExamen(props.totalenrg) }} />
             <div className='grid'>
                 <Dialog header={renderHeader('displayBasic2')} visible={displayBasic2} className="lg:col-5 md:col-8 col-9 p-0" footer={renderFooter('displayBasic2')} onHide={() => onHide('displayBasic2')}>
                     <div className="p-1 style-modal-tamby" style={{fontSize:'0.9em'}} >
