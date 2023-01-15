@@ -85,6 +85,7 @@ const useAuth = () => {
                 });
             return 'ind';
         } catch (err) {
+            setnotif({etat:'error',situation : 'Connexion',message:'Vérifier votre connexion !'});
             console.error(err);
         }
     };

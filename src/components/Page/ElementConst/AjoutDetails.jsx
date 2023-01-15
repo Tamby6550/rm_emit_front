@@ -132,7 +132,7 @@ export default function AjoutDetails(props) {
     const renderHeader = (name) => {
         return (
             <div>
-                <h4 className='mb-1'>Ajout details </h4>
+                <h4 className='mb-1'>Ajout details(En cours de developpement) </h4>
                 <hr />
             </div>
         );
@@ -143,23 +143,23 @@ export default function AjoutDetails(props) {
 
 
     const onSub = async () => { //Ajout de donnees vers Laravel
-
-        setcharge({ chajoute: true });
-        await axios.post(props.url + 'insertExamen', infoDetails)
-            .then(res => {
-                notificationAction(res.data.etat, 'Enregistrement', res.data.message);//message avy @back
-                setcharge({ chajoute: false });
-                setTimeout(() => {
-                    props.setrefreshData(1);
-                    onVideInfo()
-                    onHide('displayBasic2');
-                }, 900)
-            })
-            .catch(err => {
-                console.log(err);
-                notificationAction('error', 'Erreur', err.data.message);//message avy @back
-                setcharge({ chajoute: false });
-            });
+        console.log('first')
+        // setcharge({ chajoute: true });
+        // await axios.post(props.url + 'insertExamen', infoDetails)
+        //     .then(res => {
+        //         notificationAction(res.data.etat, 'Enregistrement', res.data.message);//message avy @back
+        //         setcharge({ chajoute: false });
+        //         setTimeout(() => {
+        //             props.setrefreshData(1);
+        //             onVideInfo()
+        //             onHide('displayBasic2');
+        //         }, 900)
+        //     })
+        //     .catch(err => {
+        //         console.log(err);
+        //         notificationAction('error', 'Erreur', err.data.message);//message avy @back
+        //         setcharge({ chajoute: false });
+        //     });
     }
     return (
         <div>
@@ -167,13 +167,13 @@ export default function AjoutDetails(props) {
             <Button icon={PrimeIcons.PLUS} className='p-buttom-sm p-1 ' label='' style={stylebtnRec} tooltip='Ajouter details' tooltipOptions={{ position: 'top' }} onClick={() => { onClick('displayBasic2'); idExamen(props.totalenrg) }} />
             <div className='grid'>
                 <Dialog header={renderHeader('displayBasic2')} visible={displayBasic2} className="lg:col-5 md:col-8 col-9 p-0" footer={renderFooter('displayBasic2')} onHide={() => onHide('displayBasic2')}>
-                    <div className="p-1 style-modal-tamby" style={{fontSize:'0.9em'}} >
+                    <div className="p-1 style-modal-tamby" style={{ fontSize: '0.9em' }} >
                         <form className='flex flex-column justify-content-center'>
 
                             <div className='grid px-4 flex justify-content-center'>
                                 <div className="lg:col-4 col-12 field my-0 flex flex-column">
                                     <h4 className='m-1'>Volmue d'heure</h4>
-                                    <InputNumber inputId="withoutgrouping"  value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} />
+                                    <InputNumber inputId="withoutgrouping" value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} />
                                     {verfChamp.vheure ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
                                 </div>
                                 <div className="lg:col-4 col-12 ml-3 field my-0 flex flex-column">
@@ -187,17 +187,17 @@ export default function AjoutDetails(props) {
                                     <Fieldset legend="Enseignement Théorique "  >
                                         <div className='grid p-1'>
                                             <div className="lg:col-4 col-12 field my-0 flex flex-column">
-                                                  <h4 className='m-1'>Base</h4>
+                                                <h4 className='m-1'>Base</h4>
                                                 <InputNumber inputId="withoutgrouping" value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} />
                                                 {verfChamp.vheure ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
                                             </div>
                                             <div className="lg:col-4 col-12 field my-0 flex flex-column">
-                                                  <h4 className='m-1'>Groupe</h4>
+                                                <h4 className='m-1'>Groupe</h4>
                                                 <InputNumber inputId="withoutgrouping" value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} />
                                                 {verfChamp.vheure ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
                                             </div>
                                             <div className="lg:col-4 col-12 field my-0 flex flex-column">
-                                                  <h4 className='m-1'>Total</h4>
+                                                <h4 className='m-1'>Total</h4>
                                                 <InputNumber inputId="withoutgrouping" value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} readOnly />
                                             </div>
                                         </div>
@@ -209,17 +209,17 @@ export default function AjoutDetails(props) {
                                     <Fieldset legend="Enseignement Dirigé "  >
                                         <div className='grid p-1'>
                                             <div className="lg:col-4 col-12 field my-0 flex flex-column">
-                                                  <h4 className='m-1'>Base</h4>
+                                                <h4 className='m-1'>Base</h4>
                                                 <InputNumber inputId="withoutgrouping" value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} />
                                                 {verfChamp.vheure ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
                                             </div>
                                             <div className="lg:col-4 col-12 field my-0 flex flex-column">
-                                                  <h4 className='m-1'>Groupe</h4>
+                                                <h4 className='m-1'>Groupe</h4>
                                                 <InputNumber inputId="withoutgrouping" value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} />
                                                 {verfChamp.vheure ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
                                             </div>
                                             <div className="lg:col-4 col-12 field my-0 flex flex-column">
-                                                  <h4 className='m-1'>Total</h4>
+                                                <h4 className='m-1'>Total</h4>
                                                 <InputNumber inputId="withoutgrouping" value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} readOnly />
                                             </div>
                                         </div>
@@ -231,26 +231,26 @@ export default function AjoutDetails(props) {
                                     <Fieldset legend="Enseignement Pratique "  >
                                         <div className='grid p-1'>
                                             <div className="lg:col-4 col-12 field my-0 flex flex-column">
-                                                  <h4 className='m-1'>Base</h4>
+                                                <h4 className='m-1'>Base</h4>
                                                 <InputNumber inputId="withoutgrouping" value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} />
                                                 {verfChamp.vheure ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
                                             </div>
                                             <div className="lg:col-4 col-12 field my-0 flex flex-column">
-                                                  <h4 className='m-1'>Groupe</h4>
+                                                <h4 className='m-1'>Groupe</h4>
                                                 <InputNumber inputId="withoutgrouping" value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} />
                                                 {verfChamp.vheure ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
                                             </div>
                                             <div className="lg:col-4 col-12 field my-0 flex flex-column">
-                                                  <h4 className='m-1'>Total</h4>
+                                                <h4 className='m-1'>Total</h4>
                                                 <InputNumber inputId="withoutgrouping" value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} readOnly />
                                             </div>
                                         </div>
                                     </Fieldset>
                                 </div>
                             </div>
-                           
-                          
-                           
+
+
+
 
                         </form>
                         <div className='flex mt-3 mr-4 justify-content-center'>

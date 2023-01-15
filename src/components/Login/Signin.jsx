@@ -182,7 +182,7 @@ export default function Signin(props) {
                             ))}
                         </Components.Select>
                         {verfChamp.mention ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
-                        <Components.Anchor href='#'>Mot de passe oubliez?</Components.Anchor>
+                        {/* <Components.Anchor href='#'>Mot de passe oubliez?</Components.Anchor> */}
                         <Components.Button onClick={() => { onverfCh() }} className='chargement-login' > {chargement? '...':'Connecter' } </Components.Button>
                     </Components.Form>
                 </Components.SignInContainer>

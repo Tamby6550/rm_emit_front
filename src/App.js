@@ -27,9 +27,7 @@ function App() {
         const dataString = decryptedData.toString(CryptoJS.enc.Utf8);
         const data = JSON.parse(dataString);
         setinfoUti({nom:data.nom,mention:data.grad_nom+' '+data.mention})
-      }
-
-
+    }
   const navigate = useNavigate()
   const url = "http://192.168.42.48:2000/api/";
   const { pathname } = useLocation();
@@ -68,15 +66,14 @@ function App() {
                     <h4> <u>RM  de :</u>  {infoUti.mention} </h4>
                 </div>
             </div>
-            <div className='col-12'>
+            <div className='col-12 container-tamby'>
             <div className='grid p-0'>
                         <Header />
-                       
-                    <div className='lg:col-10 md:col-10 sm:col-12 col-12 pl-2 p-0' style={{ color: '#0B0C28' }}>
+                    <div className='lg:col-10 md:col-10 sm:col-12 col-12 pl-2 p-0' style={{ color: '#0B0C28'}}>
                         <div className=''>
                             <div className='col-12'>
                                 <div className='grid'>
-                                    <div className='lg:col-9 sm:col-9 col-9'>
+                                    <div className='lg:col-9 sm:col-8 col-8'>
 
                                         {bred === "mode_paiement" || bred === "saisie_reglement" ?
                                             <BreadCrumb model={reglement} home={Home} className=" w-full" />
@@ -90,8 +87,10 @@ function App() {
                                                     <BreadCrumb model={items} home={Home} className=" w-full" />
                                         }
                                     </div>
-                                    <div className='lg:col-3 sm:col-3 col-3 pt-0 flex justify-content-end'>
-                                        <Button label='Déconnecter' tooltip='Déconnecter' tooltipOptions={{position:'top'}} style={{fontWeight:'600',fontSize:'1.1em'}} icon='pi pi-power-off' className='p-button-primary p-button-text mt-2' onClick={logout} ></Button>
+                                    <div className='lg:col-3 sm:col-4 col-4 pt-0 flex justify-content-end '  >
+                                        <Button  tooltip='Déconnecter' label='Déconnecter' tooltipOptions={{position:'top'}} style={{fontWeight:'600',fontSize:'1.1em'}} icon='pi pi-power-off' className='p-button-primary p-button-text mt-2 ' onClick={logout} >
+                                           
+                                        </Button>
                                     </div>
                                 </div>
                             </div>
@@ -102,7 +101,7 @@ function App() {
                     </div>
                 </div>
                 <footer className='col-12 tete-logo flex justify-content-center h-2em'>
-                    <small>Copyright Tamby Arimisa(ITDC Mada)</small>
+                    <small>Copyright Tamby Arimisa (EMIT-ITDC Mada)</small>
                 </footer>
             </div>
         </div>

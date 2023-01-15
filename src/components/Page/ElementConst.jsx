@@ -159,6 +159,17 @@ export default function ElementConst(props) {
                 :
                 <Tag className="mr-2 " severity={"success"} >Terminé</Tag>
           }
+          
+           {
+            ////Raha label
+            // data.etat_mat == null || data.etat_mat == '0' ?
+            //   <label className="mr-2 " style={{color:'#A9811F',fontWeight:'700'}} >Pas encore</label>
+            //   :
+            //   data.etat_mat == '1' ?
+            //     <label className="mr-2 " style={{color:'#0288D1',fontWeight:'700'}} >En cours</ label>
+            //     :
+            //     <label className="mr-2 " style={{color:'#22C55E',fontWeight:'700'}} >Terminé</label>
+          }
         </div>
       </div >
     )
