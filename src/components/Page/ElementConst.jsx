@@ -60,13 +60,19 @@ export default function ElementConst(props) {
   const onVideMatiere = () => {
     setlistMatiere([{ matiere: '', unite_ens: '', semestre: '', abbr_niveau: '' }])
   }
-
+  const toastTR = useRef(null);
+  /*Notification Toast */
+  const notificationAction = (etat, titre, message) => {
+    toastTR.current.show({ severity: etat, summary: titre, detail: message, life: 10000 });
+  }
   const choixEtat = [
     { label: 'Tous', value: '5' },
     { label: 'Pas encore démarré', value: '0' },
     { label: 'En cours', value: '1' },
     { label: 'Terminé', value: '2' },
   ]
+
+ 
 
   const loadData = async (token, rm_id, mention_nom, grad_id, anne_univ, niveau,etat) => {
     await axios.get(props.url + `getMatiereRm/${rm_id}/${mention_nom}/${grad_id}/${anne_univ}/${niveau}/${etat}`, {
@@ -78,6 +84,12 @@ export default function ElementConst(props) {
     })
       .then(
         (result) => {
+          if (result.data.message=='Token Time Expire.') {
+            notificationAction('warn','Votre token est expiré !','Délais de token 4 heures !')
+            setTimeout(() => {
+              logout();
+            }, 3000)
+          }
           setlistMatiere(result.data.matiere);
           setselectanne(result.data.anne_univ)
           setselectniveau(result.data.niveau)
@@ -116,11 +128,7 @@ export default function ElementConst(props) {
 
 
 
-  const toastTR = useRef(null);
-  /*Notification Toast */
-  const notificationAction = (etat, titre, message) => {
-    toastTR.current.show({ severity: etat, summary: titre, detail: message, life: 10000 });
-  }
+ 
   /**Style css */
   const stylebtnRec = {
     fontSize: '1rem', padding: ' 0.8375rem 0.975rem', backgroundColor: 'rgb(40 187 96)', border: '1px solid rgb(40 187 96)'

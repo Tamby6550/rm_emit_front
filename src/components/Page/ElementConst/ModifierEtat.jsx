@@ -79,7 +79,7 @@ export default function ModifierEtat(props) {
     const renderFooter = (name) => {
         return (
             <div>
-               
+
                 <Button label="Fermer" icon="pi pi-times" onClick={() => onHide(name)} className="p-button-text" />
             </div>
         );
@@ -88,10 +88,10 @@ export default function ModifierEtat(props) {
         return (
             <div className='grid px-4'>
 
-                <h5> <u style={{fontWeight:'700',fontSize:'1.1em'}} >Etat de matière :</u> {props.nom_mat}  :
-                  <label style={{textEmphasis:'GrayText'}}>
-                    {props.etat == null || props.etat == '0' ? <i style={{ color: '#212529', borderRadius: '8px', backgroundColor: '#FBC02D', fontSize: '0.8em', padding: '0.21rem 0.1rem' }}> Pas encore démarré</i> : props.etat == '1' ? <i style={{ color: '#248dbf' }}> En cours...</i> : <i style={{ color: '#0fa31a' }}> Terminé</i>}
-                    </label>  
+                <h5> <u style={{ fontWeight: '700', fontSize: '1.1em' }} >Etat de matière :</u> {props.nom_mat}  :
+                    <label style={{ textEmphasis: 'GrayText' }}>
+                        {props.etat == null || props.etat == '0' ? <i style={{ color: '#212529', borderRadius: '8px', backgroundColor: '#FBC02D', fontSize: '0.8em', padding: '0.21rem 0.1rem' }}> Pas encore démarré</i> : props.etat == '1' ? <i style={{ color: '#248dbf' }}> En cours...</i> : <i style={{ color: '#0fa31a' }}> Terminé</i>}
+                    </label>
                 </h5>
             </div>
         );
@@ -109,6 +109,12 @@ export default function ModifierEtat(props) {
                 },
             })
                 .then(res => {
+                    if (res.data.message == 'Token Time Expire.') {
+                        notificationAction('warn','Votre token est expiré !','Délais de token 4 heures !')
+                        setTimeout(() => {
+                            logout();
+                        }, 3000)
+                    }
                     //message avy @back
                     notificationAction(res.data.etat, res.data.situation, res.data.message);
                     setCharge(false);
@@ -126,7 +132,6 @@ export default function ModifierEtat(props) {
         } catch (error) {
             notificationAction('error', 'Erreur', error.message);//message avy @back
         }
-
     }
 
     return (

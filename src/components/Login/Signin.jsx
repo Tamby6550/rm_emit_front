@@ -127,7 +127,7 @@ export default function Signin(props) {
 
     return (
         <div className='flex flex-row justify-content-center  align-items-center m-0 w-full '>
-            <Toast ref={toastTR} position="top-right" />
+            <Toast ref={toastTR} position="top-center" />
             <Components.Container class='.login-page' >
                 <Components.SignUpContainer signinIn={signIn}>
                     <Components.Form>
