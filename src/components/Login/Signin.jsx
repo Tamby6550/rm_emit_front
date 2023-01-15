@@ -13,10 +13,11 @@ import { Toast } from 'primereact/toast';
 
 export default function Signin(props) {
 
-    const {  login, notif,chargement } = useAuth();
+    const {  login, notif,chargement,inscriptionlogin } = useAuth();
 
     const [signIn, toggle] = React.useState(true);
-    const [infoLogin, setinfoLogin] = useState({ rm_nom: '', mention: '', grad_id: '', motpasse: '' })
+    const [infoLogin, setinfoLogin] = useState({ rm_nom: '', mention: '', grad_id: '', motpasse: '' });
+    const [infoInscription, setinfoInscription] = useState({ rm_nom: '', mention_nom: '', grad_id: '', rm_mdp: '' });
     const [grade, setgrade] = useState([{ grad_id: '', grad_nom: '' }]);
     const [mention, setmention] = useState([{ mention_nom: '', mention_lib: '' }]);
     const [charge, setCharge] = useState(false);
@@ -24,8 +25,12 @@ export default function Signin(props) {
 
 
     const [verfChamp, setverfChamp] = useState({ rm_nom: false, mention: false, grad_id: false, motpasse: false })
+    const [verfChampIns, setverfChampIns] = useState({ rm_nom: false, mention: false, grad_id: false, motpasse: false })
     const onChargeDonne = (e) => {
         setinfoLogin({ ...infoLogin, [e.target.name]: e.target.value })
+    }
+    const onChargeDonneInscription = (e) => {
+        setinfoInscription({ ...infoInscription, [e.target.name]: e.target.value })
     }
     const loadData = async () => {
         try {
@@ -66,7 +71,6 @@ export default function Signin(props) {
     useEffect(() => {
         if (notif.etat != '') {
             notificationAction(notif.etat, notif.situation, notif.message);
-            
         }
     }, [notif])
 
@@ -89,10 +93,36 @@ export default function Signin(props) {
             onSub();
         }
     }
+    const onverfChInscription = () => {
+        if (infoInscription.mention_nom == "") {   
+            setverfChampIns({ rm_nom: false, grad_id: false, motpasse: false, mention: true });
+        }
+        if (infoInscription.grad_id == "") {
+            setverfChampIns({ rm_nom: false, mention: false, motpasse: false, grad_id: true });
+        }
 
-    //Ajout de donnees vers ci
+        if (infoInscription.rm_mdp == "") {
+            setverfChampIns({ rm_nom: false, mention: false, grad_id: false, motpasse: true });
+        }
+        if (infoInscription.rm_nom == "") {
+            setverfChampIns({ mention: false, grad_id: false, motpasse: false, rm_nom: true });
+        }
+        if (infoInscription.mention_nom != "" && infoInscription.grad_id != "" && infoInscription.rm_mdp != "" && infoInscription.rm_nom != "") {
+            setverfChampIns({ mention: false, grad_id: false, motpasse: false, rm_nom: false });
+            onInscription();
+        }
+    }
+
+    //Login
     const onSub = () => {
         login(infoLogin, props.url)
+    }
+    
+    //Inscription de donnees vers ci
+    const onInscription = () => {
+        inscriptionlogin(infoInscription, props.url)
+        // console.log(infoInscription)
+        // login(infoLogin, props.url)
     }
 
     return (
@@ -102,10 +132,29 @@ export default function Signin(props) {
                 <Components.SignUpContainer signinIn={signIn}>
                     <Components.Form>
                         <Components.Title>Création du compte</Components.Title>
-                        <Components.Input type='text' placeholder='Name' />
-                        <Components.Input type='email' placeholder='Email' />
-                        <Components.Input type='password' placeholder='Password' />
-                        <Components.Button>Inscrire</Components.Button>
+                        <Components.Input type='text' className={verfChampIns.rm_nom ? "fform-invalid" : ''} placeholder='Nom utilisateur' style={{ marginBottom: '20px' }} name='rm_nom' onChange={(e) => { onChargeDonneInscription(e) }} />
+                        {verfChampIns.rm_nom ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
+                        <Components.Input type='password' placeholder='Password' className={verfChampIns.motpasse ? "fform-invalid" : ''} name='rm_mdp' onChange={(e) => { onChargeDonneInscription(e) }} />
+                        {verfChampIns.motpasse ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
+
+                        <Components.Label >Grade </Components.Label>
+                        <Components.Select name='grad_id' onChange={(e) => { onChargeDonneInscription(e) }} className={verfChampIns.grad_id ? "fform-invalid" : ''} >
+                            <Components.Option value={''}  >{charge ? 'Chargement...' : ''}</Components.Option>
+                            {grade.map((gr, index) => (
+                                <Components.Option value={gr.grad_id} key={index} >{gr.grad_nom}</Components.Option>
+                            ))}
+                        </Components.Select>
+                        {verfChampIns.grad_id ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
+                        <Components.Label >Mention</Components.Label>
+                        <Components.Select name='mention_nom' onChange={(e) => { onChargeDonneInscription(e) }} className={verfChampIns.mention ? "fform-invalid" : ''}  >
+                            <Components.Option value={''}  >{charge ? 'Chargement...' : ''}</Components.Option>
+                            {mention.map((mt, index) => (
+                                <Components.Option value={mt.mention_nom} key={index} >{mt.mention_nom}</Components.Option>
+                            ))}
+                        </Components.Select>
+                        {verfChampIns.mention ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
+                        <Components.Anchor href='#'>Mot de passe oubliez?</Components.Anchor>
+                        <Components.Button onClick={() => { onverfChInscription() }}>{chargement? '...':'Inscrire' }</Components.Button>
                     </Components.Form>
                 </Components.SignUpContainer>
 

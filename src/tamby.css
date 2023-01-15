@@ -39,3 +39,29 @@ div.p-button-primary :hover {
     transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
     border-radius: 3px;
 }
+div.humbergeur{
+    display: none;
+}
+
+@media screen and (max-width: 750px)
+{
+
+    body{
+        min-width: 250px;
+    }
+    div.mobile-m{
+        display: none;
+    }
+    div.humbergeur{
+        display: flex;
+    }
+    h1.mobile-non-titre{
+        display: none;
+    }
+    div.ciWiuv{
+        width: 100%;
+    }
+    div.gJVUZI{
+        position: relative;
+    }
+}

@@ -31,7 +31,7 @@ function App() {
 
 
   const navigate = useNavigate()
-  const url = "http://localhost:2000/api/";
+  const url = "http://192.168.42.48:2000/api/";
   const { pathname } = useLocation();
   const bred = pathname.slice(1);
   const items = [
@@ -60,22 +60,23 @@ function App() {
     <div className="App p-0" >
     <Routes>
         <Route element={<div className='grid p-0 mb-3' style={{ minWidth: "500px" }}>
-            <div className='col-12 tete-logo flex justify-content-between h-1em'  >
+            <div className='col-12 tete-logo flex justify-content-between h-1em'  style={{alignItems:'center'}} >
                 <img src={logo} className=" max-h-4rem flex" />
-                <h1 className='m-1 p-1'>Application de suivie de ...</h1>
+                <h1 className='m-1 p-1 mobile-non-titre'>Application pour les Responsables des Mentions</h1>
                 <div className='mr-2'>
                     <h4> <u>Nom utilisateur :</u>  {infoUti.nom} </h4>
                     <h4> <u>RM  de :</u>  {infoUti.mention} </h4>
                 </div>
             </div>
             <div className='col-12'>
-                <div className='grid p-0'>
-                    <Header />
-                    <div className='lg:col-10 md:col-10 sm:col-9 col-9 pl-2 p-0' style={{ color: '#0B0C28' }}>
+            <div className='grid p-0'>
+                        <Header />
+                       
+                    <div className='lg:col-10 md:col-10 sm:col-12 col-12 pl-2 p-0' style={{ color: '#0B0C28' }}>
                         <div className=''>
                             <div className='col-12'>
                                 <div className='grid'>
-                                    <div className='lg:col-9 sm:col-12 col-12'>
+                                    <div className='lg:col-9 sm:col-9 col-9'>
 
                                         {bred === "mode_paiement" || bred === "saisie_reglement" ?
                                             <BreadCrumb model={reglement} home={Home} className=" w-full" />
@@ -89,8 +90,8 @@ function App() {
                                                     <BreadCrumb model={items} home={Home} className=" w-full" />
                                         }
                                     </div>
-                                    <div className='lg:col-3 sm:col-12 col-12 pt-0 flex justify-content-end'>
-                                        <Button label='Se deconnecter' tooltip='Déconnecter' tooltipOptions={{position:'top'}} style={{fontWeight:'600',fontSize:'1.1em'}} icon='pi pi-power-off' className='p-button-primary p-button-text mt-2' onClick={logout} ></Button>
+                                    <div className='lg:col-3 sm:col-3 col-3 pt-0 flex justify-content-end'>
+                                        <Button label='Déconnecter' tooltip='Déconnecter' tooltipOptions={{position:'top'}} style={{fontWeight:'600',fontSize:'1.1em'}} icon='pi pi-power-off' className='p-button-primary p-button-text mt-2' onClick={logout} ></Button>
                                     </div>
                                 </div>
                             </div>
@@ -100,6 +101,9 @@ function App() {
                         </div>
                     </div>
                 </div>
+                <footer className='col-12 tete-logo flex justify-content-center h-2em'>
+                    <small>Copyright Tamby Arimisa(ITDC Mada)</small>
+                </footer>
             </div>
         </div>
         }>

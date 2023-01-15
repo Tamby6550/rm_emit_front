@@ -66,6 +66,28 @@ const useAuth = () => {
             console.error(err);
         }
     };
+    const inscriptionlogin = async (info, url) => {
+        setchargement(true)
+        try {
+            await axios.post(url + 'ajoutRmAssocier', info,
+                {
+                    headers: {
+                        "Content-Type": "application/json; charset=utf-8",
+                        "X-API-KEY": "tamby"
+                    },
+                }
+            ).then(res => {
+                setnotif(res.data)
+                setchargement(false)
+            })
+                .catch(err => {
+                    console.log(err);
+                });
+            return 'ind';
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     const logout = () => {
         localStorage.removeItem('token');
@@ -74,7 +96,7 @@ const useAuth = () => {
         navigate('/login');
     };
 
-    return { isAuthenticated, login,notif,chargement, logout,secret };
+    return { isAuthenticated, login,notif,chargement, logout,secret,inscriptionlogin };
 };
 
 export default useAuth;
