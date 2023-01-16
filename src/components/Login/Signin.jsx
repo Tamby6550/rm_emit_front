@@ -13,7 +13,7 @@ import { Toast } from 'primereact/toast';
 
 export default function Signin(props) {
 
-    const {  login, notif,chargement,inscriptionlogin } = useAuth();
+    const { login, notif, chargement, inscriptionlogin } = useAuth();
 
     const [signIn, toggle] = React.useState(true);
     const [infoLogin, setinfoLogin] = useState({ rm_nom: '', mention: '', grad_id: '', motpasse: '' });
@@ -75,7 +75,7 @@ export default function Signin(props) {
     }, [notif])
 
     const onverfCh = () => {
-        if (infoLogin.mention == "") {   
+        if (infoLogin.mention == "") {
             setverfChamp({ rm_nom: false, grad_id: false, motpasse: false, mention: true });
         }
         if (infoLogin.grad_id == "") {
@@ -85,16 +85,16 @@ export default function Signin(props) {
         if (infoLogin.motpasse == "") {
             setverfChamp({ rm_nom: false, mention: false, grad_id: false, motpasse: true });
         }
-        if (infoLogin.rm_nom == "") {
-            setverfChamp({ mention: false, grad_id: false, motpasse: false, rm_nom: true });
-        }
-        if (infoLogin.mention != "" && infoLogin.grad_id != "" && infoLogin.motpasse != "" && infoLogin.rm_nom != "") {
+        // if (infoLogin.rm_nom == "") {
+        //     setverfChamp({ mention: false, grad_id: false, motpasse: false, rm_nom: true });
+        // }
+        if (infoLogin.mention != "" && infoLogin.grad_id != "" && infoLogin.motpasse != "") {
             setverfChamp({ mention: false, grad_id: false, motpasse: false, rm_nom: false });
             onSub();
         }
     }
     const onverfChInscription = () => {
-        if (infoInscription.mention_nom == "") {   
+        if (infoInscription.mention_nom == "") {
             setverfChampIns({ rm_nom: false, grad_id: false, motpasse: false, mention: true });
         }
         if (infoInscription.grad_id == "") {
@@ -117,7 +117,7 @@ export default function Signin(props) {
     const onSub = () => {
         login(infoLogin, props.url)
     }
-    
+
     //Inscription de donnees vers ci
     const onInscription = () => {
         inscriptionlogin(infoInscription, props.url)
@@ -153,18 +153,25 @@ export default function Signin(props) {
                             ))}
                         </Components.Select>
                         {verfChampIns.mention ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
-                        <Components.Anchor href='#'>Mot de passe oubliez?</Components.Anchor>
-                        <Components.Button onClick={() => { onverfChInscription() }}>{chargement? '...':'Inscrire' }</Components.Button>
+                        <Components.Button onClick={() => { onverfChInscription() }}>{chargement ? '...' : 'Inscrire'}</Components.Button>
                     </Components.Form>
                 </Components.SignUpContainer>
 
                 <Components.SignInContainer signinIn={signIn}>
                     <Components.Form>
                         <Components.Title>Login</Components.Title>
-                        <Components.Input type='text' className={verfChamp.rm_nom ? "fform-invalid" : ''} placeholder='Nom utilisateur' style={{ marginBottom: '20px' }} name='rm_nom' onChange={(e) => { onChargeDonne(e) }} />
-                        {verfChamp.rm_nom ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
-                        <Components.Input type='password' placeholder='Password' className={verfChamp.motpasse ? "fform-invalid" : ''} name='motpasse' onChange={(e) => { onChargeDonne(e) }} />
-                        {verfChamp.motpasse ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
+                        {/* <Components.Input type='text' className={verfChamp.rm_nom ? "fform-invalid" : ''} placeholder='Nom utilisateur' style={{ marginBottom: '20px' }} name='rm_nom' onChange={(e) => { onChargeDonne(e) }} />
+                        {verfChamp.rm_nom ? <small id="username2-help" className="p-error block">Champ vide !</small> : null} */}
+
+
+                        <Components.Label >Mention</Components.Label>
+                        <Components.Select name='mention' onChange={(e) => { onChargeDonne(e) }} className={verfChamp.mention ? "fform-invalid" : ''}  >
+                            <Components.Option value={''}  >{charge ? 'Chargement...' : ''}</Components.Option>
+                            {mention.map((mt, index) => (
+                                <Components.Option value={mt.mention_nom} key={index} >{mt.mention_nom}</Components.Option>
+                            ))}
+                        </Components.Select>
+                        {verfChamp.mention ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
 
                         <Components.Label >Grade </Components.Label>
                         <Components.Select name='grad_id' onChange={(e) => { onChargeDonne(e) }} className={verfChamp.grad_id ? "fform-invalid" : ''} >
@@ -174,16 +181,10 @@ export default function Signin(props) {
                             ))}
                         </Components.Select>
                         {verfChamp.grad_id ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
-                        <Components.Label >Mention</Components.Label>
-                        <Components.Select name='mention' onChange={(e) => { onChargeDonne(e) }} className={verfChamp.mention ? "fform-invalid" : ''}  >
-                            <Components.Option value={''}  >{charge ? 'Chargement...' : ''}</Components.Option>
-                            {mention.map((mt, index) => (
-                                <Components.Option value={mt.mention_nom} key={index} >{mt.mention_nom}</Components.Option>
-                            ))}
-                        </Components.Select>
-                        {verfChamp.mention ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
-                        {/* <Components.Anchor href='#'>Mot de passe oubliez?</Components.Anchor> */}
-                        <Components.Button onClick={() => { onverfCh() }} className='chargement-login' > {chargement? '...':'Connecter' } </Components.Button>
+                        <Components.Label >Mot de passe </Components.Label>
+                        <Components.Input type='password' placeholder='Password' className={verfChamp.motpasse ? "fform-invalid" : ''} name='motpasse' onChange={(e) => { onChargeDonne(e) }} />
+                        {verfChamp.motpasse ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
+                        <Components.Button onClick={() => { onverfCh() }} className='chargement-login mt-5' > {chargement ? '...' : 'Connecter'} </Components.Button>
                     </Components.Form>
                 </Components.SignInContainer>
 

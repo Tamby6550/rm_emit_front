@@ -16,7 +16,6 @@ import useAuth from './components/Login/useAuth';
 import { useNavigate } from 'react-router-dom'
 import React,{useEffect,useState} from 'react';
 import CryptoJS from 'crypto-js';
-
 function App() {
     const { logout, isAuthenticated, secret } = useAuth();
     const [infoUti, setinfoUti] = useState({nom:'',mention:''})
@@ -29,7 +28,7 @@ function App() {
         setinfoUti({nom:data.nom,mention:data.grad_nom+' '+data.mention})
     }
   const navigate = useNavigate()
-  const url = "http://192.168.42.48:2000/api/";
+  const url = "http://192.168.88.11:2000/api/";
   const { pathname } = useLocation();
   const bred = pathname.slice(1);
   const items = [
