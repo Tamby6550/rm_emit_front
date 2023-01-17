@@ -24,7 +24,7 @@ export default function Accueil(props) {
     const [niveau, setniveau] = useState('0');
     const [selectniveau, setselectniveau] = useState(null);
 
-    const [dtChart, setdtChart] = useState(['1', '1', '1']);
+    const [dtChart, setdtChart] = useState(['0', '0', '0']);
 
     /*Chart Graphique */
     const [chartData, schartData] = useState({
@@ -163,8 +163,8 @@ export default function Accueil(props) {
                             <h4 htmlFor="username2" className="m-1">Niveau  :</h4>
                             <Dropdown value={niveau} options={selectniveau} onChange={onTypesChangeNiveau} name="etat" />
                         </div>
-                        {charge ? <h1>Chargement...</h1> : null}
-                        {dtChart[0]==0 && dtChart[1]==0 && dtChart[2]==0 ? <h1>Aucun résultat</h1> :null}
+                        {charge ? <h1>Chargement...</h1> : 
+                        dtChart[0]==0 && dtChart[1]==0 && dtChart[2]==0 ? <h1>Aucun résultat</h1> :null}
                         <Chart type="pie" data={chartData} options={lightOptions} style={{ position: 'relative', width: '40%' }} />
                     </center>
                 </div>

@@ -28,7 +28,8 @@ function App() {
         setinfoUti({nom:data.nom,mention:data.grad_nom+' '+data.mention})
     }
   const navigate = useNavigate()
-  const url = "http://192.168.88.11:2000/api/";
+  const url = "http://192.168.42.48:2000/api/";
+//   const url = "http://192.168.88.2/backRM/api/";
   const { pathname } = useLocation();
   const bred = pathname.slice(1);
   const items = [
@@ -59,7 +60,7 @@ function App() {
         <Route element={<div className='grid p-0 mb-3' style={{ minWidth: "500px" }}>
             <div className='col-12 tete-logo flex justify-content-between h-1em'  style={{alignItems:'center'}} >
                 <img src={logo} className=" max-h-4rem flex" />
-                <h1 className='m-1 p-1 mobile-non-titre'>Application pour les Responsables des Mentions</h1>
+                <h1 className='m-1 p-1 mobile-non-titre'>Suivi Pédagogique</h1>
                 <div className='mr-2'>
                     <h4> <u>Nom utilisateur :</u>  {infoUti.nom} </h4>
                     <h4> <u>RM  de :</u>  {infoUti.mention} </h4>

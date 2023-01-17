@@ -9,7 +9,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { Toast } from 'primereact/toast';
 import CryptoJS from 'crypto-js';
 import axios from 'axios'
-
+import * as Components from '../../Login/Components';
 
 export default function ModifierEtat(props) {
 
@@ -36,12 +36,12 @@ export default function ModifierEtat(props) {
 
 
     const onTypesChange = (e) => {
-        setselectetat(e.value);
+        setselectetat(e.target.value);
         setetat({ ...etat, etat: (e.target.value) });
     }
     const choixEtat = [
         { label: 'Pas encore démarré', value: '0' },
-        { label: 'En cours', value: '1' },
+        { label: 'Démarré', value: '1' },
         { label: 'Terminé', value: '2' },
     ]
     /**Style css */
@@ -100,6 +100,7 @@ export default function ModifierEtat(props) {
 
     //Modifier de donnees vers Laravel
     const onModif = async (token) => {
+        // console.log(etat)
         try {
             await axios.put(props.url + 'updateEtatMatiere', etat, {
                 headers: {
@@ -110,7 +111,7 @@ export default function ModifierEtat(props) {
             })
                 .then(res => {
                     if (res.data.message == 'Token Time Expire.') {
-                        notificationAction('warn','Votre token est expiré !','Délais de token 4 heures !')
+                        notificationAction('warn', 'Votre token est expiré !', 'Délais de token 4 heures !')
                         setTimeout(() => {
                             logout();
                         }, 3000)
@@ -145,7 +146,13 @@ export default function ModifierEtat(props) {
                         <div className='grid px-3'>
                             <div className="col-12  field my-0  flex flex-column">
                                 <h4 htmlFor="username2" className="m-1">Changement etat  :</h4>
-                                <Dropdown value={selectetat} options={choixEtat} onChange={onTypesChange} name="etat" placeholder={props.etat == null || props.etat == '0' ? 'Pas encore démarré' : props.etat == '1' ? 'En cours' : 'Terminé'} />
+                                <Components.Select name='choixEtat' onChange={(e) => { onTypesChange(e) }}   >
+                                    <Components.Option value={''}  >{''}</Components.Option>
+                                    {choixEtat.map((etat, index) => (
+                                        <Components.Option value={etat.value} key={index} >{etat.label}</Components.Option>
+                                    ))}
+                                </Components.Select>
+                                {/* <Dropdown value={selectetat} options={choixEtat} onChange={onTypesChange} name="etat" placeholder={props.etat == null || props.etat == '0' ? 'Pas encore démarré' : props.etat == '1' ? 'En cours' : 'Terminé'} /> */}
                             </div>
                         </div>
                         <div className='flex mt-3 mr-4 justify-content-center '>
