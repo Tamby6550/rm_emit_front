@@ -16,6 +16,7 @@ import useAuth from './components/Login/useAuth';
 import { useNavigate } from 'react-router-dom'
 import React,{useEffect,useState} from 'react';
 import CryptoJS from 'crypto-js';
+import axios from 'axios';
 function App() {
     const { logout, isAuthenticated, secret } = useAuth();
     const [infoUti, setinfoUti] = useState({nom:'',mention:''})
@@ -27,10 +28,19 @@ function App() {
         const data = JSON.parse(dataString);
         setinfoUti({nom:data.nom,mention:data.grad_nom+' '+data.mention})
     }
-  const navigate = useNavigate()
+    const [url, seturl] = useState('http://192.168.88.2/backRM/api/')
+    const navigate = useNavigate()
 //   const url = "http://127.0.01:2000/api/";
 //   const url = "http://192.168.42.48:2000/api/";
-  const url = "http://192.168.88.2/backRM/api/";
+//   const url = "http://192.168.88.2/backRM/api/";
+//   const url = "http://41.188.47.76/backRM/api/";
+
+  const urlip=()=>{
+        let ip = window.location.hostname;
+        let urls ='http://'+ip+'/backRM/api/'
+        seturl(urls);
+    }
+
   const { pathname } = useLocation();
   const bred = pathname.slice(1);
   const items = [
@@ -50,10 +60,15 @@ function App() {
   ]
 
   const Home = { icon: 'pi pi-home' }
+//   useEffect(() => {
+//     console.log(url)
+//   }, [url])
+  
   useEffect(() => {
     setTimeout(() => {
         decrypt();
     }, 500)
+    urlip()
 }, [navigate])
   return (
     <div className="App p-0" >

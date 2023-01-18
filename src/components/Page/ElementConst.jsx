@@ -143,12 +143,11 @@ export default function ElementConst(props) {
   /**Style css */
 
   const bodyBoutton = (data) => {
-    console.log(data)
+    // console.log(data)
     return (
       <div className='flex flex-row justify-content-between align-items-center m-0 '>
         <div className='my-0  py-2 flex'>
           <AjoutDetails />
-          {/* <Voir etat={data.etat_mat} date_debut={data.dat_deb_etat} date_fin={data.date_fin_etat} /> */}
           <ModifierEtat etat={data.etat_mat} anne_univ={anne_univ} nom_mat={data.matiere} mat_id={data.mati_id} url={props.url} setrefreshData={setrefreshData} />
         </div>
       </div>

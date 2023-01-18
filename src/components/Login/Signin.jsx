@@ -57,8 +57,8 @@ export default function Signin(props) {
         setCharge(true);
         setTimeout(() => {
             loadData();
-        }, 500)
-    }, [refreshData]);
+        }, 800)
+    }, [refreshData,props.url]);
 
 
 

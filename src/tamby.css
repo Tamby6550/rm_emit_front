@@ -27,10 +27,6 @@ div.humbergeur{
 
 @media screen and (max-width: 767px)
 {
-    html,body {
-        font-size: 16px;
-        zoom: 84%;
-    }
     div.mobile-m{
         display: none;
     }
@@ -47,4 +43,8 @@ div.humbergeur{
         position: relative;
     }
    
+    html,body {
+        font-size: 16px;
+        zoom: 84%;
+    }
 }
