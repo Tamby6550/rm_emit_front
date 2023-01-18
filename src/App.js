@@ -28,8 +28,9 @@ function App() {
         setinfoUti({nom:data.nom,mention:data.grad_nom+' '+data.mention})
     }
   const navigate = useNavigate()
-  const url = "http://192.168.42.48:2000/api/";
-//   const url = "http://192.168.88.2/backRM/api/";
+//   const url = "http://127.0.01:2000/api/";
+//   const url = "http://192.168.42.48:2000/api/";
+  const url = "http://192.168.88.2/backRM/api/";
   const { pathname } = useLocation();
   const bred = pathname.slice(1);
   const items = [

@@ -201,11 +201,11 @@ export default function Signin(props) {
                         </Components.LeftOverlayPanel>
 
                         <Components.RightOverlayPanel signinIn={signIn}>
-                            <Components.Title>Application pour RM</Components.Title>
+                            <Components.Title style={{color:'#546372',fontSize:'1.6em'}} >Application pour le suivi pédagogique</Components.Title>
                             <Components.Paragraph>
                                 <img src={emit} alt="" width={"150px"} />
                             </Components.Paragraph>
-                            <Components.GhostButton onClick={() => toggle(false)}>
+                            <Components.GhostButton style={{display:'none'}} onClick={() => toggle(false)}>
                                 S'inscrire
                             </Components.GhostButton>
                         </Components.RightOverlayPanel>
