@@ -37,7 +37,8 @@ function App() {
 
   const urlip=()=>{
         let ip = window.location.hostname;
-        let urls ='http://'+ip+'/backRM/api/'
+        // let urls ='http://'+ip+'/backRM/api/'
+        let urls ='http://'+ip+':2000/api/'
         seturl(urls);
     }
 

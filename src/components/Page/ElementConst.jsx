@@ -69,7 +69,9 @@ export default function ElementConst(props) {
     { label: 'Tous', value: '5' },
     { label: 'Pas encore démarré', value: '0' },
     { label: 'En cours', value: '1' },
-    { label: 'Terminé', value: '2' },
+    { label: 'Cours Terminés', value: '2' },
+    { label: 'Examen SN terminé', value: '3' },
+    { label: 'Examen SR terminé', value: '4' }
   ]
 
 
@@ -157,19 +159,55 @@ export default function ElementConst(props) {
   const bodyDateDeb = (data) => {
     return (
       <label style={{ fontWeight: '600' }}>
-        {data.etat_mat == null || data.etat_mat == '0' ? '_' : moment(data.dat_deb_etat).format('DD/MM/YYYY')}
+        {data.etat_mat == null || data.etat_mat == '0' ?
+          '_' :
+          moment(data.dat_deb_etat).format('DD/MM/YYYY')}
       </label>
     )
   }
   const bodyDateFin = (data) => {
     return (
       <label style={{ fontWeight: '600' }}>
-       {data.etat_mat == null || data.etat_mat == '0' ? '_' : data.etat_mat == '2' ?   moment(data.date_fin_etat).format('DD/MM/YYYY') :'_'} 
+        {
+          data.etat_mat == null || data.etat_mat == '0' ?
+            '_' :
+            data.etat_mat == '2' ||  data.etat_mat == '3' ||  data.etat_mat == '4' ? moment(data.date_fin_etat).format('DD/MM/YYYY')
+              :
+              '_'
+        }
       </label>
     )
   }
- 
+
+  const bodyDateSN = (data) => {
+    return (
+      <label style={{ fontWeight: '600' }}>
+        {
+          data.etat_mat == null || data.etat_mat == '0' ?
+            '_' :
+            data.etat_mat == '3' ||  data.etat_mat == '4' ? moment(data.date_session_n).format('DD/MM/YYYY')
+              :
+              '_'
+        }
+      </label>
+    )
+  }
+  const bodyDateSR = (data) => {
+    return (
+      <label style={{ fontWeight: '600' }}>
+        {
+          data.etat_mat == null || data.etat_mat == '0' ?
+            '_' :
+            data.etat_mat == '4' ? moment(data.date_session_r).format('DD/MM/YYYY')
+              :
+              '_'
+        }
+      </label>
+    )
+  }
+
   const bodyStatus = (data) => {
+    // console.log(data)
     return (
       <div className='flex flex-row justify-content-between align-items-center m-0 '>
         <div className='my-0  py-2'>
@@ -180,7 +218,16 @@ export default function ElementConst(props) {
               data.etat_mat == '1' ?
                 < Tag className="mr-2 " severity={"info"} >En cours</ Tag>
                 :
-                <Tag className="mr-2 " severity={"success"} >Terminé</Tag>
+                data.etat_mat == '2' ?
+                  <Tag className="mr-2 " severity={"success"} >Terminé cours</Tag>
+                  :
+                  data.etat_mat == '3' ?
+                    <Tag className="mr-2 " severity={"success"} >Terminé SN</Tag>
+                    :
+                    data.etat_mat == '4' ?
+                      <Tag className="mr-2 " severity={"success"} >Terminé SR</Tag>
+                      :
+                      <Tag className="mr-2 " severity={"warning"} >Pas encore </Tag>
           }
 
         </div>
@@ -247,7 +294,7 @@ export default function ElementConst(props) {
       <ConfirmDialog />
       <center>
         {/* <ScrollPanel style={{ height: '750px',width:'100%' }}> */}
-        <DataTable value={listMatiere} loading={charge} header={header1} showGridlines={false}  globalFilterFields={['matiere', 'unite_ens', 'seme_code', 'abbr_niveau']} filters={filters1} rows={10} rowsPerPageOptions={[10, 20, 50]} paginator emptyMessage={'Aucun resultat trouvé'}>
+        <DataTable value={listMatiere} loading={charge} header={header1} showGridlines={false} globalFilterFields={['matiere', 'unite_ens', 'seme_code', 'abbr_niveau']} filters={filters1} rows={10} rowsPerPageOptions={[10, 20, 50]} paginator emptyMessage={'Aucun resultat trouvé'}>
           <Column header="Action" body={bodyBoutton} align={'center'}></Column>
           <Column field={'ue_code'} header={'Unité d\'enseign'} style={{ fontWeight: '600' }}></Column>
           <Column field='matiere' header={'Matiere'} style={{ fontWeight: '600' }}></Column>
@@ -255,6 +302,8 @@ export default function ElementConst(props) {
           <Column field='abbr_niveau' header="Niveau"></Column>
           <Column header={'Date début'} body={bodyDateDeb} style={{ fontWeight: '600' }}></Column>
           <Column header={'Date fin'} body={bodyDateFin} style={{ fontWeight: '600' }}></Column>
+          <Column header={'Date SN'} body={bodyDateSN} style={{ fontWeight: '600' }}></Column>
+          <Column header={'Date SR'} body={bodyDateSR} style={{ fontWeight: '600' }}></Column>
           <Column header="Etat" body={bodyStatus} > </Column>
         </DataTable>
         {/* </ScrollPanel> */}
