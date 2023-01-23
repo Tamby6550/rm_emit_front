@@ -26,6 +26,7 @@ export default function Accueil(props) {
 
     const [dtChart, setdtChart] = useState(['0', '0', '0']);
 
+    const [filtre, setfiltre] = useState('o')
     /*Chart Graphique */
     const [chartData, schartData] = useState({
         labels: ['Pas encore', 'En cours', 'Terminé'],
@@ -55,12 +56,19 @@ export default function Accueil(props) {
             }
         }
     });
+    const choixGrphe = [
+        { label: 'Cours', value: 'c' },
+        { label: 'Examen', value: 'e' },
+    ]
     /*Chart Graphique */
     const onTypesChange = (e) => {
         setanne_univ(e.value);
     }
     const onTypesChangeNiveau = (e) => {
         setniveau(e.value);
+    }
+    const onTypesChangeFiltre = (e) => {
+        setfiltre(e.value);
     }
     const { logout, isAuthenticated, secret } = useAuth();
 
@@ -81,7 +89,7 @@ export default function Accueil(props) {
 
 
     const loadData = async (token, rm_id, mention_nom, grad_id, anne_univ, niveau) => {
-        await axios.get(props.url + `getChartRm/${rm_id}/${mention_nom}/${grad_id}/${anne_univ}/${niveau}`, {
+        await axios.get(props.url + `getChartRm/${rm_id}/${mention_nom}/${grad_id}/${anne_univ}/${niveau}/${filtre}`, {
             headers: {
                 'Content-Type': 'text/html',
                 'X-API-KEY': 'tamby',
@@ -99,29 +107,77 @@ export default function Accueil(props) {
                     setselectanne(result.data.anne_univ)
                     setselectniveau(result.data.niveau)
                     setdtChart(result.data.etat);
-                    
-                  
-                    schartData({
-                        labels: ['Pas encore démarré', 'En cours', 'Terminé'],
-                        datasets: [
-                            {
-                                data: result.data.etat,
-                                backgroundColor: [
-                                    "#FFA726",
-                                    "#42A5F5",
-                                    "#66BB6A",
-                                ],
-                                hoverBackgroundColor: [
-                                    "#FFB74D",
-                                    "#64B5F6",
-                                    "#81C784",
+                    console.log(result.data)
+                    if (niveau == '0') {
+                        schartData({
+                            labels: ['Pas encore démarré', 'En cours', 'Terminé(avec SR et SN)'],
+                            datasets: [
+                                {
+                                    data: result.data.etat,
+                                    backgroundColor: [
+                                        "#FFA726",
+                                        "#42A5F5",
+                                        "#66BB6A",
+                                    ],
+                                    hoverBackgroundColor: [
+                                        "#FFB74D",
+                                        "#64B5F6",
+                                        "#81C784",
+                                    ]
+                                }
+                            ]
+                        })
+                    } else {
+                        if (filtre == 'e') {
+                            schartData({
+                                labels: ['Examen SN', 'Examen SR'],
+                                datasets: [
+                                    {
+                                        data: result.data.etat,
+
+                                        hoverBackgroundColor: [
+                                            "#66BB6A",
+                                            "#055023",
+                                            "#81C784",
+                                        ],
+                                        backgroundColor: [
+                                            "#0DAE45",
+                                            "#055023",
+                                            "#66BB6A",
+                                        ]
+                                    }
                                 ]
-                            }
-                        ]
-                    })
+                            })
+                        } else {
+                            schartData({
+                                labels: ['Pas encore démarré', 'En cours', 'Terminé(avec SR et SN)'],
+                                datasets: [
+                                    {
+                                        data: result.data.etat,
+                                        backgroundColor: [
+                                            "#FFA726",
+                                            "#42A5F5",
+                                            "#66BB6A",
+                                        ],
+                                        hoverBackgroundColor: [
+                                            "#FFB74D",
+                                            "#64B5F6",
+                                            "#81C784",
+                                        ]
+                                    }
+                                ]
+                            })
+                        }
+                    }
                     setCharge(false);
                 }
-            );
+            )
+            .catch((e) => {
+                console.log(e.message)
+                if (e.message == "Network Error") {
+                    props.urlip()
+                }
+            })
     }
 
     const chargementData = () => {
@@ -140,12 +196,7 @@ export default function Accueil(props) {
     }
     useEffect(() => {
         chargementData()
-    }, [anne_univ, niveau])
-
-
-
-
-
+    }, [anne_univ, niveau, filtre, props.url])
 
     return (
         <div className='grid h-full'>
@@ -160,16 +211,17 @@ export default function Accueil(props) {
                             <h4 htmlFor="username2" className="m-1">Anne univ :</h4>
                             <Dropdown value={anne_univ} options={selectanne} onChange={onTypesChange} name="etat" />
 
-                            <h4 htmlFor="username2" className="m-1">Niveau  :</h4>
+                            <h4 htmlFor="username2" className="m-1 ml-1">Niveau  :</h4>
                             <Dropdown value={niveau} options={selectniveau} onChange={onTypesChangeNiveau} name="etat" />
+                            <h4 htmlFor="username2" className="m-1 ml-1">Filtrer par  :</h4>
+                            <Dropdown value={filtre} options={choixGrphe} onChange={onTypesChangeFiltre} name="etat" />
                         </div>
-                        {charge ? <h1>Chargement...</h1> : 
-                        dtChart[0]==0 && dtChart[1]==0 && dtChart[2]==0 ? <h1>Aucun résultat</h1> :null}
+                        {charge ? <h1>Chargement...</h1> :
+                            dtChart[0] == 0 && dtChart[1] == 0 && dtChart[2] == 0 ? <h1>Aucun résultat</h1> : null}
                         <Chart type="pie" data={chartData} options={lightOptions} style={{ position: 'relative', width: '40%' }} />
                     </center>
                 </div>
-            </div>
-
-        </div>
+            </div >
+        </div >
     )
 }

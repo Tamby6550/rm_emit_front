@@ -109,24 +109,24 @@ export default function ModifierEtat(props) {
         return (
             <div className='grid px-4'>
 
-                <h5> <u style={{ fontWeight: '700', fontSize: '1.1em' }} >Etat de matière :</u> {props.nom_mat}  :
+                <h5> <u style={{ fontWeight: '700', color:'gray' }} >{props.nom_mat}</u>   :
                     <label style={{ textEmphasis: 'GrayText' }}>
                         {props.etat == null || props.etat == '0' ?
-                            <i style={{ color: '#212529', borderRadius: '8px', backgroundColor: '#FBC02D', fontSize: '0.8em', padding: '0.21rem 0.1rem' }}> Pas encore démarré</i>
+                            <i style={{ fontSize:'1.2em',color:'#555555' }}> Pas encore démarré</i>
                             :
                             props.etat == '1' ?
-                                <i style={{ color: '#248dbf' }}> En cours...</i>
+                                <i style={{ fontSize:'1.2em',color:'#555555' }}> En cours</i>
                                 :
                                 props.etat == '2' ?
-                                    <i style={{ color: '#0fa31a' }}> Terminé cours</i>
+                                    <i style={{ fontSize:'1.2em',color:'#555555' }}> Terminé cours</i>
                                     :
                                     props.etat == '3' ?
-                                        <i style={{ color: '#0fa31a' }}> Terminé SN</i>
+                                        <i style={{ fontSize:'1.2em',color:'#555555' }}> Terminé SN</i>
                                         :
                                         props.etat == '4' ?
-                                            <i style={{ color: '#0fa31a' }}> Terminé SR</i>
+                                            <i style={{ fontSize:'1.2em',color:'#555555' }}> Terminé SR</i>
                                             :
-                                            <i style={{ color: '#212529', borderRadius: '8px', backgroundColor: '#FBC02D', fontSize: '0.8em', padding: '0.21rem 0.1rem' }}> Pas encore démarré</i>
+                                            <i style={{ fontSize:'1.2em',color:'#555555' }}> Pas encore démarré</i>
                         }
                     </label>
                 </h5>
@@ -212,7 +212,6 @@ return (
                         </div>
                     </div>
                     <div className='flex mt-3 mr-4 justify-content-center '>
-                        {etat.valuedt}
                         <Button icon={PrimeIcons.CHECK} className='p-button-sm p-button-info ' label={charge ? 'Enregistrement...' : 'Sauvegarder'}
                             onClick={() => {
                                 if (etat != null) {

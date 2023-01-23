@@ -99,7 +99,12 @@ export default function ElementConst(props) {
           setrefreshData(0);
           initFilters1();
         }
-      );
+      ) .catch((e) => {
+        // console.log(e.message)
+        if (e.message == "Network Error") {
+            props.urlip()
+        }
+    })
   }
 
   const chargementData = () => {
@@ -118,7 +123,7 @@ export default function ElementConst(props) {
   }
   useEffect(() => {
     chargementData()
-  }, [])
+  }, [props.url])
 
   useEffect(async () => {
     if (niveau == '0' || anne_univ == '0000-0000') {
@@ -213,21 +218,21 @@ export default function ElementConst(props) {
         <div className='my-0  py-2'>
           {
             data.etat_mat == null || data.etat_mat == '0' ?
-              <Tag className="mr-2 " severity={"warning"} >Pas encore </Tag>
+              <Tag className="mr-2 " severity={"warning"} style={{backgroundColor:'#FFA726'}} >Pas encore </Tag>
               :
               data.etat_mat == '1' ?
-                < Tag className="mr-2 " severity={"info"} >En cours</ Tag>
+                < Tag className="mr-2 " severity={"info"}   >En cours</ Tag>
                 :
                 data.etat_mat == '2' ?
-                  <Tag className="mr-2 " severity={"success"} >Terminé cours</Tag>
+                  <Tag className="mr-2 " severity={"success"} style={{backgroundColor:'#89CB8C'}} >Terminé cours</Tag>
                   :
                   data.etat_mat == '3' ?
-                    <Tag className="mr-2 " severity={"success"} >Terminé SN</Tag>
+                    <Tag className="mr-2 " severity={"success"} style={{backgroundColor:'#0DAE45'}} >Terminé SN</Tag>
                     :
                     data.etat_mat == '4' ?
-                      <Tag className="mr-2 " severity={"success"} >Terminé SR</Tag>
+                      <Tag className="mr-2 " severity={"success"} style={{backgroundColor:'#055023'}} >Terminé SR</Tag>
                       :
-                      <Tag className="mr-2 " severity={"warning"} >Pas encore </Tag>
+                      <Tag className="mr-2 " severity={"waring"}  style={{backgroundColor:'#FFA726'}}>Pas encore </Tag>
           }
 
         </div>

@@ -27,22 +27,45 @@ div.humbergeur{
 
 @media screen and (max-width: 767px)
 {
-    div.mobile-m{
+    div .mobile-m{
         display: none;
     }
-    div.humbergeur{
+    div .humbergeur{
         display: flex;
     }
-    h1.mobile-non-titre{
+    h1 .mobile-non-titre{
         display: none;
     }
-    div.ciWiuv{
+    h1.m-1.p-1.mobile-non-titre {
+        display: none;
+    }
+    div .ciWiuv{
         width: 100%;
     }
-    div.gJVUZI{
+    div .gJVUZI{
         position: relative;
     }
-   
+    div .cECpmY {
+        position: absolute;
+        top: 0px;
+        left: 65%;
+        right: 0px;
+        width: 35%;
+        height: 100%;
+        overflow: hidden;
+        transition: transform 0.6s ease-in-out 0s;
+        z-index: 100;
+        font-size: 0.85em;
+    }
+   div  .bpDwEs {
+        position: absolute;
+        top: 0px;
+        height: 100%;
+        transition: all 0.6s ease-in-out 0s;
+        left: 0px;
+        width: 65%;
+        z-index: 2;
+    }
     html,body {
         font-size: 16px;
         zoom: 84%;
