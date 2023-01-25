@@ -58,10 +58,10 @@ function App() {
     //Chagment adresse ip
     const urlip=()=>{
             let ip = window.location.hostname;
-            // //Serveur emit
+            //Serveur emit
             // let urls ='http://'+ip+'/backRM/api/'
 
-            //local
+            // //local
             let urls ='http://'+ip+':2000/api/'
             seturl(urls);
     }

@@ -56,13 +56,35 @@ export default function ModifierEtat(props) {
             setetat({ ...etat, [e.target.name]: (e.target.value), datedt: 'dt_sr' });
         }
     }
-    const choixEtat = [
+    const choixEtatP = [
         { label: 'Pas encore démarré', value: '0' },
         { label: 'Démarré', value: '1' },
-        { label: 'Terminé cours', value: '2' },
-        { label: 'Terminé examen SN', value: '3' },
-        { label: 'Terminé examen SR', value: '4' },
-    ]
+    ];
+    const choixEtatD = [
+        { label: 'Pas encore démarré', value: '0' },
+        { label: 'Démarré', value: '1' },
+        { label: 'Cours Terminé', value: '2' },
+    ];
+    const choixEtatCT = [
+        { label: 'Pas encore démarré', value: '0' },
+        { label: 'Démarré', value: '1' },
+        { label: 'Cours Terminé', value: '2' },
+        { label: 'Examen SN Terminé', value: '3' },
+    ];
+    const choixEtatSNT = [
+        { label: 'Pas encore démarré', value: '0' },
+        { label: 'Démarré', value: '1' },
+        { label: 'Cours Terminé', value: '2' },
+        { label: 'Examen SN Terminé', value: '3' },
+        { label: 'Examen SR Terminé', value: '4' },
+    ];
+    const choixEtatSRT = [
+        { label: 'Pas encore démarré', value: '0' },
+        { label: 'Démarré', value: '1' },
+        { label: 'Cours Terminé', value: '2' },
+        { label: 'Examen SN Terminé', value: '3' },
+        { label: 'Examen SR Terminé', value: '4' },
+    ];
     /**Style css */
     const stylebtnRec = {
         fontSize: '1rem', padding: ' 0.8375rem 0.975rem', backgroundColor: '#a79d34', border: '1px solid #a79d34'
@@ -109,24 +131,24 @@ export default function ModifierEtat(props) {
         return (
             <div className='grid px-4'>
 
-                <h5> <u style={{ fontWeight: '700', color:'gray' }} >{props.nom_mat}</u>   :
+                <h5> <u style={{ fontWeight: '700', color: 'gray' }} >{props.nom_mat}</u>   :
                     <label style={{ textEmphasis: 'GrayText' }}>
                         {props.etat == null || props.etat == '0' ?
-                            <i style={{ fontSize:'1.2em',color:'#555555' }}> Pas encore démarré</i>
+                            <i style={{ fontSize: '1.2em', color: '#555555' }}> Pas encore démarré</i>
                             :
                             props.etat == '1' ?
-                                <i style={{ fontSize:'1.2em',color:'#555555' }}> En cours</i>
+                                <i style={{ fontSize: '1.2em', color: '#555555' }}> En cours</i>
                                 :
                                 props.etat == '2' ?
-                                    <i style={{ fontSize:'1.2em',color:'#555555' }}> Terminé cours</i>
+                                    <i style={{ fontSize: '1.2em', color: '#555555' }}> Terminé cours</i>
                                     :
                                     props.etat == '3' ?
-                                        <i style={{ fontSize:'1.2em',color:'#555555' }}> Terminé SN</i>
+                                        <i style={{ fontSize: '1.2em', color: '#555555' }}> Terminé SN</i>
                                         :
                                         props.etat == '4' ?
-                                            <i style={{ fontSize:'1.2em',color:'#555555' }}> Terminé SR</i>
+                                            <i style={{ fontSize: '1.2em', color: '#555555' }}> Terminé SR</i>
                                             :
-                                            <i style={{ fontSize:'1.2em',color:'#555555' }}> Pas encore démarré</i>
+                                            <i style={{ fontSize: '1.2em', color: '#555555' }}> Pas encore démarré</i>
                         }
                     </label>
                 </h5>
@@ -171,84 +193,109 @@ export default function ModifierEtat(props) {
             notificationAction('error', 'Erreur', error.message);//message avy @back
         }
 
-}
+    }
 
-return (
-    <>
-        <Toast ref={toastTR} position="top-center" />
-        <Button icon={PrimeIcons.PENCIL} className='p-buttom-sm p-1 ml-4' style={stylebtnCheck} tooltip="Modifier l'etat" tooltipOptions={{ position: 'top' }} onClick={() => { onClick('displayBasic2'); onChargeData(props.etat, props.mat_id, props.anne_univ, props.nom_mat) }} />
+    return (
+        <>
+            <Toast ref={toastTR} position="top-center" />
+            <Button icon={PrimeIcons.PENCIL} className='p-buttom-sm p-1 ml-4' style={stylebtnCheck} tooltip="Modifier l'etat" tooltipOptions={{ position: 'top' }} onClick={() => { onClick('displayBasic2'); onChargeData(props.etat, props.mat_id, props.anne_univ, props.nom_mat) }} />
 
-        <Dialog header={renderHeader('displayBasic2')} visible={displayBasic2} className="lg:col-4 md:col-6 col-8 p-0" onHide={() => onHide('displayBasic2')}>
-            <div className="p-1  style-modal-tamby">
-                <div className="flex flex-column justify-content-center">
-                    <div className='grid px-3'>
-                        <div className={etat.datedt == '0' ? "lg:col-12 md:col-12 sm:col-12 col-12  field my-0  flex flex-column" : " lg:col-6 md:col-12 sm:col-12 col-12  field my-0  flex flex-column"}>
-                            <h4 htmlFor="username2" className="m-1">Changement etat  :</h4>
-                            <Components.Select name='etat' onChange={(e) => { onTypesChange(e) }}   >
-                                <Components.Option value={''}  >{''}</Components.Option>
-                                {choixEtat.map((etat, index) => (
-                                    <Components.Option value={etat.value} key={index} >{etat.label}</Components.Option>
-                                ))}
-                            </Components.Select>
+            <Dialog header={renderHeader('displayBasic2')} visible={displayBasic2} className="lg:col-4 md:col-6 col-8 p-0" onHide={() => onHide('displayBasic2')}>
+                <div className="p-1  style-modal-tamby">
+                    <div className="flex flex-column justify-content-center">
+                        <div className='grid px-3'>
+                            <div className={etat.datedt == '0' ? "lg:col-12 md:col-12 sm:col-12 col-12  field my-0  flex flex-column" : " lg:col-6 md:col-12 sm:col-12 col-12  field my-0  flex flex-column"}>
+                                <h4 htmlFor="username2" className="m-1">Changement etat  :</h4>
+                                <Components.Select name='etat' onChange={(e) => { onTypesChange(e) }}   >
+                                    <Components.Option value={''}  >{''}</Components.Option>
+                                    {
+                                        props.etat == null || props.etat == '0' ?
+                                            choixEtatP.map((etat, index) => (
+                                                <Components.Option value={etat.value} key={index} >{etat.label}</Components.Option>
+                                            ))
+                                            :
+                                            props.etat == '1' ?
+                                                choixEtatD.map((etat, index) => (
+                                                    <Components.Option value={etat.value} key={index} >{etat.label}</Components.Option>
+                                                ))
+                                                :
+                                                props.etat == '2' ?
+                                                    choixEtatCT.map((etat, index) => (
+                                                        <Components.Option value={etat.value} key={index} >{etat.label}</Components.Option>
+                                                    ))
+                                                    :
+                                                    props.etat == '3' ?
+                                                        choixEtatSNT.map((etat, index) => (
+                                                            <Components.Option value={etat.value} key={index} >{etat.label}</Components.Option>
+                                                        ))
+                                                        :
+                                                        props.etat == '4' ?
+                                                            choixEtatSRT.map((etat, index) => (
+                                                                <Components.Option value={etat.value} key={index} >{etat.label}</Components.Option>
+                                                            ))
+                                                            :
+                                                            null
+                                    }
+                                </Components.Select>
+                            </div>
+                            <div className="lg:col-6 md:col-12 sm:col-12 col-12  field my-0  flex flex-column">
+                                {etat.datedt == '0' ?
+                                    null
+                                    :
+                                    <>
+                                        <h4 htmlFor="username2" className="m-1 ">
+                                            Date {etat.datedt == 'dt_encours' ? 'debut du cours' :
+                                                etat.datedt == 'dt_termine' ? 'fin du cours' :
+                                                    etat.datedt == 'dt_sn' ? 'session normale' :
+                                                        etat.datedt == 'dt_sr' ? 'session rattrapage' :
+                                                            ''
+                                            } :
+                                        </h4>
+                                        <Components.Input type='date' className={verfChamp ? "fform-invalid" : ''} placeholder='Nom utilisateur' name='valuedt' onChange={(e) => { setetat({ ...etat, valueview: e.target.value, valuedt: moment(e.target.value).format('DD/MM/YYYY') }) }} />
+
+                                        {/* <Calendar dateFormat='dd/mm/yy' value={etat.valueview} onChange={(e) => { setetat({ ...etat, valueview: e.target.value, valuedt: moment(e.target.value).format('DD/MM/YYYY') }) }} placeholder='dd/mm/yyyy' /> */}
+                                    </>
+                                }
+                            </div>
                         </div>
-                        <div className="lg:col-6 md:col-12 sm:col-12 col-12  field my-0  flex flex-column">
-                            {etat.datedt == '0' ?
-                                null
-                                :
-                                <>
-                                    <h4 htmlFor="username2" className="m-1 ">
-                                        Date {etat.datedt == 'dt_encours' ? 'debut du cours' :
-                                            etat.datedt == 'dt_termine' ? 'fin du cours' :
-                                                etat.datedt == 'dt_sn' ? 'session normale' :
-                                                    etat.datedt == 'dt_sr' ? 'session rattrapage' :
-                                                        ''
-                                        } :
-                                    </h4>
-                                    <Components.Input type='date' className={verfChamp ? "fform-invalid" : ''} placeholder='Nom utilisateur' name='valuedt' onChange={(e) => { setetat({ ...etat, valueview: e.target.value, valuedt: moment(e.target.value).format('DD/MM/YYYY') }) }} />
+                        <div className='flex mt-3 mr-4 justify-content-center '>
+                            <Button icon={PrimeIcons.CHECK} className='p-button-sm p-button-info ' label={charge ? 'Enregistrement...' : 'Sauvegarder'}
+                                onClick={() => {
+                                    if (etat != null) {
 
-                                    {/* <Calendar dateFormat='dd/mm/yy' value={etat.valueview} onChange={(e) => { setetat({ ...etat, valueview: e.target.value, valuedt: moment(e.target.value).format('DD/MM/YYYY') }) }} placeholder='dd/mm/yyyy' /> */}
-                                </>
-                            }
-                        </div>
-                    </div>
-                    <div className='flex mt-3 mr-4 justify-content-center '>
-                        <Button icon={PrimeIcons.CHECK} className='p-button-sm p-button-info ' label={charge ? 'Enregistrement...' : 'Sauvegarder'}
-                            onClick={() => {
-                                if (etat != null) {
+                                        const virus = localStorage.getItem('virus');
+                                        //Verifiena raha mbola ao le virus
+                                        if (virus) {
+                                            decrypt();
 
-                                    const virus = localStorage.getItem('virus');
-                                    //Verifiena raha mbola ao le virus
-                                    if (virus) {
-                                        decrypt();
-
-                                        setTimeout(() => {
-                                            if (etat.etat == '0') {
-                                                setverfChamp(false);
-                                                onModif(decrypt().token)
-                                            }
-                                            else {
-                                                if (etat.valuedt == '0') {
-                                                    setverfChamp(true)
-                                                }
-                                                else {
+                                            setTimeout(() => {
+                                                if (etat.etat == '0') {
+                                                    setverfChamp(false);
                                                     onModif(decrypt().token)
                                                 }
-                                            }
-                                        }, 600)
+                                                else {
+                                                    if (etat.valuedt == '0') {
+                                                        setverfChamp(true)
+                                                    }
+                                                    else {
+                                                        onModif(decrypt().token)
+                                                    }
+                                                }
+                                            }, 600)
+                                        }
+                                        else {
+
+                                            logout();
+                                        }
                                     }
                                     else {
-
-                                        logout();
+                                        alert('Etat null')
                                     }
-                                }
-                                else {
-                                    alert('Etat null')
-                                }
-                            }} />
+                                }} />
+                        </div>
                     </div>
                 </div>
-            </div>
-        </Dialog>
-    </>
-)
+            </Dialog>
+        </>
+    )
 }
