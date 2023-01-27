@@ -60,6 +60,19 @@ export default function Accueil(props) {
         { label: 'Cours', value: 'c' },
         { label: 'Examen', value: 'e' },
     ]
+
+    const [lmention, setlmention] = useState('0');
+    const [selectlmention, setselectlmention] = useState(null);
+
+    const [lgrade, setlgrade] = useState('0');
+    const [selectlgrade, setselectlgrade] = useState(null);
+    const onTypesChangeMention = (e) => {
+        setlmention(e.value);
+    }
+    const onTypesChangeGrade = (e) => {
+        setlgrade(e.value);
+    }
+
     /*Chart Graphique */
     const onTypesChange = (e) => {
         setanne_univ(e.value);
@@ -106,6 +119,8 @@ export default function Accueil(props) {
                     }
                     setselectanne(result.data.anne_univ)
                     setselectniveau(result.data.niveau)
+                    setselectlgrade(result.data.grade)
+                    setselectlmention(result.data.mention)
                     setdtChart(result.data.etat);
                     console.log(result.data)
                     if (niveau == '0') {
@@ -173,7 +188,6 @@ export default function Accueil(props) {
                 }
             )
             .catch((e) => {
-                console.log(e.message)
                 if (e.message == "Network Error") {
                     props.urlip()
                 }
@@ -194,9 +208,42 @@ export default function Accueil(props) {
             logout();
         }
     }
+    //Neny admin
+    const chargementDataAdm = () => {
+        const virus = localStorage.getItem('virus');
+        //Verifiena raha mbola ao le virus
+        if (virus) {
+            decrypt();
+            setCharge(true);
+            setTimeout(() => {
+                loadData(decrypt().token, 'admin', lmention, lgrade, anne_univ, niveau);
+            }, 800)
+        }
+        else {
+            logout();
+        }
+    }
     useEffect(() => {
         chargementData()
-    }, [anne_univ, niveau, filtre, props.url])
+    }, [props.url])
+    
+    useEffect(() => {
+        if (decrypt().data.mention == 'Admin') {
+            if (anne_univ == '0000-0000' || lgrade == '0' || lmention == '0') {
+
+                return false;
+            } else {
+                chargementDataAdm()
+            }
+        } else {
+            if (anne_univ == '0000-0000' ) {
+
+                return false;
+            } else {
+                chargementData()
+            }
+        }
+    }, [anne_univ, lmention, lgrade, niveau, filtre, props.url])
 
     return (
         <div className='grid h-full'>
@@ -205,16 +252,61 @@ export default function Accueil(props) {
                 <h3 className='text-center m-0 text-surface-500'>Bienvenue dans l'App pour les RM_EMIT <span className={PrimeIcons.CLOUD}></span></h3>
             </div>
             <div className="lg:col-12 md:col-12 sm:col-12 col-12">
-                <div className="card flex flex-column justify-content-center">
+                <div className="card flex flex-column justify-content-center w-full">
                     <center>
-                        <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
-                            <h4 htmlFor="username2" className="m-1">Anne univ :</h4>
-                            <Dropdown value={anne_univ} options={selectanne} onChange={onTypesChange} name="etat" />
+                        <div className="lgcol-12 md:col-12  md:flex-column   sm:col-3 sm:flex-column field  flex lg:flex-row flex-column " style={{ backgroundColor: '#ebebeb' }}>
 
-                            <h4 htmlFor="username2" className="m-1 ml-1">Niveau  :</h4>
-                            <Dropdown value={niveau} options={selectniveau} onChange={onTypesChangeNiveau} name="etat" />
-                            <h4 htmlFor="username2" className="m-1 ml-1">Filtrer par  :</h4>
-                            <Dropdown value={filtre} options={choixGrphe} onChange={onTypesChangeFiltre} name="etat" />
+
+                            {decrypt().data.mention == 'Admin' ?
+                                <div className='grid col-12 flex flex-row ' >
+
+                                    <div className="lg:col-4 md:col-4  md:flex-column   sm:col-4 col-4 sm:flex-column field my-0 flex lg:flex-row flex-column " style={{ alignItems: 'center', justifyContent: 'space-around' }}>
+                                        <div>
+                                            <h4 htmlFor="username2" className="m-1">Anne univ :</h4>
+                                            <Dropdown value={anne_univ} options={selectanne} onChange={onTypesChange} name="etat" />
+                                        </div>
+                                        <div className='flex flex-column '>
+                                            <h4 htmlFor="username2" className="m-1">Mention  :</h4>
+                                            <Dropdown value={lmention} options={selectlmention} onChange={onTypesChangeMention} name="etat" />
+                                        </div>
+                                    </div>
+                                    <div className="lg:col-4 md:col-4  md:flex-column   sm:col-4 col-4 sm:flex-column field my-0 flex lg:flex-row flex-column" style={{ alignItems: 'center', justifyContent: 'space-around' }}>
+                                        <div className='flex flex-column '>
+                                            <h4 htmlFor="username2" className="m-1">Grade  :</h4>
+                                            <Dropdown value={lgrade} options={selectlgrade} onChange={onTypesChangeGrade} name="etat" />
+                                        </div>
+                                        <div>
+                                            <h4 htmlFor="username2" className="m-1 ml-1">Niveau  :</h4>
+                                            <Dropdown value={niveau} options={selectniveau} onChange={onTypesChangeNiveau} name="etat" />
+                                        </div>
+
+                                    </div>
+                                    <div className="lg:col-4 md:col-4  md:flex-column   sm:col-4 col-4 sm:flex-column field my-0 flex lg:flex-row flex-column" style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                        <h4 htmlFor="username2" className="m-1 ml-1">Filtrer par  :</h4>
+                                        <Dropdown value={filtre} options={choixGrphe} onChange={onTypesChangeFiltre} name="etat" />
+                                    </div>
+                                </div>
+                                :
+                                <div className='grid col-12 flex flex-row ' >
+                                    <div className="lg:col-4 md:col-4  md:flex-column   sm:col-4 col-4 sm:flex-column field my-0 flex lg:flex-row flex-column " style={{ alignItems: 'center', justifyContent: 'center' }}>
+
+                                        <h4 htmlFor="username2" className="m-1">Anne univ :</h4>
+                                        <Dropdown value={anne_univ} options={selectanne} onChange={onTypesChange} name="etat" />
+                                    </div>
+                                    <div className="lg:col-4 md:col-4  md:flex-column   sm:col-4 col-4 sm:flex-column field my-0 flex lg:flex-row flex-column" style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                        <h4 htmlFor="username2" className="m-1 ml-1">Niveau  :</h4>
+                                        <Dropdown value={niveau} options={selectniveau} onChange={onTypesChangeNiveau} name="etat" />
+                                    </div>
+                                    <div className="lg:col-4 md:col-4  md:flex-column   sm:col-4 col-4 sm:flex-column field my-0 flex lg:flex-row flex-column" style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                        <h4 htmlFor="username2" className="m-1 ml-1">Filtrer par  :</h4>
+                                        <Dropdown value={filtre} options={choixGrphe} onChange={onTypesChangeFiltre} name="etat" />
+                                    </div>
+
+                                </div>
+                            }
+
+
+
                         </div>
                         {charge ? <h1>Chargement...</h1> :
                             dtChart[0] == 0 && dtChart[1] == 0 && dtChart[2] == 0 ? <h1>Aucun résultat</h1> : null}

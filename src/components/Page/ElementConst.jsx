@@ -40,8 +40,16 @@ export default function ElementConst(props) {
   const [anne_univ, setanne_univ] = useState('0000-0000');
   const [selectanne, setselectanne] = useState(null);
 
+  const [infomt, setinfomt] = useState({ rm_id: '', mention: '' });
+
   const [niveau, setniveau] = useState('0');
   const [selectniveau, setselectniveau] = useState(null);
+
+  const [lmention, setlmention] = useState('0');
+  const [selectlmention, setselectlmention] = useState(null);
+
+  const [lgrade, setlgrade] = useState('0');
+  const [selectlgrade, setselectlgrade] = useState(null);
 
   const [etat, setetat] = useState('5');
 
@@ -52,6 +60,12 @@ export default function ElementConst(props) {
   }
   const onTypesChangeNiveau = (e) => {
     setniveau(e.value);
+  }
+  const onTypesChangeMention = (e) => {
+    setlmention(e.value);
+  }
+  const onTypesChangeGrade = (e) => {
+    setlgrade(e.value);
   }
   const onTypesChangeEtat = (e) => {
     setetat(e.value);
@@ -94,17 +108,19 @@ export default function ElementConst(props) {
           }
           setlistMatiere(result.data.matiere);
           setselectanne(result.data.anne_univ)
-          setselectniveau(result.data.niveau)
+          setselectniveau(result.data.niveau);
+          setselectlgrade(result.data.grade)
+          setselectlmention(result.data.mention)
           setCharge(false);
           setrefreshData(0);
           initFilters1();
         }
-      ) .catch((e) => {
+      ).catch((e) => {
         // console.log(e.message)
         if (e.message == "Network Error") {
-            props.urlip()
+          props.urlip()
         }
-    })
+      })
   }
 
   const chargementData = () => {
@@ -113,9 +129,26 @@ export default function ElementConst(props) {
     if (virus) {
       decrypt();
       setCharge(true);
-      setTimeout(() => {
-        loadData(decrypt().token, decrypt().data.rm_id, decrypt().data.mention, decrypt().data.grad_id, anne_univ, niveau, etat);
-      }, 800)
+
+        setTimeout(() => {
+          
+          loadData(decrypt().token, decrypt().data.rm_id, decrypt().data.mention, decrypt().data.grad_id, anne_univ, niveau, etat);
+        }, 800)
+    }
+    else {
+      logout();
+    }
+  }
+  //Neny admin
+  const chargementDataAdm = () => {
+    const virus = localStorage.getItem('virus');
+    //Verifiena raha mbola ao le virus
+    if (virus) {
+      decrypt();
+      setCharge(true);
+        setTimeout(() => {
+          loadData(decrypt().token, 'admin', lmention, lgrade, anne_univ, niveau, etat);
+        }, 800)
     }
     else {
       logout();
@@ -126,12 +159,23 @@ export default function ElementConst(props) {
   }, [props.url])
 
   useEffect(async () => {
-    if (niveau == '0' || anne_univ == '0000-0000') {
-      return false
-    } else {
-      chargementData()
+    if (decrypt().data.mention == 'Admin') {
+      if ( anne_univ == '0000-0000' || lgrade=='0' || lmention=='0' ) {
+        console.log('non')
+        return false;
+      } else {
+        console.log('ok')
+        chargementDataAdm()
+      }
+    }else{
+      if (niveau == '0' || anne_univ == '0000-0000' ) {
+        return false
+      } else {
+        chargementData()
+      }
+
     }
-  }, [refreshData, anne_univ, niveau, etat]);
+  }, [refreshData, anne_univ, niveau, etat,lmention,lgrade]);
 
 
 
@@ -176,7 +220,7 @@ export default function ElementConst(props) {
         {
           data.etat_mat == null || data.etat_mat == '0' ?
             '_' :
-            data.etat_mat == '2' ||  data.etat_mat == '3' ||  data.etat_mat == '4' ? moment(data.date_fin_etat).format('DD/MM/YYYY')
+            data.etat_mat == '2' || data.etat_mat == '3' || data.etat_mat == '4' ? moment(data.date_fin_etat).format('DD/MM/YYYY')
               :
               '_'
         }
@@ -190,7 +234,7 @@ export default function ElementConst(props) {
         {
           data.etat_mat == null || data.etat_mat == '0' ?
             '_' :
-            data.etat_mat == '3' ||  data.etat_mat == '4' ? moment(data.date_session_n).format('DD/MM/YYYY')
+            data.etat_mat == '3' || data.etat_mat == '4' ? moment(data.date_session_n).format('DD/MM/YYYY')
               :
               '_'
         }
@@ -218,21 +262,21 @@ export default function ElementConst(props) {
         <div className='my-0  py-2'>
           {
             data.etat_mat == null || data.etat_mat == '0' ?
-              <Tag className="mr-2 " severity={"warning"} style={{backgroundColor:'#FFA726'}} >Pas encore </Tag>
+              <Tag className="mr-2 " severity={"warning"} style={{ backgroundColor: '#FFA726' }} >Pas encore </Tag>
               :
               data.etat_mat == '1' ?
                 < Tag className="mr-2 " severity={"info"}   >En cours</ Tag>
                 :
                 data.etat_mat == '2' ?
-                  <Tag className="mr-2 " severity={"success"} style={{backgroundColor:'#89CB8C'}} >Terminé cours</Tag>
+                  <Tag className="mr-2 " severity={"success"} style={{ backgroundColor: '#89CB8C' }} >Terminé cours</Tag>
                   :
                   data.etat_mat == '3' ?
-                    <Tag className="mr-2 " severity={"success"} style={{backgroundColor:'#0DAE45'}} >Terminé SN</Tag>
+                    <Tag className="mr-2 " severity={"success"} style={{ backgroundColor: '#0DAE45' }} >Terminé SN</Tag>
                     :
                     data.etat_mat == '4' ?
-                      <Tag className="mr-2 " severity={"success"} style={{backgroundColor:'#055023'}} >Terminé SR</Tag>
+                      <Tag className="mr-2 " severity={"success"} style={{ backgroundColor: '#055023' }} >Terminé SR</Tag>
                       :
-                      <Tag className="mr-2 " severity={"waring"}  style={{backgroundColor:'#FFA726'}}>Pas encore </Tag>
+                      <Tag className="mr-2 " severity={"waring"} style={{ backgroundColor: '#FFA726' }}>Pas encore </Tag>
           }
 
         </div>
@@ -272,6 +316,19 @@ export default function ElementConst(props) {
             <h4 htmlFor="username2" className="m-1">Anne univ :</h4>
             <Dropdown value={anne_univ} options={selectanne} onChange={onTypesChange} name="etat" />
           </div>
+          {decrypt().data.mention == 'Admin' ? 
+            <>
+              <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
+                <h4 htmlFor="username2" className="m-1">Mention  :</h4>
+                <Dropdown value={lmention} options={selectlmention} onChange={onTypesChangeMention} name="etat" />
+              </div>
+              <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
+                <h4 htmlFor="username2" className="m-1">Grade  :</h4>
+                <Dropdown value={lgrade} options={selectlgrade} onChange={onTypesChangeGrade} name="etat" />
+              </div>
+            </>
+            :null
+          }
           <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
             <h4 htmlFor="username2" className="m-1">Niveau  :</h4>
             <Dropdown value={niveau} options={selectniveau} onChange={onTypesChangeNiveau} name="etat" />
@@ -281,10 +338,12 @@ export default function ElementConst(props) {
             <h4 htmlFor="username2" className="m-1">Afficher :</h4>
             <Dropdown value={etat} options={choixEtat} onChange={onTypesChangeEtat} name="etat" />
           </div>
-          <div className="lgcol-8 md:col-5  justify-content-center md:flex-column  sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
-            <h4 htmlFor="username2" className="m-1">Recherche :</h4>
-            <InputText value={globalFilterValue1} onChange={onGlobalFilterChange1} placeholder="Recherche global..." />
-          </div>
+          {decrypt().data.mention == 'Admin' ? null :
+            <div className="lgcol-8 md:col-5  justify-content-center md:flex-column  sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
+              <h4 htmlFor="username2" className="m-1">Recherche :</h4>
+              <InputText value={globalFilterValue1} onChange={onGlobalFilterChange1} placeholder="Recherche global..." />
+            </div>
+          }
         </div>
       </div>
     )

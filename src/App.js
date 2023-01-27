@@ -59,10 +59,10 @@ function App() {
     const urlip=()=>{
             let ip = window.location.hostname;
             //Serveur emit
-            // let urls ='http://'+ip+'/backRM/api/'
+            let urls ='http://'+ip+'/backRM/api/'
 
             // //local
-            let urls ='http://'+ip+':2000/api/'
+            // let urls ='http://'+ip+':2000/api/'
             seturl(urls);
     }
 
@@ -269,10 +269,10 @@ function App() {
             <Route path='/element_constitutifs' element={<ElementConst url={url}  urlip={urlip} />} />
             <Route path='/classe' element={<Classe url={url}  urlip={urlip} />} />
             <Route path='/mention' element={<Mention url={url}  urlip={urlip} />} />
-            <Route path='/' element={<Accueil url={url} urlip={urlip}  />} />
+            <Route path='/acceuil' element={<Accueil url={url} urlip={urlip}  />} />
         </Route>
 
-        <Route path='/login' element={<Signin url={url} />} />
+        <Route path='/' element={<Signin url={url} />} />
     </Routes>
 </div>
 

@@ -14,17 +14,18 @@ const useAuth = () => {
     const [notif, setnotif] = useState({etat:'',situation : '',message:''})
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (token) {
+        if (token!=null) {
             setIsAuthenticated(true);
             //Rehefa mbola conncté nefa te hiverina @/login ,tonga de dirigeny 
-            if (pathname=='/login') {
-                navigate('/');
+            if (pathname=='/') {
+                navigate('/acceuil');
             }else{
                 navigate(pathname);
+                console.log('firsdsfsdt')
             }
         } else {
             setIsAuthenticated(false);
-            navigate('/login');
+            navigate('/');
         }
 
     }, [navigate]);
@@ -51,7 +52,7 @@ const useAuth = () => {
                     localStorage.setItem('virus', infocrypte.toString());
 
                     setTimeout(() => {
-                        navigate('/', { state: { dts } });
+                        navigate('/acceuil', { state: { dts } });
                        
                     }, 500)
                 }
@@ -91,10 +92,10 @@ const useAuth = () => {
     };
 
     const logout = () => {
+        navigate('/');
         localStorage.removeItem('token');
         localStorage.removeItem('virus');
         setIsAuthenticated(false);
-        navigate('/login');
     };
 
     return { isAuthenticated, login,notif,chargement, logout,secret,inscriptionlogin };

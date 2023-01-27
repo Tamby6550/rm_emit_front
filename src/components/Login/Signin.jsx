@@ -22,7 +22,7 @@ export default function Signin(props) {
     const [mention, setmention] = useState([{ mention_nom: '', mention_lib: '' }]);
     const [charge, setCharge] = useState(false);
     const [refreshData, setrefreshData] = useState(0);
-
+    const [verfadmin, setverfadmin] = useState(false);
 
     const [verfChamp, setverfChamp] = useState({ rm_nom: false, mention: false, grad_id: false, motpasse: false })
     const [verfChampIns, setverfChampIns] = useState({ rm_nom: false, mention: false, grad_id: false, motpasse: false })
@@ -58,8 +58,15 @@ export default function Signin(props) {
         setTimeout(() => {
             loadData();
         }, 800)
-    }, [refreshData,props.url]);
+    }, [refreshData, props.url]);
 
+    useEffect(() => {
+        if (infoLogin.mention == 'Admin') {
+            setverfadmin(true);
+        } else {
+            setverfadmin(false);
+        }
+    }, [infoLogin.mention])
 
 
     /*Notification Toast */
@@ -78,21 +85,28 @@ export default function Signin(props) {
         if (infoLogin.mention == "") {
             setverfChamp({ rm_nom: false, grad_id: false, motpasse: false, mention: true });
         }
-        if (infoLogin.grad_id == "") {
+
+        if (infoLogin.grad_id == "" && !verfadmin) {
             setverfChamp({ rm_nom: false, mention: false, motpasse: false, grad_id: true });
         }
 
         if (infoLogin.motpasse == "") {
             setverfChamp({ rm_nom: false, mention: false, grad_id: false, motpasse: true });
         }
-        // if (infoLogin.rm_nom == "") {
-        //     setverfChamp({ mention: false, grad_id: false, motpasse: false, rm_nom: true });
-        // }
-        if (infoLogin.mention != "" && infoLogin.grad_id != "" && infoLogin.motpasse != "") {
-            setverfChamp({ mention: false, grad_id: false, motpasse: false, rm_nom: false });
-            onSub();
+
+        if (verfadmin) {
+            if (infoLogin.mention != "" && infoLogin.motpasse != "") {
+                setverfChamp({ mention: false, grad_id: false, motpasse: false, rm_nom: false });
+                onSub();
+            }
+        }else{
+            if (infoLogin.mention != "" && infoLogin.grad_id != "" && infoLogin.motpasse != "") {
+                setverfChamp({ mention: false, grad_id: false, motpasse: false, rm_nom: false });
+                onSub();
+            }
         }
     }
+
     const onverfChInscription = () => {
         if (infoInscription.mention_nom == "") {
             setverfChampIns({ rm_nom: false, grad_id: false, motpasse: false, mention: true });
@@ -124,6 +138,7 @@ export default function Signin(props) {
         // console.log(infoInscription)
         // login(infoLogin, props.url)
     }
+
 
     return (
         <div className='flex flex-row justify-content-center  align-items-center m-0 w-full '>
@@ -160,9 +175,6 @@ export default function Signin(props) {
                 <Components.SignInContainer signinIn={signIn}>
                     <Components.Form>
                         <Components.Title>Login</Components.Title>
-                        {/* <Components.Input type='text' className={verfChamp.rm_nom ? "fform-invalid" : ''} placeholder='Nom utilisateur' style={{ marginBottom: '20px' }} name='rm_nom' onChange={(e) => { onChargeDonne(e) }} />
-                        {verfChamp.rm_nom ? <small id="username2-help" className="p-error block">Champ vide !</small> : null} */}
-
 
                         <Components.Label >Mention</Components.Label>
                         <Components.Select name='mention' onChange={(e) => { onChargeDonne(e) }} className={verfChamp.mention ? "fform-invalid" : ''}  >
@@ -173,14 +185,18 @@ export default function Signin(props) {
                         </Components.Select>
                         {verfChamp.mention ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
 
-                        <Components.Label >Grade </Components.Label>
-                        <Components.Select name='grad_id' onChange={(e) => { onChargeDonne(e) }} className={verfChamp.grad_id ? "fform-invalid" : ''} >
-                            <Components.Option value={''}  >{charge ? 'Chargement...' : ''}</Components.Option>
-                            {grade.map((gr, index) => (
-                                <Components.Option value={gr.grad_id} key={index} >{gr.grad_nom}</Components.Option>
-                            ))}
-                        </Components.Select>
-                        {verfChamp.grad_id ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
+                        {verfadmin ? null :
+                            <>
+                                <Components.Label >Grade </Components.Label>
+                                <Components.Select name='grad_id' onChange={(e) => { onChargeDonne(e) }} className={verfChamp.grad_id ? "fform-invalid" : ''} >
+                                    <Components.Option value={''}  >{charge ? 'Chargement...' : ''}</Components.Option>
+                                    {grade.map((gr, index) => (
+                                        <Components.Option value={gr.grad_id} key={index} >{gr.grad_nom}</Components.Option>
+                                    ))}
+                                </Components.Select>
+                                {verfChamp.grad_id ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
+                            </>
+                        }
                         <Components.Label >Mot de passe </Components.Label>
                         <Components.Input type='password' placeholder='Password' className={verfChamp.motpasse ? "fform-invalid" : ''} name='motpasse' onChange={(e) => { onChargeDonne(e) }} />
                         {verfChamp.motpasse ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
@@ -201,11 +217,11 @@ export default function Signin(props) {
                         </Components.LeftOverlayPanel>
 
                         <Components.RightOverlayPanel signinIn={signIn}>
-                            <Components.Title style={{color:'#546372',fontSize:'1.6em'}} >Application pour le suivi pédagogique</Components.Title>
+                            <Components.Title style={{ color: '#546372', fontSize: '1.6em' }} >Application pour le suivi pédagogique</Components.Title>
                             <Components.Paragraph>
                                 <img src={emit} alt="" width={"148px"} />
                             </Components.Paragraph>
-                            <Components.GhostButton style={{display:'none'}} onClick={() => toggle(false)}>
+                            <Components.GhostButton style={{ display: 'none' }} onClick={() => toggle(false)}>
                                 S'inscrire
                             </Components.GhostButton>
                         </Components.RightOverlayPanel>
