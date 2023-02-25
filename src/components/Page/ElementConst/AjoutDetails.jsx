@@ -116,6 +116,9 @@ export default function AjoutDetails(props) {
         if (infoDetails.vheure == "0" || infoDetails.vheure == "") {
             alert('Volume d\'heure ne doit pas etre vide ou zéro !');
         }
+        if (infoDetails.group_ed=="0" && infoDetails.group_ep=="0") {
+            alert('Vous devez configurer le nombre de groupe de cette classe dans le menu paramètre !')
+        }
         else {
             setverfChamp({ vheure: false });
             onSub()
@@ -178,6 +181,8 @@ export default function AjoutDetails(props) {
                         setinfoDetails({...infoDetails,group_ed: result.data.td, group_ep: result.data.tp,
                             anne_univ: props.anne_univ, mati_id: props.data.mati_id })
                         loadDetailsTamby(result);
+                    }else{
+                        setchargeDnn(false);
                     }
                 }
             ).catch((e) => {
