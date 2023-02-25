@@ -4,21 +4,31 @@ import { PrimeIcons } from 'primereact/api';
 import { InputText } from 'primereact/inputtext'
 import { Toast } from 'primereact/toast';
 import { InputNumber } from 'primereact/inputnumber';
+import { Checkbox } from 'primereact/checkbox';
 import { Dropdown } from 'primereact/dropdown';
 /*Importer modal */
 import { Dialog } from 'primereact/dialog';
 import axios from 'axios'
 import { Fieldset } from 'primereact/fieldset';
-
+import { BlockUI } from 'primereact/blockui';
+import { ProgressSpinner } from 'primereact/progressspinner';
 
 export default function AjoutDetails(props) {
 
+
+    const [chargeDnn, setchargeDnn] = useState(false);
     //Declaration useSatate
-    const [infoDetails, setinfoDetails] = useState({ base_et: '', group_et: '', base_ed: '', group_ed: '', base_ep: '', group_ep: '', vheure: '', credit: '', mati_id: '' });
+    const [infoDetails, setinfoDetails] = useState({ anne_univ: '', base_et: '0', group_et: '1', base_ed: '0', group_ed: '0', base_ep: '0', group_ep: '0', vheure: '0', credit: '0', mati_id: '' });
+    const [chek, setchek] = useState(true);
+    const [chek1, setchek1] = useState(true);
+    const [chek2, setchek2] = useState(true);
     const [verfChamp, setverfChamp] = useState({ vheure: false });
-    const [charge, setcharge] = useState({ chajoute: false });
+    const [charge, setcharge] = useState(false);
     const onVideInfo = () => {
-        setinfoDetails({ base_et: '', group_et: '', base_ed: '', group_ed: '', base_ep: '', group_ep: '', vheure: '', credit: '', mati_id: '' });
+        setchek(true);
+        setchek1(true);
+        setchek2(true);
+        setinfoDetails({ anne_univ: '', base_et: '0', group_et: '1', base_ed: '0', group_ed: '0', base_ep: '0', group_ep: '0', vheure: '0', credit: '0', mati_id: '' });
     }
 
 
@@ -42,64 +52,14 @@ export default function AjoutDetails(props) {
         setinfoDetails({ ...infoDetails, [e.target.name]: (e.target.value) })
     }
 
-    const idExamen = (totalenrg) => {
-        let id1 = parseInt(totalenrg) + 1;
-        let id2 = parseInt(totalenrg) + 2;
-        setinfoDetails({ ...infoDetails, id_exam: totalenrg, id_exam1: id1, id_exam2: id2 });
-    }
-    const controleChampVide = () => {
-        if (!Number.isInteger(infoDetails.montant_e)) {
-            setverfChamp({ ...verfChamp, montant_e: true })
-        }
-        if (!Number.isInteger(infoDetails.montant_l1)) {
-            setverfChamp({ ...verfChamp, montant_l1: true })
-        }
-        if (!Number.isInteger(infoDetails.montant_l2)) {
-            setverfChamp({ ...verfChamp, montant_l2: true })
-        }
-
-        // if (infoDetails.tarif == "") {
-        //     setverfChamp({ ...verfChamp, tarif: true })
-        // }
-
-        if (infoDetails.type == "") {
-            setverfChamp({ ...verfChamp, type: true })
-        }
-
-        if (infoDetails.code_tarif == "") {
-            setverfChamp({ ...verfChamp, code_tarif: true })
-        }
-
-        if (infoDetails.lib == "") {
-            setverfChamp({ ...verfChamp, lib: true })
-        }
 
 
-        if (infoDetails.lib != "" && infoDetails.code_tarif != "" && infoDetails.type != "" && Number.isInteger(infoDetails.montant_e) && Number.isInteger(infoDetails.montant_l1) && Number.isInteger(infoDetails.montant_l2)) {
-            setverfChamp({ id_exam: false, lib: false, code_tarif: false, montant_e: false, montant_l1: false, montant_l2: false });
-            onSub()
-        }
-
-    }
 
     const stylebtnRec = {
         fontSize: '1rem', padding: ' 0.8375rem 0.975rem', backgroundColor: 'rgb(72 96 112)', border: '1px solid rgb(72 96 112)'
     };
 
-    const choixType = [
-        { label: 'ECHOGRAPHIE', value: 'ECHOGRAPHIE' },
-        { label: 'MAMMOGRAPHIE', value: 'MAMMOGRAPHIE' },
-        { label: 'PANNORAMIQUE DENTAIRE', value: 'PANNORAMIQUE DENTAIRE' },
-        { label: 'SCANNER', value: 'SCANNER' },
-        { label: 'RADIOGRAPHIE', value: 'RADIOGRAPHIE' },
-        { label: 'ECG', value: 'ECG' },
-        { label: 'AUTRES', value: 'AUTRES' }
-    ]
-    const choixTarif = [
-        { label: 'E', value: 'E' },
-        { label: 'L1', value: 'L1' },
-        { label: 'L2', value: 'L2' }
-    ]
+
 
     /* Modal */
     const [displayBasic2, setDisplayBasic2] = useState(false);
@@ -140,125 +100,233 @@ export default function AjoutDetails(props) {
     /** Fin modal */
 
 
+    const verf = () => {
+        if (chek) {
+            setinfoDetails({ ...infoDetails, base_et: '0' });
+        }
+        if (chek1) {
+            setinfoDetails({ ...infoDetails, base_ed: '0' });
+        }
+        if (chek2) {
+            setinfoDetails({ ...infoDetails, base_ep: '0' });
+        }
+    }
 
+    const controleChampVide = () => {
+        if (infoDetails.vheure == "0" || infoDetails.vheure == "") {
+            alert('Volume d\'heure ne doit pas etre vide ou zéro !');
+        }
+        else {
+            setverfChamp({ vheure: false });
+            onSub()
+        }
+    }
 
     const onSub = async () => { //Ajout de donnees vers Laravel
-        console.log('first')
-        // setcharge({ chajoute: true });
-        // await axios.post(props.url + 'insertExamen', infoDetails)
-        //     .then(res => {
-        //         notificationAction(res.data.etat, 'Enregistrement', res.data.message);//message avy @back
-        //         setcharge({ chajoute: false });
-        //         setTimeout(() => {
-        //             props.setrefreshData(1);
-        //             onVideInfo()
-        //             onHide('displayBasic2');
-        //         }, 900)
-        //     })
-        //     .catch(err => {
-        //         console.log(err);
-        //         notificationAction('error', 'Erreur', err.data.message);//message avy @back
-        //         setcharge({ chajoute: false });
-        //     });
+        // console.log(etat)
+        setcharge(true);
+        try {
+            await axios.post(props.url + 'ajouteDetailsMatiere', infoDetails, {
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "X-API-KEY": "tamby",
+                    'Authorization': props.token
+                },
+            })
+                .then(res => {
+                    if (res.data.message == 'Token Time Expire.') {
+                        notificationAction('warn', 'Votre token est expiré !', 'Délais de token 4 heures !')
+                        setTimeout(() => {
+                            props.logout();
+                        }, 3000)
+                    }
+                    //message avy @back
+                    notificationAction(res.data.etat, res.data.situation, res.data.message);
+                    setcharge(false);
+                    setTimeout(() => {
+                        onHide('displayBasic2');
+                        props.setrefreshData(1);
+                    }, 500);
+                })
+                .catch(err => {
+                    notificationAction('error', 'Erreur', err.data.message);//message avy @back
+                    console.log(err);
+                    setcharge(false);
+                });
+        } catch (error) {
+            notificationAction('error', 'Erreur', error.message);//message avy @back
+        }
+    }
+    const loadNbreGroup = () => {
+        setchargeDnn(true);
+        axios.get(props.url + `getGrouptamby/${props.anne_univ}/${props.data.abbr_niveau}/${props.mention}`, {
+            headers: {
+                'Content-Type': 'text/html',
+                'X-API-KEY': 'tamby',
+                'Authorization': props.token
+            }
+        })
+            .then(
+                (result) => {
+                    if (result.data.message == 'Token Time Expire.') {
+                        notificationAction('warn', 'Votre token est expiré !', 'Délais de token 4 heures !')
+                        setTimeout(() => {
+                            props.logout();
+                        }, 3000)
+                    }
+                    if (result.data != "") {
+                        setinfoDetails({...infoDetails,group_ed: result.data.td, group_ep: result.data.tp,
+                            anne_univ: props.anne_univ, mati_id: props.data.mati_id })
+                        loadDetailsTamby(result);
+                    }
+                }
+            ).catch((e) => {
+                // console.log(e.message)
+                if (e.message == "Network Error") {
+                    props.urlip()
+                }
+                setchargeDnn(false);
+            })
+    }
+    const loadDetailsTamby = (resultss) => {
+        axios.get(props.url + `getDetailsMatiere/${props.anne_univ}/${props.data.mati_id}`, {
+            headers: {
+                'Content-Type': 'text/html',
+                'X-API-KEY': 'tamby',
+                'Authorization': props.token
+            }
+        })
+            .then(
+                (result) => {
+                    if (result.data.message == 'Token Time Expire.') {
+                        notificationAction('warn', 'Votre token est expiré !', 'Délais de token 4 heures !')
+                        setTimeout(() => {
+                            props.logout();
+                        }, 3000)
+                    }
+                    if (result.data != "") {
+                        setinfoDetails({ ...infoDetails, 
+                            vheure:props.data.vheure,credit:props.data.credit,
+                            anne_univ: props.anne_univ, group_et: result.data.group_et,group_ed: resultss.data.td, group_ep: resultss.data.tp, mati_id: props.data.mati_id ,
+                            base_ed: result.data.base_ed, base_et: result.data.base_et, base_ep: result.data.base_ep,
+                         });
+                    }
+                    setchargeDnn(false);
+                }
+            ).catch((e) => {
+                // console.log(e.message)
+                if (e.message == "Network Error") {
+                    props.urlip()
+                }
+                setchargeDnn(false);
+            })
     }
     return (
         <div>
             <Toast ref={toastTR} position="top-right" />
-            <Button icon={PrimeIcons.PLUS} className='p-buttom-sm p-1 ' label='' style={stylebtnRec} tooltip='Ajouter details' tooltipOptions={{ position: 'top' }} onClick={() => { onClick('displayBasic2'); idExamen(props.totalenrg) }} />
+            <Button icon={PrimeIcons.PLUS} className='p-buttom-sm p-1 ' label='' style={stylebtnRec} tooltip='Ajouter details' tooltipOptions={{ position: 'top' }}
+                onClick={() => {
+                    onClick('displayBasic2');
+                    setTimeout(() => {
+                        loadNbreGroup();
+                    }, 200);
+                    console.log(props.data)
+                }}
+            />
             <div className='grid'>
-                <Dialog header={renderHeader('displayBasic2')} visible={displayBasic2} className="lg:col-5 md:col-8 col-9 p-0" footer={renderFooter('displayBasic2')} onHide={() => onHide('displayBasic2')}>
-                    <div className="p-1 style-modal-tamby" style={{ fontSize: '0.9em' }} >
-                        <form className='flex flex-column justify-content-center'>
-
-                            <div className='grid px-4 flex justify-content-center'>
-                                <div className="lg:col-4 col-12 field my-0 flex flex-column">
-                                    <h4 className='m-1'>Volmue d'heure</h4>
-                                    <InputNumber inputId="withoutgrouping" value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} />
-                                    {verfChamp.vheure ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
-                                </div>
-                                <div className="lg:col-4 col-12 ml-3 field my-0 flex flex-column">
-                                    <h4 className='m-1'>Credit</h4>
-                                    <InputNumber inputId="withoutgrouping" value={infoDetails.credit} name="credit" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} />
-                                    {verfChamp.vheure ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
-                                </div>
+                <Dialog header={renderHeader('displayBasic2')} visible={displayBasic2} className="lg:col-4 md:col-8 col-9 p-0" footer={renderFooter('displayBasic2')} onHide={() => onHide('displayBasic2')}>
+                    <BlockUI blocked={chargeDnn} template={<ProgressSpinner />}>
+                        <div className="p-1 style-modal-tamby" style={{ fontSize: '0.9em' }} >
+                            <div className='flex flex-column'>
+                                <h2 className='m-1'>Matière : <u>{props.data.matiere}</u> </h2>
+                                <h2 className='m-1'> Proff : <u>{props.data.nom_prof}</u> </h2>
                             </div>
-                            <div className='grid px-4'>
-                                <div className="lg:col-12 col-12 field my-0 flex flex-column">
-                                    <Fieldset legend="Enseignement Théorique "  >
-                                        <div className='grid p-1'>
-                                            <div className="lg:col-4 col-12 field my-0 flex flex-column">
-                                                <h4 className='m-1'>Base</h4>
-                                                <InputNumber inputId="withoutgrouping" value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} />
-                                                {verfChamp.vheure ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
+                            <hr />
+                            <form className='flex flex-column justify-content-center'>
+
+                                <div className='grid px-4 flex justify-content-center'>
+                                    <div className="lg:col-4 col-12 field my-0 flex flex-column">
+                                        <h4 className='m-1'>Volmue d'heure</h4>
+                                        <InputNumber inputId="withoutgrouping" value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} />
+                                    </div>
+                                    <div className="lg:col-4 col-12 ml-3 field my-0 flex flex-column">
+                                        <h4 className='m-1'>Credit</h4>
+                                        <InputNumber inputId="withoutgrouping" value={infoDetails.credit} name="credit" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} />
+                                    </div>
+                                </div>
+                                <div className='grid px-4'>
+                                    <div className="lg:col-12 col-12 field my-0 flex flex-column">
+                                        <Fieldset legend="Enseignement Théorique "  >
+                                            <Checkbox checked={chek} onChange={() => { setchek(!chek); verf(); }} />
+                                            <div className='grid p-1'>
+                                                <div className="lg:col-6 col-12 field my-0 flex flex-column">
+                                                    <h4 className='m-1'>Base</h4>
+                                                    <InputNumber inputId="withoutgrouping" value={infoDetails.base_et} name="base_et" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} disabled={!chek} />
+                                                </div>
+                                                <div className="lg:col-6 col-12 field my-0 flex flex-column">
+                                                    <h4 className='m-1'>Groupe</h4>
+                                                    <InputNumber inputId="withoutgrouping" value={infoDetails.group_et} name="group_et" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} disabled={!chek} readOnly />
+                                                </div>
+                                                {/* <div className="lg:col-4 col-12 field my-0 flex flex-column">
+                                                <h4 className='m-1'>Total</h4>
+                                                <InputNumber inputId="withoutgrouping" value={infoDetails.} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} readOnly />
+                                            </div> */}
                                             </div>
-                                            <div className="lg:col-4 col-12 field my-0 flex flex-column">
-                                                <h4 className='m-1'>Groupe</h4>
-                                                <InputNumber inputId="withoutgrouping" value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} />
-                                                {verfChamp.vheure ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
-                                            </div>
-                                            <div className="lg:col-4 col-12 field my-0 flex flex-column">
+                                        </Fieldset>
+                                    </div>
+                                </div>
+                                <div className='grid px-4'>
+                                    <div className="lg:col-12 col-12 field my-0 flex flex-column">
+                                        <Fieldset legend="Enseignement Dirigé "  >
+                                            <Checkbox checked={chek1} onChange={() => { setchek1(!chek1); verf(); }} />
+                                            <div className='grid p-1'>
+                                                <div className="lg:col-6 col-12 field my-0 flex flex-column">
+                                                    <h4 className='m-1'>Base</h4>
+                                                    <InputNumber inputId="withoutgrouping" value={infoDetails.base_ed} name="base_ed" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} disabled={!chek1} />
+                                                </div>
+                                                <div className="lg:col-6 col-12 field my-0 flex flex-column">
+                                                    <h4 className='m-1'>Groupe</h4>
+                                                    <InputNumber inputId="withoutgrouping" value={infoDetails.group_ed} name="group_ed" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} disabled={!chek1} readOnly />
+                                                </div>
+                                                {/* <div className="lg:col-4 col-12 field my-0 flex flex-column">
                                                 <h4 className='m-1'>Total</h4>
                                                 <InputNumber inputId="withoutgrouping" value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} readOnly />
+                                            </div> */}
                                             </div>
-                                        </div>
-                                    </Fieldset>
+                                        </Fieldset>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className='grid px-4'>
-                                <div className="lg:col-12 col-12 field my-0 flex flex-column">
-                                    <Fieldset legend="Enseignement Dirigé "  >
-                                        <div className='grid p-1'>
-                                            <div className="lg:col-4 col-12 field my-0 flex flex-column">
-                                                <h4 className='m-1'>Base</h4>
-                                                <InputNumber inputId="withoutgrouping" value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} />
-                                                {verfChamp.vheure ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
-                                            </div>
-                                            <div className="lg:col-4 col-12 field my-0 flex flex-column">
-                                                <h4 className='m-1'>Groupe</h4>
-                                                <InputNumber inputId="withoutgrouping" value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} />
-                                                {verfChamp.vheure ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
-                                            </div>
-                                            <div className="lg:col-4 col-12 field my-0 flex flex-column">
+                                <div className='grid px-4'>
+                                    <div className="lg:col-12 col-12 field my-0 flex flex-column">
+                                        <Fieldset legend="Enseignement Pratique "  >
+                                            <Checkbox checked={chek2} onChange={() => { setchek2(!chek2); verf(); }} />
+                                            <div className='grid p-1'>
+                                                <div className="lg:col-6 col-12 field my-0 flex flex-column">
+                                                    <h4 className='m-1'>Base</h4>
+                                                    <InputNumber inputId="withoutgrouping" value={infoDetails.base_ep} name="base_ep" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} disabled={!chek2} />
+                                                </div>
+                                                <div className="lg:col-6 col-12 field my-0 flex flex-column">
+                                                    <h4 className='m-1'>Groupe</h4>
+                                                    <InputNumber inputId="withoutgrouping" value={infoDetails.group_ep} name="group_ep" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} disabled={!chek2} readOnly />
+                                                </div>
+                                                {/* <div className="lg:col-4 col-12 field my-0 flex flex-column">
                                                 <h4 className='m-1'>Total</h4>
-                                                <InputNumber inputId="withoutgrouping" value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} readOnly />
+                                            </div> */}
                                             </div>
-                                        </div>
-                                    </Fieldset>
+                                        </Fieldset>
+                                    </div>
                                 </div>
+
+
+
+                            </form>
+                            <div className='flex mt-3 mr-4 justify-content-center'>
+                                <Button icon={PrimeIcons.SAVE} className='p-button-sm p-button-primary ' label={charge ? 'Enregistrement...' : 'Enregistrer'} onClick={() => {
+                                    controleChampVide()
+                                }} />
                             </div>
-                            <div className='grid px-4'>
-                                <div className="lg:col-12 col-12 field my-0 flex flex-column">
-                                    <Fieldset legend="Enseignement Pratique "  >
-                                        <div className='grid p-1'>
-                                            <div className="lg:col-4 col-12 field my-0 flex flex-column">
-                                                <h4 className='m-1'>Base</h4>
-                                                <InputNumber inputId="withoutgrouping" value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} />
-                                                {verfChamp.vheure ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
-                                            </div>
-                                            <div className="lg:col-4 col-12 field my-0 flex flex-column">
-                                                <h4 className='m-1'>Groupe</h4>
-                                                <InputNumber inputId="withoutgrouping" value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} className={verfChamp.vheure ? "form-input-css-tamby p-invalid" : "form-input-css-tamby"} />
-                                                {verfChamp.vheure ? <small id="username2-help" className="p-error block">Champ vide !</small> : null}
-                                            </div>
-                                            <div className="lg:col-4 col-12 field my-0 flex flex-column">
-                                                <h4 className='m-1'>Total</h4>
-                                                <InputNumber inputId="withoutgrouping" value={infoDetails.vheure} name="vheure" onValueChange={onInfoDetails} mode="decimal" useGrouping={false} readOnly />
-                                            </div>
-                                        </div>
-                                    </Fieldset>
-                                </div>
-                            </div>
-
-
-
-
-                        </form>
-                        <div className='flex mt-3 mr-4 justify-content-center'>
-                            <Button icon={PrimeIcons.SAVE} className='p-button-sm p-button-primary ' label={charge.chajoute ? 'Enregistrement...' : 'Enregistrer'} onClick={() => {
-                                controleChampVide()
-                            }} />
                         </div>
-                    </div>
+                    </BlockUI>
                 </Dialog>
             </div>
         </div>

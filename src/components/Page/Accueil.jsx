@@ -1,5 +1,4 @@
 import { PrimeIcons } from 'primereact/api'
-import { Card } from 'primereact/card'
 import React, { useEffect, useState, useRef } from 'react'
 import { useLocation } from 'react-router-dom';
 import axios from 'axios'
@@ -10,23 +9,21 @@ import { Toast } from 'primereact/toast';
 import { Chart } from 'primereact/chart';
 
 
-
 export default function Accueil(props) {
     const location = useLocation();
 
     const [charge, setCharge] = useState(false);
 
-
     const [anne_univ, setanne_univ] = useState('0000-0000');
     const [selectanne, setselectanne] = useState(null);
 
-
     const [niveau, setniveau] = useState('0');
+
     const [selectniveau, setselectniveau] = useState(null);
 
     const [dtChart, setdtChart] = useState(['0', '0', '0']);
 
-    const [filtre, setfiltre] = useState('o')
+    const [filtre, setfiltre] = useState('o');
     /*Chart Graphique */
     const [chartData, schartData] = useState({
         labels: ['Pas encore', 'En cours', 'Terminé'],
@@ -130,14 +127,15 @@ export default function Accueil(props) {
                                 {
                                     data: result.data.etat,
                                     backgroundColor: [
-                                        "#FFA726",
-                                        "#42A5F5",
-                                        "#66BB6A",
+                                        "#F55F5F",
+                                        "#FCB358",
+                                        "#00BB00",
                                     ],
                                     hoverBackgroundColor: [
-                                        "#FFB74D",
-                                        "#64B5F6",
-                                        "#81C784",
+                                     
+                                        "#F23030",
+                                        "#F28705",
+                                        "#009900",
                                     ]
                                 }
                             ]
@@ -151,13 +149,13 @@ export default function Accueil(props) {
                                         data: result.data.etat,
 
                                         hoverBackgroundColor: [
-                                            "#66BB6A",
-                                            "#055023",
+                                            "#00AA00",
+                                            "#7EBB00",
                                             "#81C784",
                                         ],
                                         backgroundColor: [
-                                            "#0DAE45",
-                                            "#055023",
+                                            "#009900",
+                                            "#669900",
                                             "#66BB6A",
                                         ]
                                     }
@@ -170,14 +168,14 @@ export default function Accueil(props) {
                                     {
                                         data: result.data.etat,
                                         backgroundColor: [
-                                            "#FFA726",
-                                            "#42A5F5",
-                                            "#66BB6A",
+                                            "#F23030",
+                                            "#F28705",
+                                            "#009900",
                                         ],
                                         hoverBackgroundColor: [
-                                            "#FFB74D",
-                                            "#64B5F6",
-                                            "#81C784",
+                                            "#F55F5F",
+                                            "#FCB358",
+                                            "#00BB00",
                                         ]
                                     }
                                 ]
@@ -255,7 +253,6 @@ export default function Accueil(props) {
                 <div className="card flex flex-column justify-content-center w-full">
                     <center>
                         <div className="lgcol-12 md:col-12  md:flex-column   sm:col-3 sm:flex-column field  flex lg:flex-row flex-column " style={{ backgroundColor: '#ebebeb' }}>
-
 
                             {decrypt().data.mention == 'Admin' ?
                                 <div className='grid col-12 flex flex-row ' >

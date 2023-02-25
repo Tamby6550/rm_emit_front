@@ -40,33 +40,41 @@ export default function Header() {
         navigate("/proffesseur");
 
       }
-    },
+     }, 
 
+    // {
+    //   label: 'Classe',
+    //   icon: PrimeIcons.USERS,
+    //   className: pathname === "/classe" && classactive,
+    //   command: () => {
+    //     navigate("/classe");
+    //   }
+    // },
     {
-      label: 'Classe',
-      icon: PrimeIcons.USERS,
-      className: pathname === "/classe" && classactive,
+      label: 'Tableau Affichage',
+      icon: PrimeIcons.LIST,
+      className: pathname === "/affichage_tableau" && classactive,
       command: () => {
-        navigate("/classe");
+        navigate("/affichage_tableau");
       }
     },
     {
-      label: 'Mention',
-      icon: PrimeIcons.USERS,
-      className: pathname === "/mention" && classactive,
+      label: 'Paramètre',
+      icon: PrimeIcons.SLACK,
+      className: pathname === "/parametre" && classactive,
       command: () => {
-        navigate("/mention");
+        navigate("/parametre");
       }
     },
 
-    {
-      label: 'Rapport',
-      icon: PrimeIcons.BRIEFCASE,
-    },
-    {
-      label: 'Utilisateur',
-      icon: PrimeIcons.COG,
-    },//{
+    // {
+    //   label: 'Rapport',
+    //   icon: PrimeIcons.BRIEFCASE,
+    // },
+    // {
+    //   label: 'Utilisateur',
+    //   icon: PrimeIcons.COG,
+    // },//{
     //   label: 'Element Constitutifs',
     //   icon: PrimeIcons.BOOKMARK,
     //   expanded:pathname === "/client" || pathname === "/patient" || pathname === "/prescripteur" || pathname === "/examen" ? true : false ,

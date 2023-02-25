@@ -86,7 +86,7 @@ export default function ElementConst(props) {
     { label: 'Cours Terminés', value: '2' },
     { label: 'Examen SN terminé', value: '3' },
     { label: 'Examen SR terminé', value: '4' }
-  ]
+  ];
 
 
 
@@ -131,7 +131,6 @@ export default function ElementConst(props) {
       setCharge(true);
 
         setTimeout(() => {
-          
           loadData(decrypt().token, decrypt().data.rm_id, decrypt().data.mention, decrypt().data.grad_id, anne_univ, niveau, etat);
         }, 800)
     }
@@ -156,7 +155,7 @@ export default function ElementConst(props) {
   }
   useEffect(() => {
     chargementData()
-  }, [props.url])
+  }, [props.url]);
 
   useEffect(async () => {
     if (decrypt().data.mention == 'Admin') {
@@ -198,7 +197,7 @@ export default function ElementConst(props) {
     return (
       <div className='flex flex-row justify-content-between align-items-center m-0 '>
         <div className='my-0  py-2 flex'>
-          <AjoutDetails />
+          <AjoutDetails data={data}  anne_univ={anne_univ} mention={decrypt().data.mention} token={decrypt().token}  logout={logout} url={props.url} setrefreshData={setrefreshData}/>
           <ModifierEtat etat={data.etat_mat} anne_univ={anne_univ} nom_mat={data.matiere} mat_id={data.mati_id} url={props.url} setrefreshData={setrefreshData} />
         </div>
       </div>
@@ -262,21 +261,21 @@ export default function ElementConst(props) {
         <div className='my-0  py-2'>
           {
             data.etat_mat == null || data.etat_mat == '0' ?
-              <Tag className="mr-2 " severity={"warning"} style={{ backgroundColor: '#FFA726' }} >Pas encore </Tag>
+              <Tag className="mr-2 " severity={"success"} style={{ backgroundColor: '#F23030' }} >Pas encore </Tag>
               :
               data.etat_mat == '1' ?
-                < Tag className="mr-2 " severity={"info"}   >En cours</ Tag>
+                < Tag className="mr-2 " severity={"success"} style={{ backgroundColor: '#F28705' }}  >En cours</ Tag>
                 :
                 data.etat_mat == '2' ?
-                  <Tag className="mr-2 " severity={"success"} style={{ backgroundColor: '#89CB8C' }} >Terminé cours</Tag>
+                  <Tag className="mr-2 " severity={"success"} style={{ backgroundColor: '#33CC33' }} >Terminé cours</Tag>
                   :
                   data.etat_mat == '3' ?
-                    <Tag className="mr-2 " severity={"success"} style={{ backgroundColor: '#0DAE45' }} >Terminé SN</Tag>
+                    <Tag className="mr-2 " severity={"success"} style={{ backgroundColor: '#009900' }} >Terminé SN</Tag>
                     :
                     data.etat_mat == '4' ?
-                      <Tag className="mr-2 " severity={"success"} style={{ backgroundColor: '#055023' }} >Terminé SR</Tag>
+                      <Tag className="mr-2 " severity={"success"} style={{ backgroundColor: '#669900' }} >Terminé SR</Tag>
                       :
-                      <Tag className="mr-2 " severity={"waring"} style={{ backgroundColor: '#FFA726' }}>Pas encore </Tag>
+                      <Tag className="mr-2 " severity={"success"} style={{ backgroundColor: '#FF6B1A' }}>Pas encore </Tag>
           }
 
         </div>

@@ -1,6 +1,7 @@
 import logo from './images/emit.png';
 import './App.css';
-import './tamby.css'
+import './tamby.css';
+import './tableau.css';
 import Header from './components/Header/Header';
 import { Button } from 'primereact/button'
 import { Card } from 'primereact/card';
@@ -21,8 +22,8 @@ import { Dialog } from 'primereact/dialog';
 import * as Components from './components/Login/Components'
 import { PrimeIcons } from 'primereact/api';
 import { Toast } from 'primereact/toast'; 
-
-
+import Affichage from './components/Page/Tableau/Affichage';
+import Parametre from './components/Page/Parametre/Parametre';
 function App() {
     const { logout, isAuthenticated, secret } = useAuth();
     const [infoUti, setinfoUti] = useState({nom:'',mention:''});
@@ -59,11 +60,12 @@ function App() {
     const urlip=()=>{
             let ip = window.location.hostname;
             //Serveur emit
-            let urls ='http://'+ip+'/backRM/api/'
+            // let urls ='http://'+ip+'/backRM/api/'
 
             // //local
-            // let urls ='http://'+ip+':2000/api/'
+            let urls ='http://'+ip+':2000/api/'
             seturl(urls);
+            console.log(urls)
     }
 
     const { pathname } = useLocation();
@@ -270,6 +272,8 @@ function App() {
             <Route path='/classe' element={<Classe url={url}  urlip={urlip} />} />
             <Route path='/mention' element={<Mention url={url}  urlip={urlip} />} />
             <Route path='/acceuil' element={<Accueil url={url} urlip={urlip}  />} />
+            <Route path='/affichage_tableau' element={<Affichage url={url} urlip={urlip}  />} />
+            <Route path='/parametre' element={<Parametre url={url} urlip={urlip}  />} />
         </Route>
 
         <Route path='/' element={<Signin url={url} />} />

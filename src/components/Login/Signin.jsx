@@ -5,7 +5,6 @@ import 'primereact/resources/primereact.css';
 import 'primeflex/primeflex.css';
 import axios from 'axios';
 import useAuth from './useAuth';
-
 import * as Components from './Components';
 import emit from './images/emit.png'
 import { Toast } from 'primereact/toast';
