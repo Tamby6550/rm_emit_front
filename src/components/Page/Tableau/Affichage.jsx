@@ -10,6 +10,7 @@ import { Toast } from 'primereact/toast';
 import { BlockUI } from 'primereact/blockui';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
+// import { NumberToLetter } from 'convertir-nombre-lettre';
 export default function Affichage(props) {
     const { logout, isAuthenticated, secret } = useAuth();
 
@@ -30,12 +31,17 @@ export default function Affichage(props) {
 
     const [chargementDD, setchargementDD] = useState(false);
     const [titreAff, settitreAff] = useState({
-        nbreClasse:'',
-        groupe_td:'',
-        groupe_tp:'',
-        nom_mention:'',
-        parcours:'',
-        abbre_niveau:'',
+        nbreClasse: '',
+        groupe_td: '',
+        groupe_tp: '',
+        nom_mention: '',
+        parcours: '',
+        abbre_niveau: '',
+    });
+    const [totalT, settotalT] = useState({
+        ttotal_et: "",
+        ttotal_ed: "",
+        ttotal_ep: ""
     })
     const [data, setdata] = useState([{
         semestre: "Semestre 0",
@@ -59,7 +65,7 @@ export default function Affichage(props) {
                 total_ed: "",
                 total_ep: ""
             }],
-        nombreM:2,
+        nombreM: 2,
         total: {
             tvheure: "0",
             tcredit: "0",
@@ -107,7 +113,7 @@ export default function Affichage(props) {
                 }
             })
     }
-   
+
 
     const anne_univDt = async () => {
         await axios.get(props.url + `getAnneUniv`, {
@@ -136,7 +142,7 @@ export default function Affichage(props) {
             })
     }
 
-    const loadTitreTableau = async (rm_id, mention_nom, niveau,grad_id,anne_univ) => {
+    const loadTitreTableau = async (rm_id, mention_nom, niveau, grad_id, anne_univ) => {
         await axios.get(props.url + `getTitreTableau/${rm_id}/${mention_nom}/${niveau}/${grad_id}/${anne_univ}`, {
             headers: {
                 'Content-Type': 'text/html',
@@ -153,14 +159,15 @@ export default function Affichage(props) {
                         }, 3000)
                     }
                     settitreAff({
-                        nbreClasse:result.data.nbreClasse.count,
-                        nom_mention:result.data.info.nom_mention,
-                        abbre_niveau:result.data.info.abbr_niveau,
-                        parcours:result.data.info.parc_libelle,
-                        groupe_td:result.data.group_tamby.td,
-                        groupe_tp:result.data.group_tamby.tp
+                        nbreClasse: result.data.nbreClasse.count,
+                        nom_mention: result.data.info.nom_mention,
+                        abbre_niveau: result.data.info.abbr_niveau,
+                        parcours: result.data.info.parc_libelle,
+                        groupe_td: result.data.group_tamby.td,
+                        groupe_tp: result.data.group_tamby.tp
                     });
-                    setchargementDD(false);
+                    //Affiche Somme Et Ed, Ep
+                    loadAfficheTableauSommeEtEdEp();
                 }
             ).catch((e) => {
                 // console.log(e.message)
@@ -192,8 +199,9 @@ export default function Affichage(props) {
                         }, 3000)
                     }
                     setdata(result.data);
-                    loadTitreTableau(decrypt().data.rm_id,decrypt().data.mention,niveau,decrypt().data.grad_id,anne_univ);
-                    
+                    //Affiche titre tableau d'affichage
+                    loadTitreTableau(decrypt().data.rm_id, decrypt().data.mention, niveau, decrypt().data.grad_id, anne_univ);
+
                 }
             ).catch((e) => {
                 // console.log(e.message)
@@ -203,10 +211,46 @@ export default function Affichage(props) {
                 setchargementDD(false);
             })
     }
+    const loadAfficheTableauSommeEtEdEp = async () => {
+
+        await axios.get(props.url + `getTableauAfficheSommeEtEdEp/${anne_univ}/${decrypt().data.mention}/${niveau}/${decrypt().data.rm_id}`, {
+            headers: {
+                'Content-Type': 'text/html',
+                'X-API-KEY': 'tamby',
+                'Authorization': decrypt().token
+            }
+        })
+            .then(
+                (result) => {
+                    if (result.data.message == 'Token Time Expire.') {
+                        notificationAction('warn', 'Votre token est expiré !', 'Délais de token 4 heures !')
+                        setTimeout(() => {
+                            logout();
+                        }, 3000)
+                    }
+                    settotalT(result.data);
+                    setchargementDD(false);
+                }
+            ).catch((e) => {
+                // console.log(e.message)
+                if (e.message == "Network Error") {
+                    props.urlip()
+                }
+
+            })
+    }
 
     useEffect(() => {
         anne_univDt()
     }, [props.url]);
+
+
+    //Manao Lettre anle heure
+    // function manisyLettre(nb) {
+    //     let intNb=parseInt(nb);
+    //     ren = NumberToLetter(intNb);
+    //     return ren;
+    // }
 
     return (
         <div className='content'>
@@ -254,7 +298,7 @@ export default function Affichage(props) {
                     </div>
                     <div className="lg:col-4 md:col-4  md:flex-column   sm:col-4 col-4 sm:flex-column field my-0 flex lg:flex-row flex-column " style={{ alignItems: 'center' }}>
                         <div className='flex flex-column'>
-                            <label htmlFor="">Année Universitaire : 2017-2018</label>
+                            <label htmlFor="">Année Universitaire : {anne_univ}</label>
                             <div className='flex flex-column ml-5' style={{ width: '100%' }}>
                                 <label style={{ fontSize: '1.1em', border: '1px solid grey' }} className='p-1 pr-5' >Nombre de Groupe de TD : {titreAff.groupe_td}</label>
                                 <label style={{ fontSize: '1.1em', border: '1px solid grey' }} className='p-1 pr-5' >Nombre de Groupe de TP : {titreAff.groupe_tp}</label>
@@ -262,19 +306,19 @@ export default function Affichage(props) {
                         </div>
                     </div>
                     <div className="col-12 flex-column " style={{ alignItems: 'center' }}>
-                        <label className='pl-5' >(S5 et S6) : Parcours Communication Multimedia</label>
+
                         <table style={{ borderCollapse: 'collapse', width: '100%', height: '101.625px' }} border="1">
-                            {/* <colgroup><col style="width: 10.0245%;"><col style="width: 18.5506%;"><col style="width: 3.46209%;"><col style="width: 3.51376%;"><col style="width: 3.6171%;"><col style="width: 4.23718%;"><col style="width: 4.23718%;"><col style="width: 3.92714%;"><col style="width: 3.97881%;"><col style="width: 3.8238%;"><col style="width: 3.8238%;"><col style="width: 4.44387%;"><col style="width: 4.49554%;"><col style="width: 27.8517%;"></colgroup> */}
+
                             {data.map((obj, index) => (
                                 <tbody>
                                     <tr style={{ height: '19.5833px' }}>
-                                        <td style={{ height: '82.0416px' }} rowspan={'18'}>{obj.semestre} </td>
+                                        <td style={{ height: '82.0416px', fontWeight: '600', textTransform: 'uppercase' }} rowspan={'18'}>{obj.semestre} </td>
                                         <td style={{ height: '40.0208px', textAlign: 'center' }} rowspan="2">ELEMENTS CONSTITUTIFS(EC)</td>
                                         <td style={{ height: '19.5833px' }}>&nbsp;</td>
                                         <td style={{ height: '19.5833px', textAlign: 'center' }} colspan="4">ET</td>
                                         <td style={{ height: '19.5833px', textAlign: 'center' }} colspan="3">ED</td>
                                         <td style={{ height: '19.5833px', textAlign: 'center' }} colspan="3">EP</td>
-                                        <td style={{ height: '19.5833px' }}>&nbsp;</td>
+                                        <td style={{ height: '19.5833px', borderTop: '1px solid white', borderRight: '1px solid white' }}>&nbsp;</td>
                                     </tr>
                                     <tr style={{ height: '20.4375px' }}>
                                         <td style={{ height: '20.4375px' }}>Cr&eacute;dits</td>
@@ -304,11 +348,21 @@ export default function Affichage(props) {
                                             <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.base_ed}</td>
                                             <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.group_ed}</td>
                                             <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.total_ed}</td>
-
-                                            <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.base_ep}</td>
-                                            <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.group_ep}</td>
-                                            <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.total_ep}</td>
-                                            <td style={{ height: '22.4375px', textAlign: 'left' }}>{detail.nom_prof}</td>
+                                            {detail.base_ep == '0' ?
+                                                <>
+                                                    <td style={{ height: '22.4375px', textAlign: 'center' }}></td>
+                                                    <td style={{ height: '22.4375px', textAlign: 'center' }}></td>
+                                                    <td style={{ height: '22.4375px', textAlign: 'center' }}></td>
+                                                    <td style={{ height: '22.4375px', textAlign: 'left' }}>{detail.nom_prof}</td>
+                                                </>
+                                                :
+                                                <>
+                                                    <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.base_ep}</td>
+                                                    <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.group_ep}</td>
+                                                    <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.total_ep}</td>
+                                                    <td style={{ height: '22.4375px', textAlign: 'left' }}>{detail.nom_prof}</td>
+                                                </>
+                                            }
                                         </tr>
 
                                     ))}
@@ -329,12 +383,37 @@ export default function Affichage(props) {
                                         <td style={{ textAlign: 'center', height: '19.5833px' }}>&nbsp;</td>
                                         <td style={{ textAlign: 'center', height: '19.5833px' }}>&nbsp;</td>
                                         <td style={{ textAlign: 'center', height: '19.5833px' }}><strong>{obj.total.ttotal_ep}</strong></td>
-                                        <td style={{ height: '19.5833px' }}>&nbsp;</td>
+                                        <td style={{ height: '19.5833px', borderBottom: '1px solid white', borderRight: '1px solid white' }}>&nbsp;</td>
                                     </tr>
+
                                 </tbody>
                             ))}
+                            <tr>
+                                <td style={{ textAlign: 'center', borderBottom: '1px solid white', borderLeft: '1px solid white' }} colspan="6"></td>
+                                <td style={{ textAlign: 'center' }}><strong>{totalT.ttotal_et}</strong></td>
+                                <td style={{ textAlign: 'center', borderBottom: '1px solid white' }} colspan="2">&nbsp;</td>
+                                <td style={{ textAlign: 'center' }}><strong>{totalT.ttotal_ed}</strong></td>
+                                <td style={{ textAlign: 'center', borderBottom: '1px solid white' }} colspan="2">&nbsp;</td>
+                                <td style={{ textAlign: 'center' }}><strong>{totalT.ttotal_ep}</strong></td>
+                                <td style={{ borderBottom: '1px solid white', borderRight: '1px solid white' }} >&nbsp;</td>
+                            </tr>
 
                         </table>
+                    </div>
+                    <div className='col-12  flex flex-column'>
+                        <div className='col-12 pl-5 flex flex-column'>
+                            <label style={{ fontSize: '1.1em' }} >{/*manisyLettre(totalT.ttotal_et)*/} Deux cent soixante huit heures ({totalT.ttotal_et + 'h'}) en enseignement théorique</label>
+                            <label style={{ fontSize: '1.1em' }}>{/*manisyLettre(totalT.ttotal_ed)*/} Deux cent soixante huit heures ({totalT.ttotal_ed + 'h'}) en enseignement dirigé</label>
+                            <label style={{ fontSize: '1.1em' }}>{/*manisyLettre(totalT.ttotal_ep)*/} Deux cent soixante huit heures ({totalT.ttotal_ep + 'h'}) en enseignement pratique</label>
+                            <label style={{ fontSize: '1.1em', paddingLeft: '120px', fontWeight: '700' }}>Deux cent soixante huit heures ({totalT.ttotal_ep + 'h'}) en enseignement théorique</label>
+                            <center style={{ fontSize: '1.1em' }}>Fait a Fianarantsoa le,</center>
+                        </div>
+                        <div className='flex pl-5 flex-row justify-content-between'>
+                            <label style={{ fontSize: '1.1em', fontWeight: '700' }}>Le Chef de Mention</label>
+                            <label style={{ fontSize: '1.1em', paddingRight:'100px', fontWeight: '700' }}>Le Directeur</label>
+
+                        </div>
+
                     </div>
                 </div>
             </BlockUI>
