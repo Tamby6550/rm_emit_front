@@ -10,7 +10,7 @@ import { Toast } from 'primereact/toast';
 import { BlockUI } from 'primereact/blockui';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
-// import { NumberToLetter } from 'convertir-nombre-lettre';
+import { NumberToLetter } from 'convertir-nombre-lettre';
 export default function Affichage(props) {
     const { logout, isAuthenticated, secret } = useAuth();
 
@@ -245,12 +245,13 @@ export default function Affichage(props) {
     }, [props.url]);
 
 
-    //Manao Lettre anle heure
-    // function manisyLettre(nb) {
-    //     let intNb=parseInt(nb);
-    //     ren = NumberToLetter(intNb);
-    //     return ren;
-    // }
+    // Manao Lettre anle heure
+    function manisyLettre(nb) {
+        let intNb=parseInt(nb);
+        let ren = NumberToLetter(intNb);
+        
+       return ren.charAt(0).toUpperCase() + ren.slice(1);
+    }
 
     return (
         <div className='content'>
@@ -274,149 +275,152 @@ export default function Affichage(props) {
                 </div>
             </div>
             <hr />
-            <center>
+            <center className=' mb-2'>
                 <ReactToPrint trigger={() =>
                     <Button icon={PrimeIcons.PRINT} className='p-button-sm p-button-primary ml-3 ' label={'Imprimer'} />
                 } content={() => document.getElementById("imprimable")} />
             </center>
-            <BlockUI blocked={chargementDD} template={<ProgressSpinner />}>
-                <div className='grid h-full ' id='imprimable'  >
-                    <div className="lg:col-4 md:col-4  md:flex-column   sm:col-4 col-4 sm:flex-column field my-0 flex lg:flex-coluln flex-column " style={{ alignItems: 'center' }}>
-                        <div className='flex flex-column '>
-                            <center>
-                                <h3 className='m-1'>UNIVERSITE DE FIANARANTSOA <br /> EMIT</h3>
-                            </center>
-                            <h4 className='m-1'>MENTION : {titreAff.nom_mention}</h4>
-                            <h4 className='m-1'>Parcours : {titreAff.parcours}</h4>
-                            <h4 className='m-1'>Classe : {titreAff.abbre_niveau}</h4>
-                            <h4 className='m-1'>Nombre d'étudiants : {titreAff.nbreClasse}</h4>
+            <div className='col-12' style={{ border: '1px solid grey' }}>
+
+                <BlockUI blocked={chargementDD} template={<ProgressSpinner />}>
+                    <div className='grid h-full ' id='imprimable'  >
+                        <div className="lg:col-4 md:col-4  md:flex-column   sm:col-4 col-4 sm:flex-column field my-0 flex lg:flex-coluln flex-column " style={{ alignItems: 'center' }}>
+                            <div className='flex flex-column '>
+                                <center>
+                                    <h3 className='m-1'>UNIVERSITE DE FIANARANTSOA <br /> EMIT</h3>
+                                </center>
+                                <h4 className='m-1'>MENTION : {titreAff.nom_mention}</h4>
+                                <h4 className='m-1'>Parcours : {titreAff.parcours}</h4>
+                                <h4 className='m-1'>Classe : {titreAff.abbre_niveau}</h4>
+                                <h4 className='m-1'>Nombre d'étudiants : {titreAff.nbreClasse}</h4>
+                            </div>
+                            <label style={{ borderBottom: '1px solid black', height: '10px', width: '100%' }} ></label>
                         </div>
-                        <label style={{ borderBottom: '1px solid black', height: '10px', width: '100%' }} ></label>
-                    </div>
-                    <div className="lg:col-4 md:col-4  md:flex-column   sm:col-4 col-4 sm:flex-column field my-0 flex lg:flex-row flex-column " style={{ alignItems: 'center' }}>
-                        <h4>LISTE DES DISCIPLINES ENSEIGNEES</h4>
-                    </div>
-                    <div className="lg:col-4 md:col-4  md:flex-column   sm:col-4 col-4 sm:flex-column field my-0 flex lg:flex-row flex-column " style={{ alignItems: 'center' }}>
-                        <div className='flex flex-column'>
-                            <label htmlFor="">Année Universitaire : {anne_univ}</label>
-                            <div className='flex flex-column ml-5' style={{ width: '100%' }}>
-                                <label style={{ fontSize: '1.1em', border: '1px solid grey' }} className='p-1 pr-5' >Nombre de Groupe de TD : {titreAff.groupe_td}</label>
-                                <label style={{ fontSize: '1.1em', border: '1px solid grey' }} className='p-1 pr-5' >Nombre de Groupe de TP : {titreAff.groupe_tp}</label>
+                        <div className="lg:col-4 md:col-4  md:flex-column   sm:col-4 col-4 sm:flex-column field my-0 flex lg:flex-row flex-column " style={{ alignItems: 'center' }}>
+                            <h4>LISTE DES DISCIPLINES ENSEIGNEES</h4>
+                        </div>
+                        <div className="lg:col-4 md:col-4  md:flex-column   sm:col-4 col-4 sm:flex-column field my-0 flex lg:flex-row flex-column " style={{ alignItems: 'center' }}>
+                            <div className='flex flex-column'>
+                                <label htmlFor="">Année Universitaire : {anne_univ}</label>
+                                <div className='flex flex-column ml-5' style={{ width: '100%' }}>
+                                    <label style={{ fontSize: '1.1em', border: '1px solid grey' }} className='p-1 pr-5' >Nombre de Groupe de TD : {titreAff.groupe_td}</label>
+                                    <label style={{ fontSize: '1.1em', border: '1px solid grey' }} className='p-1 pr-5' >Nombre de Groupe de TP : {titreAff.groupe_tp}</label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="col-12 flex-column " style={{ alignItems: 'center' }}>
+                        <div className="col-12 flex-column " style={{ alignItems: 'center' }}>
 
-                        <table style={{ borderCollapse: 'collapse', width: '100%', height: '101.625px' }} border="1">
+                            <table style={{ borderCollapse: 'collapse', width: '100%', height: '101.625px' }} border="1">
 
-                            {data.map((obj, index) => (
-                                <tbody>
-                                    <tr style={{ height: '19.5833px' }}>
-                                        <td style={{ height: '82.0416px', fontWeight: '600', textTransform: 'uppercase' }} rowspan={'18'}>{obj.semestre} </td>
-                                        <td style={{ height: '40.0208px', textAlign: 'center' }} rowspan="2">ELEMENTS CONSTITUTIFS(EC)</td>
-                                        <td style={{ height: '19.5833px' }}>&nbsp;</td>
-                                        <td style={{ height: '19.5833px', textAlign: 'center' }} colspan="4">ET</td>
-                                        <td style={{ height: '19.5833px', textAlign: 'center' }} colspan="3">ED</td>
-                                        <td style={{ height: '19.5833px', textAlign: 'center' }} colspan="3">EP</td>
-                                        <td style={{ height: '19.5833px', borderTop: '1px solid white', borderRight: '1px solid white' }}>&nbsp;</td>
-                                    </tr>
-                                    <tr style={{ height: '20.4375px' }}>
-                                        <td style={{ height: '20.4375px' }}>Cr&eacute;dits</td>
-                                        <td style={{ height: '20.4375px', textAlign: 'center' }}>VH</td>
-                                        <td style={{ height: '20.4375px', textAlign: 'center' }}>BASE</td>
-                                        <td style={{ height: '20.4375px', textAlign: 'center' }}>GROUP</td>
-                                        <td style={{ height: '20.4375px', textAlign: 'center' }}>TOTAL</td>
-                                        <td style={{ height: '20.4375px', textAlign: 'center' }}>BASE</td>
-                                        <td style={{ height: '20.4375px', textAlign: 'center' }}>GROUP</td>
-                                        <td style={{ height: '20.4375px', textAlign: 'center' }}>TOTAL</td>
-                                        <td style={{ height: '20.4375px', textAlign: 'center' }}>BASE</td>
-                                        <td style={{ height: '20.4375px', textAlign: 'center' }}>GROUP</td>
-                                        <td style={{ height: '20.4375px', textAlign: 'center' }}>TOTAL</td>
-                                        <td style={{ height: '20.4375px', textAlign: 'left' }}>&nbsp;</td>
-                                    </tr>
-                                    {obj.details.map((detail, index) => (
+                                {data.map((obj, index) => (
+                                    <tbody>
+                                        <tr style={{ height: '19.5833px' }}>
+                                            <td style={{ height: '82.0416px', fontWeight: '600', textTransform: 'uppercase' }} rowspan={'18'}>{obj.semestre} </td>
+                                            <td style={{ height: '40.0208px', textAlign: 'center' }} rowspan="2">ELEMENTS CONSTITUTIFS(EC)</td>
+                                            <td style={{ height: '19.5833px' }}>&nbsp;</td>
+                                            <td style={{ height: '19.5833px', textAlign: 'center' }} colspan="4">ET</td>
+                                            <td style={{ height: '19.5833px', textAlign: 'center' }} colspan="3">ED</td>
+                                            <td style={{ height: '19.5833px', textAlign: 'center' }} colspan="3">EP</td>
+                                            <td style={{ height: '19.5833px', borderTop: '1px solid white', borderRight: '1px solid white' }}>&nbsp;</td>
+                                        </tr>
+                                        <tr style={{ height: '20.4375px' }}>
+                                            <td style={{ height: '20.4375px' }}>Cr&eacute;dits</td>
+                                            <td style={{ height: '20.4375px', textAlign: 'center' }}>VH</td>
+                                            <td style={{ height: '20.4375px', textAlign: 'center' }}>BASE</td>
+                                            <td style={{ height: '20.4375px', textAlign: 'center' }}>GROUP</td>
+                                            <td style={{ height: '20.4375px', textAlign: 'center' }}>TOTAL</td>
+                                            <td style={{ height: '20.4375px', textAlign: 'center' }}>BASE</td>
+                                            <td style={{ height: '20.4375px', textAlign: 'center' }}>GROUP</td>
+                                            <td style={{ height: '20.4375px', textAlign: 'center' }}>TOTAL</td>
+                                            <td style={{ height: '20.4375px', textAlign: 'center' }}>BASE</td>
+                                            <td style={{ height: '20.4375px', textAlign: 'center' }}>GROUP</td>
+                                            <td style={{ height: '20.4375px', textAlign: 'center' }}>TOTAL</td>
+                                            <td style={{ height: '20.4375px', textAlign: 'left' }}>&nbsp;</td>
+                                        </tr>
+                                        {obj.details.map((detail, index) => (
 
-                                        <tr style={{ height: '22.4375px' }}>
-                                            <td style={{ height: '22.4375px' }}>{detail.mat_libelle}</td>
-                                            <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.credit}</td>
-                                            <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.vheure}</td>
+                                            <tr style={{ height: '22.4375px' }}>
+                                                <td style={{ height: '22.4375px' }}>{detail.mat_libelle}</td>
+                                                <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.credit}</td>
+                                                <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.vheure}</td>
 
-                                            <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.base_et}</td>
-                                            <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.group_et}</td>
-                                            <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.total_et}</td>
+                                                <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.base_et}</td>
+                                                <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.group_et}</td>
+                                                <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.total_et}</td>
 
-                                            <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.base_ed}</td>
-                                            <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.group_ed}</td>
-                                            <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.total_ed}</td>
-                                            {detail.base_ep == '0' ?
-                                                <>
-                                                    <td style={{ height: '22.4375px', textAlign: 'center' }}></td>
-                                                    <td style={{ height: '22.4375px', textAlign: 'center' }}></td>
-                                                    <td style={{ height: '22.4375px', textAlign: 'center' }}></td>
-                                                    <td style={{ height: '22.4375px', textAlign: 'left' }}>{detail.nom_prof}</td>
-                                                </>
-                                                :
-                                                <>
-                                                    <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.base_ep}</td>
-                                                    <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.group_ep}</td>
-                                                    <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.total_ep}</td>
-                                                    <td style={{ height: '22.4375px', textAlign: 'left' }}>{detail.nom_prof}</td>
-                                                </>
-                                            }
+                                                <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.base_ed}</td>
+                                                <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.group_ed}</td>
+                                                <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.total_ed}</td>
+                                                {detail.base_ep == '0' ?
+                                                    <>
+                                                        <td style={{ height: '22.4375px', textAlign: 'center' }}></td>
+                                                        <td style={{ height: '22.4375px', textAlign: 'center' }}></td>
+                                                        <td style={{ height: '22.4375px', textAlign: 'center' }}></td>
+                                                        <td style={{ height: '22.4375px', textAlign: 'left' }}>{detail.nom_prof}</td>
+                                                    </>
+                                                    :
+                                                    <>
+                                                        <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.base_ep}</td>
+                                                        <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.group_ep}</td>
+                                                        <td style={{ height: '22.4375px', textAlign: 'center' }}>{detail.total_ep}</td>
+                                                        <td style={{ height: '22.4375px', textAlign: 'left' }}>{detail.nom_prof}</td>
+                                                    </>
+                                                }
+                                            </tr>
+
+                                        ))}
+
+
+
+
+                                        <tr style={{ height: '19.5833px' }}>
+                                            <td style={{ height: '19.5833px', textAlign: 'center' }} colspan="0">TOTAL</td>
+                                            <td style={{ height: '19.5833px', textAlign: 'center' }}><strong>{obj.total.tcredit}</strong></td>
+                                            <td style={{ textAlign: 'center', height: '19.5833px' }}><strong>{obj.total.tvheure}</strong></td>
+                                            <td style={{ textAlign: 'center', height: '19.5833px' }}><strong>{obj.total.tbase_et}</strong></td>
+                                            <td style={{ textAlign: 'center', height: '19.5833px' }}>&nbsp;</td>
+                                            <td style={{ textAlign: 'center', height: '19.5833px' }}><strong>{obj.total.ttotal_et}</strong></td>
+                                            <td style={{ textAlign: 'center', height: '19.5833px' }}>&nbsp;</td>
+                                            <td style={{ textAlign: 'center', height: '19.5833px' }}>&nbsp;</td>
+                                            <td style={{ textAlign: 'center', height: '19.5833px' }}><strong>{obj.total.ttotal_ed}</strong></td>
+                                            <td style={{ textAlign: 'center', height: '19.5833px' }}>&nbsp;</td>
+                                            <td style={{ textAlign: 'center', height: '19.5833px' }}>&nbsp;</td>
+                                            <td style={{ textAlign: 'center', height: '19.5833px' }}><strong>{obj.total.ttotal_ep}</strong></td>
+                                            <td style={{ height: '19.5833px', borderBottom: '1px solid white', borderRight: '1px solid white' }}>&nbsp;</td>
                                         </tr>
 
-                                    ))}
+                                    </tbody>
+                                ))}
+                                <tr>
+                                    <td style={{ textAlign: 'center', borderBottom: '1px solid white', borderLeft: '1px solid white' }} colspan="6"></td>
+                                    <td style={{ textAlign: 'center' }}><strong>{totalT.ttotal_et}</strong></td>
+                                    <td style={{ textAlign: 'center', borderBottom: '1px solid white' }} colspan="2">&nbsp;</td>
+                                    <td style={{ textAlign: 'center' }}><strong>{totalT.ttotal_ed}</strong></td>
+                                    <td style={{ textAlign: 'center', borderBottom: '1px solid white' }} colspan="2">&nbsp;</td>
+                                    <td style={{ textAlign: 'center' }}><strong>{totalT.ttotal_ep}</strong></td>
+                                    <td style={{ borderBottom: '1px solid white', borderRight: '1px solid white' }} >&nbsp;</td>
+                                </tr>
 
-
-
-
-                                    <tr style={{ height: '19.5833px' }}>
-                                        <td style={{ height: '19.5833px', textAlign: 'center' }} colspan="0">TOTAL</td>
-                                        <td style={{ height: '19.5833px', textAlign: 'center' }}><strong>{obj.total.tcredit}</strong></td>
-                                        <td style={{ textAlign: 'center', height: '19.5833px' }}><strong>{obj.total.tvheure}</strong></td>
-                                        <td style={{ textAlign: 'center', height: '19.5833px' }}><strong>{obj.total.tbase_et}</strong></td>
-                                        <td style={{ textAlign: 'center', height: '19.5833px' }}>&nbsp;</td>
-                                        <td style={{ textAlign: 'center', height: '19.5833px' }}><strong>{obj.total.ttotal_et}</strong></td>
-                                        <td style={{ textAlign: 'center', height: '19.5833px' }}>&nbsp;</td>
-                                        <td style={{ textAlign: 'center', height: '19.5833px' }}>&nbsp;</td>
-                                        <td style={{ textAlign: 'center', height: '19.5833px' }}><strong>{obj.total.ttotal_ed}</strong></td>
-                                        <td style={{ textAlign: 'center', height: '19.5833px' }}>&nbsp;</td>
-                                        <td style={{ textAlign: 'center', height: '19.5833px' }}>&nbsp;</td>
-                                        <td style={{ textAlign: 'center', height: '19.5833px' }}><strong>{obj.total.ttotal_ep}</strong></td>
-                                        <td style={{ height: '19.5833px', borderBottom: '1px solid white', borderRight: '1px solid white' }}>&nbsp;</td>
-                                    </tr>
-
-                                </tbody>
-                            ))}
-                            <tr>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid white', borderLeft: '1px solid white' }} colspan="6"></td>
-                                <td style={{ textAlign: 'center' }}><strong>{totalT.ttotal_et}</strong></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid white' }} colspan="2">&nbsp;</td>
-                                <td style={{ textAlign: 'center' }}><strong>{totalT.ttotal_ed}</strong></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid white' }} colspan="2">&nbsp;</td>
-                                <td style={{ textAlign: 'center' }}><strong>{totalT.ttotal_ep}</strong></td>
-                                <td style={{ borderBottom: '1px solid white', borderRight: '1px solid white' }} >&nbsp;</td>
-                            </tr>
-
-                        </table>
-                    </div>
-                    <div className='col-12  flex flex-column'>
-                        <div className='col-12 pl-5 flex flex-column'>
-                            <label style={{ fontSize: '1.1em' }} >{/*manisyLettre(totalT.ttotal_et)*/} Deux cent soixante huit heures ({totalT.ttotal_et + 'h'}) en enseignement théorique</label>
-                            <label style={{ fontSize: '1.1em' }}>{/*manisyLettre(totalT.ttotal_ed)*/} Deux cent soixante huit heures ({totalT.ttotal_ed + 'h'}) en enseignement dirigé</label>
-                            <label style={{ fontSize: '1.1em' }}>{/*manisyLettre(totalT.ttotal_ep)*/} Deux cent soixante huit heures ({totalT.ttotal_ep + 'h'}) en enseignement pratique</label>
-                            <label style={{ fontSize: '1.1em', paddingLeft: '120px', fontWeight: '700' }}>Deux cent soixante huit heures ({totalT.ttotal_ep + 'h'}) en enseignement théorique</label>
-                            <center style={{ fontSize: '1.1em' }}>Fait a Fianarantsoa le,</center>
+                            </table>
                         </div>
-                        <div className='flex pl-5 flex-row justify-content-between'>
-                            <label style={{ fontSize: '1.1em', fontWeight: '700' }}>Le Chef de Mention</label>
-                            <label style={{ fontSize: '1.1em', paddingRight:'100px', fontWeight: '700' }}>Le Directeur</label>
+                        <div className='col-12  flex flex-column'>
+                            <div className='col-12 pl-5 flex flex-column'>
+                                <label style={{ fontSize: '1.1em' }} >{manisyLettre(totalT.ttotal_et)+' heures'}  ({totalT.ttotal_et + 'h'}) en enseignement théorique</label>
+                                <label style={{ fontSize: '1.1em' }}>{manisyLettre(totalT.ttotal_ed)+' heures'}  ({totalT.ttotal_ed + 'h'}) en enseignement dirigé</label>
+                                <label style={{ fontSize: '1.1em' }}>{manisyLettre(totalT.ttotal_ep)+' heures'}  ({totalT.ttotal_ep + 'h'}) en enseignement pratique</label>
+                                <label style={{ fontSize: '1.1em', paddingLeft: '120px', fontWeight: '700' }}>Deux cent soixante huit heures ({totalT.ttotal_ep + 'h'}) en enseignement théorique</label>
+                                <center style={{ fontSize: '1.1em' }}>Fait a Fianarantsoa le,</center>
+                            </div>
+                            <div className='flex pl-5 flex-row justify-content-between'>
+                                <label style={{ fontSize: '1.1em', fontWeight: '700' }}>Le Chef de Mention</label>
+                                <label style={{ fontSize: '1.1em', paddingRight: '100px', fontWeight: '700' }}>Le Directeur</label>
+
+                            </div>
 
                         </div>
-
                     </div>
-                </div>
-            </BlockUI>
+                </BlockUI>
+            </div>
         </div >
     )
 }

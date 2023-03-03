@@ -11,6 +11,7 @@
     "bootstrap": "^5.2.3",
     "chart.js": "^4.1.2",
     "ckbox": "^1.2.1",
+    "convertir-nombre-lettre": "^1.0.2",
     "crypto-js": "^4.1.1",
     "jspdf": "^2.5.1",
     "jwt-decode": "^3.1.2",
@@ -33,7 +34,6 @@
     "tinymce": "^6.3.1",
     "web-vitals": "^2.1.4"
   },
-  
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

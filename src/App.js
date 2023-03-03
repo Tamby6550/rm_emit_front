@@ -22,7 +22,7 @@ import { Dialog } from 'primereact/dialog';
 import * as Components from './components/Login/Components'
 import { PrimeIcons } from 'primereact/api';
 import { Toast } from 'primereact/toast'; 
-import Affichage from './components/Page/Tableau/Affichage';
+import MenuAffichage from './components/Page/Tableau/MenuAffichage';
 import Parametre from './components/Page/Parametre/Parametre';
 function App() {
     const { logout, isAuthenticated, secret } = useAuth();
@@ -272,7 +272,7 @@ function App() {
             <Route path='/classe' element={<Classe url={url}  urlip={urlip} />} />
             <Route path='/mention' element={<Mention url={url}  urlip={urlip} />} />
             <Route path='/acceuil' element={<Accueil url={url} urlip={urlip}  />} />
-            <Route path='/affichage_tableau' element={<Affichage url={url} urlip={urlip}  />} />
+            <Route path='/affichage_tableau' element={<MenuAffichage url={url} urlip={urlip}  />} />
             <Route path='/parametre' element={<Parametre url={url} urlip={urlip}  />} />
         </Route>
 

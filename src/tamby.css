@@ -33,6 +33,11 @@ div#imprimable{
 table .table{
     border: 1px solid rgb(43, 43, 43);
 }
+.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+    background: #7fb2df;
+    border-color: #4270eb;
+    color: #ffffff;
+}
 @media screen and (max-width: 767px)
 {
     div .mobile-m{
