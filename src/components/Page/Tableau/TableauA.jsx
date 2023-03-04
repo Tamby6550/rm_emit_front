@@ -32,6 +32,7 @@ export default function TableauA(props) {
   const [niveau, setniveau] = useState('0');
   const [selectniveau, setselectniveau] = useState(null);
 
+  const [parcours_libell, setparcours_libell] = useState('')
   const [chargementDD, setchargementDD] = useState(false);
   const [titreAff, settitreAff] = useState({
     nbreClasse: '',
@@ -46,19 +47,22 @@ export default function TableauA(props) {
     ttotal_ed: "",
     ttotal_ep: ""
   })
-  const [data, setdata] = useState([{
-    tvheure: "",
-    tbase_et: "",
-    tbase_ed: "",
-    tbase_ep: "",
-    ttotal_et: "",
-    ttotal_ed: "",
-    ttotal_ep: "",
-    heuredeclare: "",
+  const [data, setdata] = useState({
+    total: {
+      parc_libelle: "",
+      tvheure: "",
+      tbase_et: "",
+      tbase_ed: "",
+      tbase_ep: "",
+      ttotal_et: "",
+      ttotal_ed: "",
+      ttotal_ep: "",
+      heuredeclare: ""
+    },
     detail: [
       {
-        abbr_niveau:"",
         niv_id: "",
+        abbr_niveau: "",
         mati_id: "",
         mat_libelle: "",
         nom_prof: "",
@@ -72,10 +76,18 @@ export default function TableauA(props) {
         group_ep: "",
         total_et: "",
         total_ed: "",
-        total_ep: ""
+        total_ep: "",
+        nbgroup: {
+          id_groupe: "",
+          anne_univ: "",
+          niveau: "",
+          mention: "",
+          td: "",
+          tp: ""
+        }
       }
     ]
-  }]);
+  });
   const onTypesChange = (e) => {
     setanne_univ(e.value);
   }
@@ -90,6 +102,31 @@ export default function TableauA(props) {
   }
 
 
+  const loadNiveau = async (rm_id, mention_nom, grad_id) => {
+    await axios.get(props.url + `getNiveau/${rm_id}/${mention_nom}/${grad_id}`, {
+      headers: {
+        'Content-Type': 'text/html',
+        'X-API-KEY': 'tamby',
+        'Authorization': decrypt().token
+      }
+    })
+      .then(
+        (result) => {
+          if (result.data.message == 'Token Time Expire.') {
+            notificationAction('warn', 'Votre token est expiré !', 'Délais de token 4 heures !')
+            setTimeout(() => {
+              logout();
+            }, 3000)
+          }
+          setselectniveau(result.data);
+        }
+      ).catch((e) => {
+        // console.log(e.message)
+        if (e.message == "Network Error") {
+          props.urlip()
+        }
+      })
+  }
 
   const anne_univDt = async () => {
     await axios.get(props.url + `getAnneUniv`, {
@@ -107,7 +144,8 @@ export default function TableauA(props) {
               logout();
             }, 3000)
           }
-          setselectanne(result.data)
+          setselectanne(result.data);
+          loadNiveau(decrypt().data.rm_id, decrypt().data.mention, decrypt().data.grad_id);
         }
       ).catch((e) => {
         // console.log(e.message)
@@ -151,42 +189,37 @@ export default function TableauA(props) {
         }
       })
   }
-  const loadAfficheTableau = async () => {
-    // console.log({
-    //     ann:anne_univ,
-    //     mention:decrypt().data.mention,
-    //     niveau:niveau
-    // })
+  const loadAfficheTableau = () => {
     setchargementDD(true);
-    await axios.get(props.url + `getTableauAfficheTableauA/${anne_univ}/${decrypt().data.mention}/${prof.idprof}`, {
-      headers: {
-        'Content-Type': 'text/html',
-        'X-API-KEY': 'tamby',
-        'Authorization': decrypt().token
-      }
-    })
-      .then(
-        (result) => {
-          if (result.data.message == 'Token Time Expire.') {
-            notificationAction('warn', 'Votre token est expiré !', 'Délais de token 4 heures !')
-            setTimeout(() => {
-              logout();
-            }, 3000)
-          }
-          setdata(result.data);
-          setchargementDD(false);
-
-          //Affiche titre tableau d'affichage
-          // loadTitreTableau(decrypt().data.rm_id, decrypt().data.mention, niveau, decrypt().data.grad_id, anne_univ);
-
+    setTimeout(async () => {
+      await axios.get(props.url + `getTableauAfficheTableauA/${anne_univ}/${decrypt().data.mention}/${prof.idprof}`, {
+        headers: {
+          'Content-Type': 'text/html',
+          'X-API-KEY': 'tamby',
+          'Authorization': decrypt().token
         }
-      ).catch((e) => {
-        // console.log(e.message)
-        if (e.message == "Network Error") {
-          props.urlip()
-        }
-        setchargementDD(false);
       })
+        .then(
+          (result) => {
+            if (result.data.message == 'Token Time Expire.') {
+              notificationAction('warn', 'Votre token est expiré !', 'Délais de token 4 heures !')
+              setTimeout(() => {
+                logout();
+              }, 3000)
+            }
+            if (result.data.total.parc_libelle !='') {
+              setdata(result.data); 
+            }
+            setchargementDD(false);
+          }
+        ).catch((e) => {
+          // console.log(e.message)
+          if (e.message == "Network Error") {
+            props.urlip()
+          }
+          setchargementDD(false);
+        })
+    }, 800)
   }
   const loadAfficheTableauSommeEtEdEp = async () => {
 
@@ -227,7 +260,7 @@ export default function TableauA(props) {
     let intNb = parseInt(nb);
     let ren = NumberToLetter(intNb);
 
-    return ren.charAt(0).toUpperCase() + ren.slice(1);
+    return ren;
   }
 
   return (
@@ -273,7 +306,6 @@ export default function TableauA(props) {
                     Etablissement : EMIT
                   </label>
                 </center>
-
               </div>
             </div>
 
@@ -293,7 +325,7 @@ export default function TableauA(props) {
                 FICHE INDIVIDUELLE DE DECLARATION DES ENSEIGNEMENTS<br />
                 Voyage d'études ; stages ; mini-projet ; mémoire et Thèses ou obligations <br />
                 Année Univesitaire : {anne_univ} <br />
-                Mention :  {decrypt().data.mention}
+                Mention :  {data.total.parc_libelle}
               </label>
             </div>
             <div className="col-12 sm:flex-column field my-0 flex lg:flex-row flex-column " >
@@ -305,80 +337,81 @@ export default function TableauA(props) {
             </div>
             <div className="col-12 flex-column " style={{ alignItems: 'center' }}>
               <table style={{ borderCollapse: 'collapse', width: '85.4857%', height: '130.653px' }} border="1">
-                {data.map((obj, index) => (
-                  <tbody>
-                    <tr style={{ height: '19.5833px' }}>
-                      <td style={{ height: '19.5833px' }}>P&eacute;riode</td>
-                      <td style={{ height: '19.5833px' }}>Fili&egrave;re</td>
-                      <td style={{ height: '39.1666px', textAlign: 'center' }} rowspan="2">Mati&egrave;res</td>
-                      <td style={{ height: '19.5833px' }}>Type</td>
-                      <td style={{ height: '19.5833px' }}>Horaire</td>
-                      <td style={{ height: '19.5833px' }}>Volume</td>
-                      <td style={{ height: '19.5833px' }} colspan="3">Nombre Groupes</td>
-                      <td style={{ height: '19.5833px' }} colspan="3">Heures effectu&eacute;s</td>
-                    </tr>
-                    <tr style={{ height: '19.5833px' }}>
-                      <td style={{ height: '19.5833px' }}>s&eacute;ances</td>
-                      <td style={{ height: '19.5833px' }}>Niveau</td>
-                      <td style={{ height: '19.5833px' }}>(ET, ED , EP)</td>
-                      <td style={{ height: '19.5833px' }}>(jour/heure)</td>
-                      <td style={{ height: '19.5833px' }}>en HA</td>
-                      <td style={{ height: '19.5833px' }}>ET <label style={{ visibility: 'hidden' }}>(1)</label></td>
-                      <td style={{ height: '19.5833px' }}>ED(2)</td>
-                      <td style={{ height: '19.5833px' }}>EP(5)</td>
-                      <td style={{ height: '19.5833px' }}>ET</td>
-                      <td style={{ height: '19.5833px' }}>ED</td>
-                      <td style={{ height: '19.5833px' }}>EP</td>
-                    </tr>
-                    {obj.detail.map((detail, index) => (
-                      <tr style={{ height: '22.1528px' }}>
-                        <td style={{ height: '22.1528px' }}>&nbsp;</td>
-                        <td style={{ height: '22.1528px' }}>{detail.abbr_niveau}</td>
-                        <td style={{ height: '22.1528px' }}>{detail.mat_libelle}</td>
-                        <td style={{ height: '22.1528px' }}>ET,&nbsp; ED,&nbsp; EP</td>
-                        <td style={{ height: '22.1528px' }}>&nbsp;</td>
-                        <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.vheure}</td>
-                        <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.base_et}</td>
-                        <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.base_ed}</td>
-                        <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.base_ep}</td>
-                        <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.total_et}</td>
-                        <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.total_ed}</td>
-                        <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.total_ep}</td>
-                      </tr>
-                    ))}
 
-                    <tr style={{ height: '19.5833px' }}>
-                      <td style={{ height: '49.75px', borderLeft: '1px solid white', borderBottom: '1px solid white' }} colspan="4" rowspan="2">&nbsp;</td>
-                      <td style={{ height: '19.5833px' }}>Total</td>
-                      <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{obj.tvheure}</strong></td>
-                      <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{obj.tbase_et}</strong></td>
-                      <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{obj.tbase_ed}</strong></td>
-                      <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{obj.tbase_ep}</strong></td>
-                      <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{obj.ttotal_et}</strong></td>
-                      <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{obj.ttotal_ed}</strong></td>
-                      <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{obj.ttotal_ep}</strong></td>
+                <tbody>
+                  <tr style={{ height: '19.5833px' }}>
+                    <td style={{ height: '19.5833px' }}>P&eacute;riode</td>
+                    <td style={{ height: '19.5833px' }}>Fili&egrave;re</td>
+                    <td style={{ height: '39.1666px', textAlign: 'center' }} rowspan="2">Mati&egrave;res</td>
+                    <td style={{ height: '19.5833px' }}>Type</td>
+                    <td style={{ height: '19.5833px' }}>Horaire</td>
+                    <td style={{ height: '19.5833px' }}>Volume</td>
+                    <td style={{ height: '19.5833px' }} colspan="3">Nombre Groupes</td>
+                    <td style={{ height: '19.5833px' }} colspan="3">Heures effectu&eacute;s</td>
+                  </tr>
+                  <tr style={{ height: '19.5833px' }}>
+                    <td style={{ height: '19.5833px' }}>s&eacute;ances</td>
+                    <td style={{ height: '19.5833px' }}>Niveau</td>
+                    <td style={{ height: '19.5833px' }}>(ET, ED , EP)</td>
+                    <td style={{ height: '19.5833px' }}>(jour/heure)</td>
+                    <td style={{ height: '19.5833px' }}>en HA</td>
+                    <td style={{ height: '19.5833px' }}>ET <label style={{ visibility: 'hidden' }}>(1)</label></td>
+                    <td style={{ height: '19.5833px' }}>ED</td>
+                    <td style={{ height: '19.5833px' }}>EP</td>
+                    <td style={{ height: '19.5833px' }}>ET</td>
+                    <td style={{ height: '19.5833px' }}>ED</td>
+                    <td style={{ height: '19.5833px' }}>EP</td>
+                  </tr>
+                  {data.detail.map((detail, index) => (
+                    <tr key={index} style={{ height: '22.1528px' }}>
+                      <td style={{ height: '22.1528px' }}>&nbsp;</td>
+                      <td style={{ height: '22.1528px' }}>{detail.abbr_niveau}</td>
+                      <td style={{ height: '22.1528px' }}>{detail.mat_libelle}</td>
+                      <td style={{ height: '22.1528px' }}>ET,&nbsp; ED({detail.nbgroup.td}),&nbsp; EP({detail.nbgroup.tp})</td>
+                      <td style={{ height: '22.1528px' }}>&nbsp;</td>
+                      <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.vheure}</td>
+                      <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.base_et}</td>
+                      <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.base_ed}</td>
+                      <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.base_ep}</td>
+                      <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.total_et}</td>
+                      <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.total_ed}</td>
+                      <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.total_ep}</td>
                     </tr>
+                  ))}
 
-                    <tr style={{ height: '20px' }}>
-                      <td style={{ height: '20px' }}>Heures &agrave; declarer</td>
-                      <td style={{ height: '20px', textAlign: 'right' }}><strong>{obj.heuredeclare}</strong></td>
-                      <td style={{ height: '20px' }}>&nbsp;</td>
-                      <td style={{ height: '20px' }}>&nbsp;</td>
-                      <td style={{ height: '20px' }}>&nbsp;</td>
-                      <td style={{ height: '20px', textAlign: 'right' }}><strong>{obj.ttotal_et}</strong></td>
-                      <td style={{ height: '20px', textAlign: 'right' }}><strong>{obj.ttotal_ed}</strong></td>
-                      <td style={{ height: '20px', textAlign: 'right' }}><strong>{obj.ttotal_ep}</strong></td>
-                    </tr>
+                  <tr style={{ height: '19.5833px' }}>
+                    <td style={{ height: '49.75px', borderLeft: '1px solid white', borderBottom: '1px solid white' }} colspan="4" rowspan="2">&nbsp;</td>
+                    <td style={{ height: '19.5833px' }}>Total</td>
+                    <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{data.total.tvheure}</strong></td>
+                    <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{data.total.tbase_et}</strong></td>
+                    <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{data.total.tbase_ed}</strong></td>
+                    <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{data.total.tbase_ep}</strong></td>
+                    <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{data.total.ttotal_et}</strong></td>
+                    <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{data.total.ttotal_ed}</strong></td>
+                    <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{data.total.ttotal_ep}</strong></td>
+                  </tr>
 
-                  </tbody>
-                ))}
+                  <tr style={{ height: '20px' }}>
+                    <td style={{ height: '20px' }}>Heures &agrave; declarer</td>
+                    <td style={{ height: '20px', textAlign: 'right' }}><strong>{data.total.heuredeclare}</strong></td>
+                    <td style={{ height: '20px' }}>&nbsp;</td>
+                    <td style={{ height: '20px' }}>&nbsp;</td>
+                    <td style={{ height: '20px' }}>&nbsp;</td>
+                    <td style={{ height: '20px', textAlign: 'right' }}><strong>{data.total.ttotal_et}</strong></td>
+                    <td style={{ height: '20px', textAlign: 'right' }}><strong>{data.total.ttotal_ed}</strong></td>
+                    <td style={{ height: '20px', textAlign: 'right' }}><strong>{data.total.ttotal_ep}</strong></td>
+                  </tr>
+
+                </tbody>
               </table>
             </div>
             <div className='col-12  flex flex-column'>
               <div className='col-12 pl-5 flex flex-column'>
                 <label style={{ fontSize: '1.1em' }}>
-                  Arrêté la présente de déclaration à : deux cent deux heures (202h) d'enseignement effectuées dont : dix huit heures(18h) d'ET,soixante quatre <br /> heures (64h)
-                  d'ED et cent vingt heures (120h) d'EP.
+                  Arrêté la présente de déclaration à : {manisyLettre(data.total.heuredeclare)} heures ({data.total.heuredeclare + 'h'}) d'enseignement effectuées dont : {manisyLettre(data.total.ttotal_et)} heures ({data.total.ttotal_et + 'h'}) d'ET
+                  ,{manisyLettre(data.total.ttotal_ed)}
+                  <br /> heures ({data.total.ttotal_ed + 'h'})
+                  d'ED et {manisyLettre(data.total.ttotal_ep)} heures ({data.total.ttotal_ep + 'h'}) d'EP.
                 </label>
               </div>
               <div className='col-12 pl-5 flex flex-column'>

@@ -182,7 +182,7 @@ export default function Voir(props) {
         <>
             <Toast ref={toastTR} position="top-right" />
 
-            <Button icon={PrimeIcons.EYE} className='p-buttom-sm p-0 ' style={stylebtnVoir} tooltip='Voir' tooltipOptions={{ position: 'top' }} onClick={() => { onClick('displayBasic2'); chargementData() }} />
+            <Button icon={PrimeIcons.EYE} className='p-buttom-sm p-1 ' style={stylebtnVoir} tooltip='Voir' tooltipOptions={{ position: 'top' }} onClick={() => { onClick('displayBasic2'); chargementData() }} />
             <Dialog header={renderHeader('displayBasic2')} visible={displayBasic2} className="lg:col-7 md:col-9 col-11 p-0" footer={renderFooter('displayBasic2')} onHide={() => onHide('displayBasic2')}  >
                 <div className="p-1  style-modal-tamby">
                     <div className="col-12 field my-1 flex flex-column">
@@ -195,8 +195,8 @@ export default function Voir(props) {
                             <Column field={'unite_ens'} header={'Unité d\'enseign'} style={{ fontWeight: '600' }}></Column>
                             <Column field={'semestre'} header="Semetre" style={{ fontWeight: '600' }}></Column>
                             <Column field='abbr_niveau' header="Niveau"></Column>
-                            <Column header="Action" body={bodyBoutton} align={'left'}></Column>
-                            <Column header="Status" body={bodyStatus} > </Column>
+                            {/* <Column header="Action" body={bodyBoutton} align={'left'}></Column>
+                            <Column header="Status" body={bodyStatus} > </Column> */}
 
                         </DataTable>
                     </div>
