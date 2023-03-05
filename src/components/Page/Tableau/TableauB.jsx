@@ -12,7 +12,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { InputText } from 'primereact/inputtext'
 import { NumberToLetter } from 'convertir-nombre-lettre';
 import ListeProf from './TableauA/ListeProf';
-
+import moment from 'moment/moment';
 
 export default function TableauB(props) {
   const { logout, isAuthenticated, secret } = useAuth();
@@ -44,51 +44,29 @@ export default function TableauB(props) {
     parcours: '',
     abbre_niveau: '',
   });
-  const [totalT, settotalT] = useState({
-    ttotal_et: "",
-    ttotal_ed: "",
-    ttotal_ep: ""
-  })
   const [data, setdata] = useState({
     total: {
       parc_libelle: "",
-      tvheure: "",
-      tbase_et: "",
-      tbase_ed: "",
-      tbase_ep: "",
       ttotal_et: "",
       ttotal_ed: "",
       ttotal_ep: "",
+      total_enga: "",
+      total_ed_enga: "",
       heuredeclare: ""
     },
     detail: [
       {
-        niv_id: "",
-        abbr_niveau: "",
-        mati_id: "",
-        mat_libelle: "",
-        nom_prof: "",
-        vheure: "",
-        id_details: "",
-        base_et: "",
-        group_et: "",
-        base_ed: "",
-        group_ed: "",
-        base_ep: "",
-        group_ep: "",
-        total_et: "",
-        total_ed: "",
-        total_ep: ""
+        id_enga: "",
+        nom_enga: "",
+        nbre_etu: "",
+        valeur: "",
+        grad_id: "",
+        date_engamnt1: "",
+        date_engamnt2: "",
+        prof_id: "",
+        annee_univ: ""
       }
-    ],
-    group_tamby: {
-      id_groupe: "",
-      anne_univ: "",
-      niveau: "",
-      mention: "",
-      td: "",
-      tp: ""
-    }
+    ]
   });
   const onTypesChange = (e) => {
     setanne_univ(e.value);
@@ -104,31 +82,7 @@ export default function TableauB(props) {
   }
 
 
-  const loadNiveau = async (rm_id, mention_nom, grad_id) => {
-    await axios.get(props.url + `getNiveau/${rm_id}/${mention_nom}/${grad_id}`, {
-      headers: {
-        'Content-Type': 'text/html',
-        'X-API-KEY': 'tamby',
-        'Authorization': decrypt().token
-      }
-    })
-      .then(
-        (result) => {
-          if (result.data.message == 'Token Time Expire.') {
-            notificationAction('warn', 'Votre token est expiré !', 'Délais de token 4 heures !')
-            setTimeout(() => {
-              logout();
-            }, 3000)
-          }
-          setselectniveau(result.data);
-        }
-      ).catch((e) => {
-        // console.log(e.message)
-        if (e.message == "Network Error") {
-          props.urlip()
-        }
-      })
-  }
+
 
   const anne_univDt = async () => {
     await axios.get(props.url + `getAnneUniv`, {
@@ -147,7 +101,6 @@ export default function TableauB(props) {
             }, 3000)
           }
           setselectanne(result.data);
-          loadNiveau(decrypt().data.rm_id, decrypt().data.mention, decrypt().data.grad_id);
         }
       ).catch((e) => {
         // console.log(e.message)
@@ -157,44 +110,44 @@ export default function TableauB(props) {
       })
   }
 
-  const loadTitreTableau = async (rm_id, mention_nom, niveau, grad_id, anne_univ) => {
-    await axios.get(props.url + `getTitreTableau/${rm_id}/${mention_nom}/${niveau}/${grad_id}/${anne_univ}`, {
-      headers: {
-        'Content-Type': 'text/html',
-        'X-API-KEY': 'tamby',
-        'Authorization': decrypt().token
-      }
-    })
-      .then(
-        (result) => {
-          if (result.data.message == 'Token Time Expire.') {
-            notificationAction('warn', 'Votre token est expiré !', 'Délais de token 4 heures !')
-            setTimeout(() => {
-              logout();
-            }, 3000)
-          }
-          settitreAff({
-            nbreClasse: result.data.nbreClasse.count,
-            nom_mention: result.data.info.nom_mention,
-            abbre_niveau: result.data.info.abbr_niveau,
-            parcours: result.data.info.parc_libelle,
-            groupe_td: result.data.group_tamby.td,
-            groupe_tp: result.data.group_tamby.tp
-          });
-          //Affiche Somme Et Ed, Ep
-          loadAfficheTableauSommeEtEdEp();
-        }
-      ).catch((e) => {
-        // console.log(e.message)
-        if (e.message == "Network Error") {
-          props.urlip()
-        }
-      })
-  }
+  // const loadTitreTableau = async (rm_id, mention_nom, niveau, grad_id, anne_univ) => {
+  //   await axios.get(props.url + `getTitreTableau/${rm_id}/${mention_nom}/${niveau}/${grad_id}/${anne_univ}`, {
+  //     headers: {
+  //       'Content-Type': 'text/html',
+  //       'X-API-KEY': 'tamby',
+  //       'Authorization': decrypt().token
+  //     }
+  //   })
+  //     .then(
+  //       (result) => {
+  //         if (result.data.message == 'Token Time Expire.') {
+  //           notificationAction('warn', 'Votre token est expiré !', 'Délais de token 4 heures !')
+  //           setTimeout(() => {
+  //             logout();
+  //           }, 3000)
+  //         }
+  //         settitreAff({
+  //           nbreClasse: result.data.nbreClasse.count,
+  //           nom_mention: result.data.info.nom_mention,
+  //           abbre_niveau: result.data.info.abbr_niveau,
+  //           parcours: result.data.info.parc_libelle,
+  //           groupe_td: result.data.group_tamby.td,
+  //           groupe_tp: result.data.group_tamby.tp
+  //         });
+  //         //Affiche Somme Et Ed, Ep
+  //         loadAfficheTableauSommeEtEdEp();
+  //       }
+  //     ).catch((e) => {
+  //       // console.log(e.message)
+  //       if (e.message == "Network Error") {
+  //         props.urlip()
+  //       }
+  //     })
+  // }
   const loadAfficheTableau = () => {
     setchargementDD(true);
     setTimeout(async () => {
-      await axios.get(props.url + `getTableauAfficheTableauA/${anne_univ}/${decrypt().data.mention}/${prof.idprof}/${niveau}`, {
+      await axios.get(props.url + `getTableauAfficheTableauB/${anne_univ}/${decrypt().data.mention}/${prof.idprof}/${decrypt().data.grad_id}`, {
         headers: {
           'Content-Type': 'text/html',
           'X-API-KEY': 'tamby',
@@ -223,34 +176,7 @@ export default function TableauB(props) {
         })
     }, 800)
   }
-  const loadAfficheTableauSommeEtEdEp = async () => {
 
-    await axios.get(props.url + `getTableauAfficheSommeEtEdEp/${anne_univ}/${decrypt().data.mention}/${niveau}/${decrypt().data.rm_id}`, {
-      headers: {
-        'Content-Type': 'text/html',
-        'X-API-KEY': 'tamby',
-        'Authorization': decrypt().token
-      }
-    })
-      .then(
-        (result) => {
-          if (result.data.message == 'Token Time Expire.') {
-            notificationAction('warn', 'Votre token est expiré !', 'Délais de token 4 heures !')
-            setTimeout(() => {
-              logout();
-            }, 3000)
-          }
-          settotalT(result.data);
-          setchargementDD(false);
-        }
-      ).catch((e) => {
-        // console.log(e.message)
-        if (e.message == "Network Error") {
-          props.urlip()
-        }
-
-      })
-  }
 
   useEffect(() => {
     anne_univDt()
@@ -274,10 +200,7 @@ export default function TableauB(props) {
           <Dropdown value={anne_univ} options={selectanne} onChange={onTypesChange} name="etat" />
         </div>
 
-        <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
-          <h4 htmlFor="username2" className="m-1">Niveau  :</h4>
-          <Dropdown value={niveau} options={selectniveau} onChange={onTypesChangeNiveau} name="etat" />
-        </div>
+
 
         <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
           <div className='m-1 flex flex-row align-items-center '>
@@ -343,121 +266,125 @@ export default function TableauB(props) {
               </label>
             </div>
 
-            <div className="col-12 flex flex-column ">
-              <table style={{borderCollapse: 'collapse', width: '80%', height: '20px'}} border="1">
-                <tbody>
-                  <tr style={{height: '19.5833px'}}>
-                    <td style={{height: '78.3333px', textAlign: 'left'}} rowspan="3">P&eacute;riode</td>
-                    <td style={{height: '19.5833px'}}>Objet</td>
-                    <td style={{height: '19.5833px'}}>Fili&egrave;re</td>
-                    <td style={{height: '78.3333px'}} rowspan="3">Nombre d'&eacute;tudiant ou groupes</td>
-                    <td style={{height: '58.75px'}} colspan="2" rowspan="2">Heure effectu&eacute;es</td>
-                    <td style={{height: '339.896px',width:'5%',borderTop:'1px solid white',borderBottom:'1px solid white'}} rowspan="12">&nbsp;</td>
-                    <td style={{height: '58.75px', textAlign: 'center'}} colspan="4" rowspan="2">RECAPITULATIF</td>
-                  </tr>
-                  <tr style={{height: '39.1667px'}}>
-                    <td style={{height: '39.1667px'}}>Nom de l'&eacute;tudiant et&nbsp;</td>
-                    <td style={{height: '39.1667px'}}>Ann&eacute;e d'&eacute;tude</td>
-                  </tr>
-                  <tr style={{height: '19.5833px'}}>
-                    <td style={{height: '19.5833px'}} colspan="2">&nbsp;</td>
-                    <td style={{height: '19.5833px'}}>ED</td>
-                    <td style={{height: '19.5833px'}}>EP</td>
-                    <td style={{height: '19.5833px', textAlign: 'center'}} colspan="4">A compl&eacute;ter par l'administration</td>
-                  </tr>
-                  {/* <tr style={{height: '1.5833px'}}>
-                    <td style={{height: '1.5833px'}}>&nbsp;</td>
-                    <td style={{height: '1.5833px'}}>&nbsp;</td>
-                    <td style={{height: '1.5833px'}}>&nbsp;</td>
-                    <td style={{height: '1.5833px'}}>&nbsp;</td>
-                    <td style={{height: '1.5833px'}}>&nbsp;</td>
-                    <td style={{height: '1.5833px'}}>&nbsp;</td>
-                    <td style={{height: '1.5833px'}} colspan="4">&nbsp;</td>
-                  </tr> */}
-                  <tr style={{height: '47.5833px'}}>
-                    <td style={{height: '47.5833px'}}>&nbsp;</td>
-                    <td style={{height: '0.5833px', textAlign: 'left'}}>
-                      <p style={{textAlign: 'center'}}>Encadrement L2</p>
-                    </td>
-                    <td style={{height: '47.5833px'}}>&nbsp;</td>
-                    <td style={{height: '47.5833px', textAlign: 'center'}}>&nbsp;</td>
-                    <td style={{height: '47.5833px', textAlign: 'center'}}>0</td>
-                    <td style={{height: '47.5833px'}}>&nbsp;</td>
-                    <td style={{height: '47.5833px'}}>Selon</td>
-                    <td style={{height: '84.0625px', textAlign: 'right'}} rowspan="2">18</td>
-                    <td style={{height: '84.0625px', textAlign: 'right'}} rowspan="2">64</td>
-                    <td style={{height: '84.0625px', textAlign: 'right'}} rowspan="2">120</td>
-                  </tr>
-                  <tr style={{height: '36.4792px'}}>
-                    <td style={{height: '36.4792px'}}>&nbsp;</td>
-                    <td style={{height: '36.4792px', textAlign: 'center'}}>Soutenance L2</td>
-                    <td style={{height: '36.4792px'}}>&nbsp;</td>
-                    <td style={{height: '36.4792px', textAlign: 'center'}}>6</td>
-                    <td style={{height: '36.4792px', textAlign: 'center'}}>24</td>
-                    <td style={{height: '36.4792px'}}>&nbsp;</td>
-                    <td style={{height: '36.4792px',width:'2%'}}>Tableau A</td>
-                  </tr>
-                  <tr style={{height: '37.5px'}}>
-                    <td style={{height: '37.5px'}}>&nbsp;</td>
-                    <td style={{height: '37.5px', textAlign: 'center'}}>Encadrement L3</td>
-                    <td style={{height: '37.5px'}}>&nbsp;</td>
-                    <td style={{height: '37.5px', textAlign: 'center'}}>&nbsp;</td>
-                    <td style={{height: '37.5px', textAlign: 'center'}}>0</td>
-                    <td style={{height: '37.5px'}}>&nbsp;</td>
-                    <td style={{height: '37.5px'}}>Selon</td>
-                    <td style={{height: '76.6667px', textAlign: 'right'}} rowspan="2">&nbsp;</td>
-                    <td style={{height: '76.6667px', textAlign: 'right'}} rowspan="2">100</td>
-                    <td style={{height: '76.6667px', textAlign: 'right'}} rowspan="2">&nbsp;</td>
-                  </tr>
-                  <tr style={{height: '39.1667px'}}>
-                    <td style={{height: '39.1667px'}}>Du 02 au 05 Avril 2019</td>
-                    <td style={{height: '39.1667px', textAlign: 'center'}}>Soutenance L3</td>
-                    <td style={{height: '39.1667px'}}>&nbsp;</td>
-                    <td style={{height: '39.1667px', textAlign: 'center'}}>19</td>
-                    <td style={{height: '39.1667px', textAlign: 'center'}}>76</td>
-                    <td style={{height: '39.1667px'}}>&nbsp;</td>
-                    <td style={{height: '39.1667px'}}>Tableau B</td>
-                  </tr>
-                  <tr style={{height: '19.5833px'}}>
-                    <td style={{height: '19.5833px'}}>&nbsp;</td>
-                    <td style={{textAlign: 'left', height: '19.5833px'}}>&nbsp;</td>
-                    <td style={{height: '19.5833px'}}>&nbsp;</td>
-                    <td style={{height: '19.5833px'}}>&nbsp;</td>
-                    <td style={{textAlign: 'center',height: '19.5833px'}}>&nbsp;</td>
-                    <td style={{height: '19.5833px'}}>&nbsp;</td>
-                    <td style={{height: '19.5833px'}}>TOTAL</td>
-                    <td style={{height: '19.5833px', textAlign: 'right'}}>18</td>
-                    <td style={{height: '19.5833px', textAlign: 'right'}}>164</td>
-                    <td style={{height: '19.5833px', textAlign: 'right'}}>120</td>
-                  </tr>
-                  <tr style={{height: '22.5px'}}>
-                    <td style={{height: '22.5px'}}>&nbsp;</td>
-                    <td style={{height: '22.5px', textAlign: 'center'}}>Voyage d'Etudes</td>
-                    <td style={{height: '22.5px'}}>&nbsp;</td>
-                    <td style={{height: '22.5px'}}>&nbsp;</td>
-                    <td style={{height: '22.5px', textAlign: 'center'}}>0</td>
-                    <td style={{height: '22.5px'}}>&nbsp;</td>
-                    <td style={{height: '22.5px'}}>OBLIGATION</td>
-                    <td style={{height: '22.5px', textAlign: 'right'}} colspan="3">&nbsp;</td>
-                  </tr>
-                  <tr style={{height: '19.5833px'}}>
-                    <td style={{height: '39.1666px'}} colspan="2" rowspan="2">&nbsp;</td>
-                    <td style={{height: '19.5833px'}} colspan="2">Total</td>
-                    <td style={{height: '19.5833px', textAlign: 'center'}}>100</td>
-                    <td style={{height: '19.5833px'}}>&nbsp;</td>
-                    <td style={{height: '19.5833px'}}>Heures&nbsp; de</td>
-                    <td style={{height: '19.5833px', textAlign: 'right'}}>30</td>
-                    <td style={{height: '19.5833px', textAlign: 'right'}}>164</td>
-                    <td style={{height: '19.5833px', textAlign: 'right'}}>60</td>
-                  </tr>
-                  <tr style={{height: '19.5833px'}}>
-                    <td style={{height: '19.5833px'}} colspan="2">Heures &agrave; declarer</td>
-                    <td style={{height: '19.5833px'}}>&nbsp;</td>
-                    <td style={{height: '19.5833px'}}>&nbsp;</td>
-                    <td style={{height: '19.5833px', textAlign: 'center'}} colspan="4">254 heures en ED</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div className="col-12 flex flex-row justify-content-between">
+              <div className='col-8 '>
+                <table style={{ borderCollapse: 'collapse', width: '90.6961%', height: '330.254px' }} border="1">
+                  <tbody>
+                    <tr style={{ height: '19.5898px' }}>
+                      <td style={{ height: '78.3398px', textAlign: 'left' }} rowspan="3">P&eacute;riode</td>
+                      <td style={{ height: '19.5898px' }}>Objet</td>
+                      <td style={{ height: '19.5898px' }}>Fili&egrave;re</td>
+                      <td style={{ height: '78.3398px' }} rowspan="3">Nombre d'&eacute;tudiant ou groupes</td>
+                      <td style={{ height: '58.75px' }} colspan="2" rowspan="2">Heure effectu&eacute;es</td>
+                    </tr>
+                    <tr style={{ height: '39.1602px' }}>
+                      <td style={{ height: '39.1602px' }}>Nom de l'&eacute;tudiant et&nbsp;</td>
+                      <td style={{ height: '39.1602px' }}>Ann&eacute;e d'&eacute;tude</td>
+                    </tr>
+                    <tr style={{ height: '19.5898px' }}>
+                      <td style={{ height: '19.5898px' }} colspan="2">&nbsp;</td>
+                      <td style={{ height: '19.5898px' }}>ED</td>
+                      <td style={{ height: '19.5898px' }}>EP</td>
+                    </tr>
+                    <tr style={{ height: '19.5898px' }}>
+                      <td style={{ height: '19.5898px' }}>&nbsp;</td>
+                      <td style={{ height: '19.5898px' }}>&nbsp;</td>
+                      <td style={{ height: '19.5898px' }}>&nbsp;</td>
+                      <td style={{ height: '19.5898px' }}>&nbsp;</td>
+                      <td style={{ height: '19.5898px' }}>&nbsp;</td>
+                      <td style={{ height: '19.5898px' }}>&nbsp;</td>
+                    </tr>
+
+
+                    {data.detail.map((detail, index) => (
+                      <tr style={{ height: '39.1602px' }} key={index}>
+                        <td style={{ height: '39.1602px' }}>
+                          {
+                            detail.date_engamnt1 == null || detail.date_engamnt1 == '0' ? '' :
+                              detail.date_engamnt2 == null || detail.date_engamnt2 == '0' ?
+                                moment(detail.date_engamnt1).format('DD/MM/YYYY') :
+                                <>
+                              Du  <strong>{moment(detail.date_engamnt1).format('DD/MM/YYYY')}</strong>  au <strong>{moment(detail.date_engamnt2).format('DD/MM/YYYY')}</strong> 
+                                </>
+                          }
+                        </td>
+                        <td style={{ height: '39.1602px', textAlign: 'center' }}>{detail.nom_enga}</td>
+                        <td style={{ height: '39.1602px' }}>&nbsp;</td>
+                        <td style={{ height: '39.1602px', textAlign: 'center' }}>{detail.nbre_etu}</td>
+                        <td style={{ height: '39.1602px', textAlign: 'center' }}>{detail.valeur}</td>
+                        <td style={{ height: '39.1602px' }}>&nbsp;</td>
+                      </tr>
+                    ))}
+
+                    <tr style={{ height: '19.5898px' }}>
+                      <td style={{ height: '29.5898px' }} colspan="2" rowspan="2">&nbsp;</td>
+                      <td style={{ height: '19.5898px' }} colspan="2">Total</td>
+                      <td style={{ height: '19.5898px', textAlign: 'center' }}>{data.total.total_enga}</td>
+                      <td style={{ height: '19.5898px' }}>&nbsp;</td>
+                    </tr>
+                    <tr style={{ height: '10px' }}>
+                      <td style={{ height: '10px' }} colspan="2">Heures &agrave; declarer</td>
+                      <td style={{ height: '10px' }}>&nbsp;</td>
+                      <td style={{ height: '10px' }}>&nbsp;</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div className='col-4 '>
+                <table style={{ borderCollapse: 'collapse', width: '58.6961%', height: '330.254px' }} border="1">
+                  <tbody>
+                    <tr style={{ height: '0.5px' }}>
+                      <td style={{ height: '38.3906px', textAlign: 'center' }} colspan="4" rowspan="2">RECAPITULATIF</td>
+                    </tr>
+                    <tr style={{ height: '37.8906px' }}></tr>
+                    <tr style={{ height: '30.5469px' }}>
+                      <td style={{ height: '30.5469px', textAlign: 'center' }} colspan="4">A compl&eacute;ter par l'administration</td>
+                    </tr>
+                    <tr style={{ height: '19.5938px' }}>
+                      <td style={{ height: '19.5938px', textAlign: 'center' }} colspan="4">&nbsp;</td>
+                    </tr>
+                    <tr style={{ height: '26.4844px' }}>
+                      <td style={{ height: '26.4844px', textAlign: 'center' }}>Selon</td>
+                      <td style={{ height: '57.9688px', textAlign: 'right' }} rowspan="2">{data.total.ttotal_et}</td>
+                      <td style={{ height: '57.9688px', textAlign: 'right' }} rowspan="2">{data.total.ttotal_ed}</td>
+                      <td style={{ height: '57.9688px', textAlign: 'right' }} rowspan="2">{data.total.ttotal_ep}</td>
+                    </tr>
+                    <tr style={{ height: '31.4844px' }}>
+                      <td style={{ height: '31.4844px', textAlign: 'center' }}>Tableau A</td>
+                    </tr>
+                    <tr style={{ height: '21.1719px' }}>
+                      <td style={{ height: '21.1719px', textAlign: 'center' }}>Selon&nbsp;</td>
+                      <td style={{ height: '42.6563px' }} rowspan="2">&nbsp;</td>
+                      <td style={{ height: '42.6563px', textAlign: 'right' }} rowspan="2">{data.total.total_enga}</td>
+                      <td style={{ height: '42.6563px' }} rowspan="2">&nbsp;</td>
+                    </tr>
+                    <tr style={{ height: '21.4844px' }}>
+                      <td style={{ textAlign: 'center', height: '21.4844px' }}>Tableau B</td>
+                    </tr>
+                    <tr style={{ height: '19.5938px' }}>
+                      <td style={{ height: '19.5938px', textAlign: 'center' }}>TOTAL</td>
+                      <td style={{ height: '19.5938px', textAlign: 'right' }}>{data.total.ttotal_et}</td>
+                      <td style={{ height: '19.5938px', textAlign: 'right' }}>{data.total.total_ed_enga}</td>
+                      <td style={{ height: '19.5938px', textAlign: 'right' }}>{data.total.ttotal_ep}</td>
+                    </tr>
+                    <tr style={{ height: '19.5938px' }}>
+                      <td style={{ height: '19.5938px', textAlign: 'left' }}>OBLIGATION</td>
+                      <td style={{ height: '19.5938px' }}>&nbsp;</td>
+                      <td style={{ height: '19.5938px' }}>&nbsp;</td>
+                      <td style={{ height: '19.5938px' }}>&nbsp;</td>
+                    </tr>
+                    <tr style={{ height: '27.5469px' }}>
+                      <td style={{ height: '27.5469px' }}>Heures de</td>
+                      <td style={{ height: '27.5469px', textAlign: 'right' }}>30</td>
+                      <td style={{ height: '27.5469px', textAlign: 'right' }}>{data.total.total_ed_enga}</td>
+                      <td style={{ height: '27.5469px', textAlign: 'right' }}>60</td>
+                    </tr>
+                    <tr style={{ height: '29.5469px' }}>
+                      <td style={{ textAlign: 'center', height: '29.5469px' }} colspan="4">254 heures en ED</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
 
 
@@ -465,8 +392,8 @@ export default function TableauB(props) {
               <div className='col-12 pl-5 flex flex-column'>
                 <label style={{ fontSize: '1.1em' }}>
                   Arrêté la présente de déclaration à : {manisyLettre(data.total.heuredeclare)} heures ({data.total.heuredeclare + 'h'}) d'enseignement effectuées dont : {manisyLettre(data.total.ttotal_et)} heures ({data.total.ttotal_et + 'h'}) d'ET
-                  ,{manisyLettre(data.total.ttotal_ed)}
-                  <br /> heures ({data.total.ttotal_ed + 'h'})
+                  ,{manisyLettre(data.total.total_ed_enga)}
+                  <br /> heures ({data.total.total_ed_enga + 'h'})
                   d'ED et {manisyLettre(data.total.ttotal_ep)} heures ({data.total.ttotal_ep + 'h'}) d'EP.
                 </label>
               </div>
@@ -475,13 +402,13 @@ export default function TableauB(props) {
                 <label style={{ fontSize: '1.1em' }}>
                   Fait a Fianarantsoa le,.... <br />
                   Signature de l'enseignant
-                  </label>
+                </label>
               </div>
-              
+
             </div>
           </div>
         </BlockUI>
-      </div>
+      </div >
     </div >
   )
 }

@@ -192,7 +192,7 @@ export default function TableauA(props) {
   const loadAfficheTableau = () => {
     setchargementDD(true);
     setTimeout(async () => {
-      await axios.get(props.url + `getTableauAfficheTableauA/${anne_univ}/${decrypt().data.mention}/${prof.idprof}`, {
+      await axios.get(props.url + `getTableauAfficheTableauA/${anne_univ}/${decrypt().data.mention}/${prof.idprof}/${decrypt().data.grad_id}`, {
         headers: {
           'Content-Type': 'text/html',
           'X-API-KEY': 'tamby',

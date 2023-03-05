@@ -129,6 +129,7 @@ export default function Insertion(props) {
     };
 
     const onSub = async () => { //Ajout de donnees vers Laravel
+        console.log(infoEngagement)
         setchargeDnn(true);
         try {
             await axios.post(props.url + 'ajoutEngagement', infoEngagement, {
