@@ -33,7 +33,7 @@ export default function Header() {
     },
 
     {
-      label: 'Proffesseur',
+      label: 'Enseignant',
       icon: PrimeIcons.USERS,
       className: pathname === "/proffesseur" && classactive,
       command: () => {
