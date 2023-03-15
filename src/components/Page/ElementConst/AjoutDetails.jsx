@@ -18,7 +18,7 @@ export default function AjoutDetails(props) {
 
     const [chargeDnn, setchargeDnn] = useState(false);
     //Declaration useSatate
-    const [infoDetails, setinfoDetails] = useState({ anne_univ: '', base_et: '0', group_et: '1', base_ed: '0', group_ed: '0', base_ep: '0', group_ep: '0', vheure: '0', credit: '0', mati_id: '' });
+    const [infoDetails, setinfoDetails] = useState({ diviser_td: '', diviser_tp: '', anne_univ: '', base_et: '0', group_et: '1', base_ed: '0', group_ed: '0', base_ep: '0', group_ep: '0', vheure: '0', credit: '0', mati_id: '' });
     const [chek, setchek] = useState(true);
     const [chek1, setchek1] = useState(true);
     const [chek2, setchek2] = useState(true);
@@ -28,7 +28,7 @@ export default function AjoutDetails(props) {
         setchek(true);
         setchek1(true);
         setchek2(true);
-        setinfoDetails({ anne_univ: '', base_et: '0', group_et: '1', base_ed: '0', group_ed: '0', base_ep: '0', group_ep: '0', vheure: '0', credit: '0', mati_id: '' });
+        setinfoDetails({ diviser_td: '', diviser_tp: '', anne_univ: '', base_et: '0', group_et: '1', base_ed: '0', group_ed: '0', base_ep: '0', group_ep: '0', vheure: '0', credit: '0', mati_id: '' });
     }
 
 
@@ -116,7 +116,7 @@ export default function AjoutDetails(props) {
         if (infoDetails.vheure == "0" || infoDetails.vheure == "") {
             alert('Volume d\'heure ne doit pas etre vide ou zéro !');
         }
-        if (infoDetails.group_ed=="0" && infoDetails.group_ep=="0") {
+        if (infoDetails.group_ed == "0" && infoDetails.group_ep == "0") {
             alert('Vous devez configurer le nombre de groupe de cette classe dans le menu paramètre !')
         }
         else {
@@ -162,7 +162,7 @@ export default function AjoutDetails(props) {
     }
     const loadNbreGroup = () => {
         setchargeDnn(true);
-        axios.get(props.url + `getGrouptamby/${props.anne_univ}/${props.data.abbr_niveau}/${props.mention}`, {
+        axios.get(props.url + `getGrouptamby/${props.anne_univ}/${props.grad_id}/${props.mention}`, {
             headers: {
                 'Content-Type': 'text/html',
                 'X-API-KEY': 'tamby',
@@ -178,10 +178,13 @@ export default function AjoutDetails(props) {
                         }, 3000)
                     }
                     if (result.data != "") {
-                        setinfoDetails({...infoDetails,group_ed: result.data.td, group_ep: result.data.tp,
-                            anne_univ: props.anne_univ, mati_id: props.data.mati_id })
+                        setinfoDetails({
+                            ...infoDetails, diviser_td: result.data.diviser_td, diviser_tp: result.data.diviser_tp,
+                            anne_univ: props.anne_univ, mati_id: props.data.mati_id
+                        })
                         loadDetailsTamby(result);
-                    }else{
+
+                    } else {
                         setchargeDnn(false);
                     }
                 }
@@ -210,11 +213,9 @@ export default function AjoutDetails(props) {
                         }, 3000)
                     }
                     if (result.data != "") {
-                        setinfoDetails({ ...infoDetails, 
-                            vheure:props.data.vheure,credit:props.data.credit,
-                            anne_univ: props.anne_univ, group_et: result.data.group_et,group_ed: resultss.data.td, group_ep: resultss.data.tp, mati_id: props.data.mati_id ,
-                            base_ed: result.data.base_ed, base_et: result.data.base_et, base_ep: result.data.base_ep,
-                         });
+
+                        diviserNbGroupe(props.nbreClasse.nmbre_classe, resultss.data.diviser_td, resultss.data.diviser_tp, result)
+
                     }
                     setchargeDnn(false);
                 }
@@ -226,6 +227,26 @@ export default function AjoutDetails(props) {
                 setchargeDnn(false);
             })
     }
+
+    function getResult(num, denom) {
+        const result = num / denom;
+        if (result % 1 !== 0) {
+            return Math.ceil(result);
+        }
+        return result;
+    }
+
+    function diviserNbGroupe(nbreEtud, div_td, div_tp, resultat) {
+        setinfoDetails({
+            ...infoDetails,
+            vheure: props.data.vheure, credit: props.data.credit,
+            anne_univ: props.anne_univ, group_et: resultat.data.group_et, mati_id: props.data.mati_id,
+            base_ed: resultat.data.base_ed, base_et: resultat.data.base_et, base_ep: resultat.data.base_ep,
+            group_ed: getResult(nbreEtud, div_td), group_ep: getResult(nbreEtud, div_tp) 
+        });
+    }
+
+
     return (
         <div>
             <Toast ref={toastTR} position="top-right" />
@@ -234,8 +255,11 @@ export default function AjoutDetails(props) {
                     onClick('displayBasic2');
                     setTimeout(() => {
                         loadNbreGroup();
+
                     }, 200);
-                    console.log(props.data)
+                    setTimeout(() => {
+                    }, 400);
+
                 }}
             />
             <div className='grid'>

@@ -31,7 +31,6 @@ export default function Header() {
         navigate("/element_constitutifs");
       }
     },
-
     {
       label: 'Enseignant',
       icon: PrimeIcons.USERS,

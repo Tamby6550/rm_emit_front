@@ -39,8 +39,10 @@ export default function Insertion(props) {
         { value: 'Voyages d\'Etudes', label: 'Voyages d\'Etudes' },
     ];
     const listengage1 = [
+        { value: 'Encadrement M1', label: 'Encadrement M1' },
         { value: 'Encadrement M2', label: 'Encadrement M2' },
         { value: 'Soutenance M2', label: 'Soutenance M2' },
+        { value: 'Soutenance M1', label: 'Soutenance M1' },
         { value: 'Voyages d\'Etudes', label: 'Voyages d\'Etudes' },
     ];
 
@@ -87,7 +89,19 @@ export default function Insertion(props) {
     const notificationAction = (etat, titre, message) => {
         toastTR.current.show({ severity: etat, summary: titre, detail: message, life: 3000 });
     }
+    const changeNomEngag = (e) => {
+        let heure = e.target.value;
+        if (infoEngagement.nom_enga === 'Encadrement L2' || infoEngagement.nom_enga === 'Encadrement L3' || infoEngagement.nom_enga === 'Encadrement M2' || infoEngagement.nom_enga === 'Encadrement M1') {
 
+            heure = heure * 25;
+        } else if (infoEngagement.nom_enga === 'Soutenance L2' || infoEngagement.nom_enga === 'Soutenance L3' || infoEngagement.nom_enga === 'Soutenance M2' || infoEngagement.nom_enga === 'Soutenance M1') {
+            heure = heure * 4;
+        }
+        else {
+            heure = heure * 25;
+        }
+        setinfoEngagement({ ...infoEngagement, nbre_etu: e.target.value, valeur: heure })
+    }
     /* Modal */
     const [displayBasic2, setDisplayBasic2] = useState(false);
     const [position, setPosition] = useState('center');
@@ -129,7 +143,6 @@ export default function Insertion(props) {
     };
 
     const onSub = async () => { //Ajout de donnees vers Laravel
-        console.log(infoEngagement)
         setchargeDnn(true);
         try {
             await axios.post(props.url + 'ajoutEngagement', infoEngagement, {
@@ -191,6 +204,11 @@ export default function Insertion(props) {
                 }
             })
     }
+
+    useEffect(() => {
+        setinfoEngagement({ ...infoEngagement, nbre_etu: 0, valeur: 0 })
+      }, [infoEngagement.nom_enga])
+
     return (
         <>
             <Toast ref={toastTR} position="top-right" />
@@ -218,11 +236,11 @@ export default function Insertion(props) {
                             </div>
                             <div className="lg:col-6 col-12 field my-0 flex flex-column">
                                 <h4 htmlFor="username2" className="m-1 mb-3">Nbre étudiants ou groupes* :</h4>
-                                <InputNumber value={infoEngagement.nbre_etu} onValueChange={onInfoEngagement} name="nbre_etu" />
+                                <InputNumber value={infoEngagement.nbre_etu} onValueChange={changeNomEngag} name="nbre_etu" />
                             </div>
                             <div className="lg:col-6 col-12 field my-0 flex flex-column">
-                                <h4 htmlFor="username2" className="m-1 mb-3">ED* :</h4>
-                                <InputNumber value={infoEngagement.valeur} onValueChange={onInfoEngagement} name="valeur" />
+                                <h4 htmlFor="username2" className="m-1 mb-3">Heures* :</h4>
+                                <InputNumber value={infoEngagement.valeur} onValueChange={onInfoEngagement} name="valeur" readOnly/>
                             </div>
 
                             <div className='grid flex flex-row mt-3' style={{ border: '1px solid #f3f1f1' }}>

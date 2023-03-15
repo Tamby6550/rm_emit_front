@@ -53,7 +53,7 @@ export default function ElementConst(props) {
 
   const [etat, setetat] = useState('5');
 
-
+  const [nbreClasse, setnbreClasse] = useState(0);
   //Get List Examen
   const onTypesChange = (e) => {
     setanne_univ(e.value);
@@ -110,7 +110,8 @@ export default function ElementConst(props) {
           setselectanne(result.data.anne_univ)
           setselectniveau(result.data.niveau);
           setselectlgrade(result.data.grade)
-          setselectlmention(result.data.mention)
+          setselectlmention(result.data.mention);
+          setnbreClasse(result.data.nbre_classe)
           setCharge(false);
           setrefreshData(0);
           initFilters1();
@@ -160,10 +161,8 @@ export default function ElementConst(props) {
   useEffect(async () => {
     if (decrypt().data.mention == 'Admin') {
       if ( anne_univ == '0000-0000' || lgrade=='0' || lmention=='0' ) {
-        console.log('non')
         return false;
       } else {
-        console.log('ok')
         chargementDataAdm()
       }
     }else{
@@ -197,7 +196,7 @@ export default function ElementConst(props) {
     return (
       <div className='flex flex-row justify-content-between align-items-center m-0 '>
         <div className='my-0  py-2 flex'>
-          <AjoutDetails data={data}  anne_univ={anne_univ} mention={decrypt().data.mention} token={decrypt().token}  logout={logout} url={props.url} setrefreshData={setrefreshData}/>
+          <AjoutDetails nbreClasse={nbreClasse} grad_id={decrypt().data.grad_id} data={data}  anne_univ={anne_univ} mention={decrypt().data.mention} token={decrypt().token}  logout={logout} url={props.url} setrefreshData={setrefreshData}/>
           <ModifierEtat etat={data.etat_mat} anne_univ={anne_univ} nom_mat={data.matiere} mat_id={data.mati_id} url={props.url} setrefreshData={setrefreshData} />
         </div>
       </div>

@@ -15,6 +15,7 @@ import CryptoJS from 'crypto-js';
 import { Dropdown } from 'primereact/dropdown';
 import moment from 'moment/moment';
 import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
 
 export default function Parametre(props) {
 
@@ -29,7 +30,7 @@ export default function Parametre(props) {
         return { data, token };
     }
 
-    const [infoGroup, setinfoGroup] = useState({ td: 0, tp: 0, anne_univ: '', niveau: '', mention: '', nombre: '0' })
+    const [infoGroup, setinfoGroup] = useState({ td: 0, tp: 0, anne_univ: '', grade: '', mention: '', diviser_td: '0', diviser_tp: 0 })
 
     const [list, setlist] = useState([]);
     const [refreshData, setrefreshData] = useState(0);
@@ -38,6 +39,9 @@ export default function Parametre(props) {
     const [selectniveau, setselectniveau] = useState(null);
     const [anne_univ, setanne_univ] = useState('0000-0000');
     const [selectanne, setselectanne] = useState(null);
+
+
+    const [classe, setclasse] = useState({nom:'',nbre:''})
     const onTypesChange = (e) => {
         setanne_univ(e.value);
     }
@@ -90,6 +94,9 @@ export default function Parametre(props) {
                     setCharge(false);
                     setrefreshData(0);
                     initFilters1();
+                    setTimeout(() => {
+                        loadNbreGroup(decrypt().token, anne_univ, decrypt().data.mention);
+                    }, 800)
                 }
             ).catch((e) => {
                 // console.log(e.message)
@@ -159,16 +166,25 @@ export default function Parametre(props) {
         return (
 
             <div className="flex justify-content-between lg:flex-row md:flex-column sm:flex-column flex-column">
-                <div className='flex lg:flex-row lg:col-6 md:col-7 md:flex-row sm:flex-row flex-column'>
-                    <div className="lgcol-8 md:col-5   md:flex-column  sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
+                <div className='flex lg:flex-row lg:col-6  md:col-7 md:flex-row sm:flex-row flex-column'>
+                    <div className="lgcol-4 md:col-4   md:flex-column  sm:col-3 sm:flex-column field my-0 flex lg:flex-column flex-column">
                         <h4 htmlFor="username2" className="m-1">Anne univ :</h4>
                         <Dropdown value={anne_univ} options={selectanne} onChange={onTypesChange} name="etat" />
                     </div>
 
-                    {/* <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
-                        <h4 htmlFor="username2" className="m-1">Niveau  :</h4>
-                        <Dropdown value={niveau} options={selectniveau} onChange={onTypesChangeNiveau} name="etat" />
-                    </div> */}
+                    <div className="lgcol-4 md:col-4  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-column flex-column">
+                        <label htmlFor="username2" className="label-input-sm">Nbre etudiants par Groupe TD</label>
+                        <InputNumber id="username2" value={infoGroup.diviser_td} aria-describedby="username2-help" className="form-input-css-tamby" name='tp' onValueChange={(e) => { setinfoGroup({ ...infoGroup, diviser_td: e.target.value }) }} />
+                    </div>
+                    <div className="lgcol-4 md:col-4  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-column flex-column">
+                        <label htmlFor="username2" className="label-input-sm">Nbre etudiants par Groupe TP</label>
+                        <InputNumber id="username2" value={infoGroup.diviser_tp} aria-describedby="username2-help" className="form-input-css-tamby" name='tp' onValueChange={(e) => { setinfoGroup({ ...infoGroup, diviser_tp: e.target.value }) }} />
+                    </div>
+                    <div className="lgcol-4 md:col-4  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-column flex-column">
+                        <label htmlFor="username2" className="label-input-sm" style={{ visibility: 'hidden' }}>Nombre par Groupe</label>
+                        <Button icon={PrimeIcons.SAVE} className='p-buttom-sm p-1 ml-4' label='Enregistrer' tooltipOptions={{ position: 'top' }}
+                            onClick={() => { onSaveGroupe() }} />
+                    </div>
                 </div>
             </div>
         )
@@ -219,19 +235,25 @@ export default function Parametre(props) {
     const bodyBoutton = (data) => {
         // console.log(data)
         return (
-            <Button icon={PrimeIcons.PENCIL} className='p-buttom-sm p-button-secondary p-1 ml-4' tooltip="Modifier Nombre de Groupe" tooltipOptions={{ position: 'top' }}
+            <Button icon={PrimeIcons.EYE} className='p-buttom-sm p-button-secondary p-1 ml-4' tooltip="Voir Nombre de Groupe" tooltipOptions={{ position: 'top' }}
                 onClick={() => {
                     onClick('displayBasic2');
-
-                    loadNbreGroup(decrypt().token, anne_univ, data.nom, decrypt().data.mention, data);
+                    diviserNbGroupe(data.count);
+                    setclasse({nom:data.nom,nbre:data.count})
+                    // loadNbreGroup(decrypt().token, anne_univ, data.nom, decrypt().data.mention,);
                 }}
             />
 
         );
     }
 
-    const loadNbreGroup = (token, anne_univ, nomclasse, mention_nom, data) => {
-        axios.get(props.url + `getGrouptamby/${anne_univ}/${nomclasse}/${mention_nom}`, {
+    const loadNbreGroup = (token, anne_univ, mention_nom) => {
+        setinfoGroup({
+            ...infoGroup,
+            diviser_td: 0,
+            diviser_tp: 0,
+        });
+        axios.get(props.url + `getGrouptamby/${anne_univ}/${decrypt().data.grad_id}/${mention_nom}`, {
             headers: {
                 'Content-Type': 'text/html',
                 'X-API-KEY': 'tamby',
@@ -248,11 +270,13 @@ export default function Parametre(props) {
                     }
                     if (result.data != "") {
                         setinfoGroup({
-                            td: result.data.td, tp: result.data.tp, mention: decrypt().data.mention, niveau: data.nom, anne_univ: anne_univ, nombre: data.count
+                            ...infoGroup,
+                            diviser_td: result.data.diviser_td, diviser_tp: result.data.diviser_tp, mention: decrypt().data.mention, grade: decrypt().data.grad_id, anne_univ: anne_univ
                         });
                     } else {
                         setinfoGroup({
-                            td: '0', tp: '0', mention: decrypt().data.mention, niveau: data.nom, anne_univ: anne_univ, nombre: data.count
+                            ...infoGroup,
+                            diviser_td: '0', diviser_tp: '0', mention: decrypt().data.mention, grade: decrypt().data.grad_id, anne_univ: anne_univ
                         });
                     }
                 }
@@ -264,40 +288,57 @@ export default function Parametre(props) {
             })
     }
     const onSaveGroupe = async () => {
-        // console.log(etat)
-        setCharge(true);
-        try {
-            await axios.post(props.url + 'postGroupeTamby', infoGroup, {
-                headers: {
-                    "Content-Type": "application/json; charset=utf-8",
-                    "X-API-KEY": "tamby",
-                    'Authorization': decrypt().token
-                },
-            })
-                .then(res => {
-                    if (res.data.message == 'Token Time Expire.') {
-                        notificationAction('warn', 'Votre token est expiré !', 'Délais de token 4 heures !')
-                        setTimeout(() => {
-                            logout();
-                        }, 3000)
-                    }
-                    //message avy @back
-                    notificationAction(res.data.etat, res.data.situation, res.data.message);
-                    setCharge(false);
-                    setTimeout(() => {
-                        onHide('displayBasic2');
-                    }, 500)
+        if (infoGroup.anne_univ === '') {
+            alert("Veulliez choisir l'anné universitaire ! ")
+        } else {
+            setCharge(true);
+            try {
+                await axios.post(props.url + 'postGroupeTamby', infoGroup, {
+                    headers: {
+                        "Content-Type": "application/json; charset=utf-8",
+                        "X-API-KEY": "tamby",
+                        'Authorization': decrypt().token
+                    },
                 })
-                .catch(err => {
-                    notificationAction('error', 'Erreur', err.data.message);//message avy @back
-                    console.log(err);
-                    setCharge(false);
-                });
-        } catch (error) {
-            notificationAction('error', 'Erreur', error.message);//message avy @back
+                    .then(res => {
+                        if (res.data.message == 'Token Time Expire.') {
+                            notificationAction('warn', 'Votre token est expiré !', 'Délais de token 4 heures !')
+                            setTimeout(() => {
+                                logout();
+                            }, 3000)
+                        }
+                        //message avy @back
+                        notificationAction(res.data.etat, res.data.situation, res.data.message);
+                        setCharge(false);
+                        setTimeout(() => {
+                            onHide('displayBasic2');
+                        }, 500)
+                    })
+                    .catch(err => {
+                        notificationAction('error', 'Erreur', err.data.message);//message avy @back
+                        console.log(err);
+                        setCharge(false);
+                    });
+            } catch (error) {
+                notificationAction('error', 'Erreur', error.message);//message avy @back
+            }
         }
 
     }
+
+    function getResult(num, denom) {
+        const result = num / denom;
+        if (result % 1 !== 0) {
+          return Math.ceil(result);
+        }
+        return result;
+      }
+
+    function diviserNbGroupe( nbreEtud) {
+       setinfoGroup({...infoGroup,td:getResult(nbreEtud,infoGroup.diviser_td),tp:getResult(nbreEtud,infoGroup.diviser_tp)})
+    }
+
+
     return (
         <>
             <Toast ref={toastTR} position="top-right" />
@@ -305,25 +346,25 @@ export default function Parametre(props) {
             <Dialog header={renderHeader('displayBasic2')} visible={displayBasic2} className="lg:col-3 md:col-5 col-8 p-0" onHide={() => onHide('displayBasic2')}>
                 <div className="p-1  style-modal-tamby">
                     <div className='flex flex-column'>
-                        <h3 className='m-1'>Classe : {infoGroup.niveau}</h3>
-                        <h3 className='m-1'>Nombre des étudiants : {infoGroup.nombre}</h3>
+                        <h3 className='m-1'>Classe : {classe.nom}</h3>
+                        <h3 className='m-1'>Nombre des étudiants : {classe.nbre}</h3>
                     </div>
 
                     <div className='flex flex-column'>
                         <div className='grid px-4'>
                             <div className="lg:col-6 col-12 field my-0 flex flex-column">
                                 <label htmlFor="username2" className="label-input-sm">Nombre de groupe TD</label>
-                                <InputNumber id="username2" value={infoGroup.td} aria-describedby="username2-help" name='td' onValueChange={(e) => { setinfoGroup({ ...infoGroup, td: e.target.value }) }} />
+                                <InputText id="username2" value={infoGroup.td} aria-describedby="username2-help" name='td' readOnly />
                             </div>
                             <div className="lg:col-6 col-12 field my-0 flex flex-column">
                                 <label htmlFor="username2" className="label-input-sm">Nombre de groupe TP</label>
-                                <InputNumber id="username2" value={infoGroup.tp} aria-describedby="username2-help" className="form-input-css-tamby" name='tp' onValueChange={(e) => { setinfoGroup({ ...infoGroup, tp: e.target.value }) }} />
+                                <InputText id="username2" value={infoGroup.tp} aria-describedby="username2-help" className="form-input-css-tamby" name='tp' readOnly />
                             </div>
                         </div>
-                        <center>
+                        {/* <center>
                             <Button icon={PrimeIcons.SAVE} className='p-buttom-sm p-1 ml-4' label='Enregistrer' tooltipOptions={{ position: 'top' }}
                                 onClick={() => { onSaveGroupe() }} />
-                        </center>
+                        </center> */}
                     </div>
                 </div>
             </Dialog>

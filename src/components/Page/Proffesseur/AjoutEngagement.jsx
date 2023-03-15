@@ -16,7 +16,7 @@ import CryptoJS from 'crypto-js';
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
 import Insertion from './Insertion';
-
+import moment from 'moment/moment';
 export default function AjoutEngagement(props) {
 
     const { logout, isAuthenticated, secret } = useAuth();
@@ -147,8 +147,8 @@ export default function AjoutEngagement(props) {
             {
                 data.date_engamnt1 == null || data.date_engamnt1 == '0' ? '' :
                     data.date_engamnt2 == null || data.date_engamnt2 == '0' ?
-                        data.date_engamnt1 :
-                        data.date_engamnt1 + ' jusqu\'au ' + data.date_engamnt2
+                       moment(data.date_engamnt1).format('DD/MM/YYYY') :
+                        moment(data.date_engamnt1).format('DD/MM/YYYY') + ' jusqu\'au ' + moment(data.date_engamnt2).format('DD/MM/YYYY')
             }
         </div>
     )
