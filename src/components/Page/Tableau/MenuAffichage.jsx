@@ -6,8 +6,6 @@ import TableauB from './TableauB';
 export default function MenuAffichage(props) {
   const [activeIndex, setActiveIndex] = useState(0);
 
-
-  
   return (
     <div className="tabview-demo">
       <div className="card">
@@ -18,9 +16,9 @@ export default function MenuAffichage(props) {
           <TabPanel header="TABLEAU A">
             <TableauA url={props.url}  activeIndex={activeIndex} setActiveIndex={setActiveIndex} />
           </TabPanel>
-          <TabPanel header="TABLEAU B">
+          {/* <TabPanel header="TABLEAU B">
             <TableauB url={props.url}  activeIndex={activeIndex} setActiveIndex={setActiveIndex} />
-          </TabPanel>
+          </TabPanel> */}
         </TabView>
       </div>
     </div>

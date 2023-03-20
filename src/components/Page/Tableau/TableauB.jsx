@@ -282,7 +282,7 @@ export default function TableauB(props) {
         <label className='pl-5' style={{ fontSize: '1.1em' }} >
           NOM : {props.prof.nomprof} <br />
           Prénom : <br />
-          Grade : {data.total.prof_titre}
+          Grade : {data.total.prof_grade}
         </label>
       </div>
 

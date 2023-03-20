@@ -26,6 +26,7 @@ export default function TableauA(props) {
     return { data, token };
   }
 
+  const [affficheB, setaffficheB] = useState(false);
   const [changeTableau, setchangeTableau] = useState('A');
   const [prof, setprof] = useState({ idprof: '', nomprof: '' });
 
@@ -218,6 +219,7 @@ export default function TableauA(props) {
             }
             if (result.data.total.parc_libelle != '') {
               setdata(result.data);
+              setaffficheB(true);
             }
             setchargementDD(false);
           }
@@ -289,177 +291,181 @@ export default function TableauA(props) {
       groupe_td: getResult(nbreEtud, div_td), groupe_tp: getResult(nbreEtud, div_tp)
     });
   }
-    return (
-      <div className='content'>
-        <Toast ref={toastTR} position="top-right" />
-        <div className='flex lg:flex-row lg:col-6 md:col-7 md:flex-row sm:flex-row flex-column'>
-          <div className="lgcol-8 md:col-5   md:flex-column  sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
-            <h4 htmlFor="username2" className="m-1">Anne univ :</h4>
-            <Dropdown value={anne_univ} options={selectanne} onChange={onTypesChange} name="etat" />
-          </div>
+  return (
+    <div className='content'>
+      <Toast ref={toastTR} position="top-right" />
+      <div className='flex lg:flex-row lg:col-6 md:col-7 md:flex-row sm:flex-row flex-column'>
+        <div className="lgcol-8 md:col-5   md:flex-column  sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
+          <h4 htmlFor="username2" className="m-1">Anne univ :</h4>
+          <Dropdown value={anne_univ} options={selectanne} onChange={onTypesChange} name="etat" />
+        </div>
 
-          <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
-            <div className='m-1 flex flex-row align-items-center '>
-              <InputText id="username2" style={{ height: '25px' }} aria-describedby="username2-help" name='code_cli' value={prof.nomprof} readOnly />
-              <ListeProf url={props.url} setprof={setprof} />
-            </div>
-          </div>
-          <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
-            <Button icon={PrimeIcons.EYE} className='p-button-sm p-button-success ml-3 ' label={'Tableau A'}
-              onClick={() => {
-                setchangeTableau('A');
-                loadAfficheTableau();
-              }}
-            />
+        <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
+          <div className='m-1 flex flex-row align-items-center '>
+            <InputText id="username2" style={{ height: '25px' }} aria-describedby="username2-help" name='code_cli' value={prof.nomprof} readOnly />
+            <ListeProf url={props.url} setprof={setprof} />
           </div>
         </div>
-        <hr />
-        <center className=' mb-2'>
-          <ReactToPrint trigger={() =>
-            <Button icon={PrimeIcons.PRINT} className='p-button-sm p-button-primary ml-3 ' label={'Imprimer'} />
-          } content={() => document.getElementById("imprimable")} />
-          <Button icon={PrimeIcons.EYE} className='p-button-sm p-button-success ml-3 ' label={'Tableau B'}
+        <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
+          <Button icon={PrimeIcons.EYE} className='p-button-sm p-button-success ml-3 ' label={'Tableau A'}
+            onClick={() => {
+              setchangeTableau('A');
+              loadAfficheTableau();
+            }}
+          />
+        </div>
+      </div>
+      <hr />
+      <center className=' mb-2'>
+        <ReactToPrint trigger={() =>
+          <Button icon={PrimeIcons.PRINT} className='p-button-sm p-button-primary ml-3 ' label={'Imprimer'} />
+        } content={() => document.getElementById("imprimable")} />
+        {affficheB ?
+          <Button icon={PrimeIcons.EYE} className='p-button-sm p-button-success ml-3 p-1' label={'Tableau B'}
             onClick={() => {
               setchangeTableau('B')
             }}
           />
-        </center>
-        <div className='col-12' style={{ border: '1px solid grey' }}>
+          :
+          null
+        }
+      </center>
+      <div className='col-12' style={{ border: '1px solid grey' }}>
 
-          <BlockUI blocked={chargementDD} template={<ProgressSpinner />}>
-            {changeTableau === 'A' ?
+        <BlockUI blocked={chargementDD} template={<ProgressSpinner />}>
+          {changeTableau === 'A' ?
 
-              <div className='grid h-full ' id='imprimable'  >
-                <div className="lg:col-6 md:col-6  md:flex-column   sm:col-6 col-6 sm:flex-column field my-0 flex lg:flex-coluln flex-column " style={{ alignItems: 'center' }}>
-                  <div className='flex flex-column '>
-                    <center>
-                      <label className='m-1' style={{ fontSize: '1.1em' }} >
-                        MINISTRE DE L'ENSEIGNEMENT SUPERIEUR ET DE LA <br />
-                        RECHERCHE SCIENTIFIQUE <br />
-                        UNIVERSITE DE FIANARANTSOA <br />
-                        Etablissement : EMIT
-                      </label>
-                    </center>
-                  </div>
-                </div>
-
-                <div className="lg:col-6 md:col-6  md:flex-column   sm:col-6 col-6 sm:flex-column field my-0 flex lg:flex-row flex-column " style={{ alignItems: 'center' }}>
-                  <div className='flex flex-row justify-content-between '>
-                    <label style={{ fontSize: '1.1em' }}>
-                      Permanent <br />
-                      N° matricule
+            <div className='grid h-full ' id='imprimable'  >
+              <div className="lg:col-6 md:col-6  md:flex-column   sm:col-6 col-6 sm:flex-column field my-0 flex lg:flex-coluln flex-column " style={{ alignItems: 'center' }}>
+                <div className='flex flex-column '>
+                  <center>
+                    <label className='m-1' style={{ fontSize: '1.1em' }} >
+                      MINISTRE DE L'ENSEIGNEMENT SUPERIEUR ET DE LA <br />
+                      RECHERCHE SCIENTIFIQUE <br />
+                      UNIVERSITE DE FIANARANTSOA <br />
+                      Etablissement : EMIT
                     </label>
-                    <div className='flex flex-column ml-5' >
-                      <label style={{ fontSize: '1.1em', border: '1px solid grey' }} className='pl-3 pr-3' >{data.total.prof_type}</label>
-                    </div>
-                  </div>
+                  </center>
                 </div>
-                <div className="col-12 sm:flex-column field my-0 flex lg:flex-row flex-column " style={{ justifyContent: 'center', textAlign: 'center' }} >
-                  <label className='m-1' style={{ fontSize: '1.1em' }} >
-                    FICHE INDIVIDUELLE DE DECLARATION DES ENSEIGNEMENTS<br />
-                    Voyage d'études ; stages ; mini-projet ; mémoire et Thèses ou obligations <br />
-                    Année Univesitaire : {anne_univ} <br />
-                    Mention :  {data.total.parc_libelle}
+              </div>
+
+              <div className="lg:col-6 md:col-6  md:flex-column   sm:col-6 col-6 sm:flex-column field my-0 flex lg:flex-row flex-column " style={{ alignItems: 'center' }}>
+                <div className='flex flex-row justify-content-between '>
+                  <label style={{ fontSize: '1.1em' }}>
+                    Permanent <br />
+                    N° matricule
                   </label>
-                </div>
-                <div className="col-12 sm:flex-column field my-0 flex lg:flex-row flex-column " >
-                  <label className='m-1 pl-5' style={{ fontSize: '1.1em' }} >
-                    NOM : {prof.nomprof} <br />
-                    Prénom : <br />
-                    Grade : {data.total.prof_titre}
-                  </label>
-                </div>
-                <div className="col-12 flex-column " style={{ alignItems: 'center' }}>
-                  <table style={{ borderCollapse: 'collapse', width: '85.4857%', height: '130.653px' }} border="1">
-
-                    <tbody>
-                      <tr style={{ height: '19.5833px' }}>
-                        <td style={{ height: '19.5833px' }}>P&eacute;riode</td>
-                        <td style={{ height: '19.5833px' }}>Fili&egrave;re</td>
-                        <td style={{ height: '39.1666px', textAlign: 'center' }} rowspan="2">Mati&egrave;res</td>
-                        <td style={{ height: '19.5833px' }}>Type</td>
-                        <td style={{ height: '19.5833px' }}>Horaire</td>
-                        <td style={{ height: '19.5833px' }}>Volume</td>
-                        <td style={{ height: '19.5833px' }} colspan="3">Nombre Groupes</td>
-                        <td style={{ height: '19.5833px' }} colspan="3">Heures effectu&eacute;s</td>
-                      </tr>
-                      <tr style={{ height: '19.5833px' }}>
-                        <td style={{ height: '19.5833px' }}>s&eacute;ances</td>
-                        <td style={{ height: '19.5833px' }}>Niveau</td>
-                        <td style={{ height: '19.5833px' }}>(ET, ED , EP)</td>
-                        <td style={{ height: '19.5833px' }}>(jour/heure)</td>
-                        <td style={{ height: '19.5833px' }}>en HA</td>
-                        <td style={{ height: '19.5833px' }}>ET <label style={{ visibility: 'hidden' }}>(1)</label></td>
-                        <td style={{ height: '19.5833px' }}>ED</td>
-                        <td style={{ height: '19.5833px' }}>EP</td>
-                        <td style={{ height: '19.5833px' }}>ET</td>
-                        <td style={{ height: '19.5833px' }}>ED</td>
-                        <td style={{ height: '19.5833px' }}>EP</td>
-                      </tr>
-                      {data.detail.map((detail, index) => (
-                        <tr key={index} style={{ height: '22.1528px' }}>
-                          <td style={{ height: '22.1528px' }}>&nbsp;</td>
-                          <td style={{ height: '22.1528px' }}>{detail.abbr_niveau}</td>
-                          <td style={{ height: '22.1528px' }}>{detail.mat_libelle}</td>
-                          <td style={{ height: '22.1528px' }}>ET,&nbsp; ED({getResult(detail.nbgroup.count, data.group_tamby.diviser_td)}),&nbsp; EP({getResult(detail.nbgroup.count, data.group_tamby.diviser_tp)})</td>
-                          <td style={{ height: '22.1528px' }}>&nbsp;</td>
-                          <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.vheure}</td>
-                          <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.base_et}</td>
-                          <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.base_ed}</td>
-                          <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.base_ep}</td>
-                          <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.total_et}</td>
-                          <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.total_ed}</td>
-                          <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.total_ep}</td>
-                        </tr>
-                      ))}
-
-                      <tr style={{ height: '19.5833px' }}>
-                        <td style={{ height: '49.75px', borderLeft: '1px solid white', borderBottom: '1px solid white' }} colspan="4" rowspan="2">&nbsp;</td>
-                        <td style={{ height: '19.5833px' }}>Total</td>
-                        <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{data.total.tvheure}</strong></td>
-                        <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{data.total.tbase_et}</strong></td>
-                        <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{data.total.tbase_ed}</strong></td>
-                        <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{data.total.tbase_ep}</strong></td>
-                        <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{data.total.ttotal_et}</strong></td>
-                        <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{data.total.ttotal_ed}</strong></td>
-                        <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{data.total.ttotal_ep}</strong></td>
-                      </tr>
-
-                      <tr style={{ height: '20px' }}>
-                        <td style={{ height: '20px' }}>Heures &agrave; declarer</td>
-                        <td style={{ height: '20px', textAlign: 'right' }}><strong>{data.total.heuredeclare}</strong></td>
-                        <td style={{ height: '20px' }}>&nbsp;</td>
-                        <td style={{ height: '20px' }}>&nbsp;</td>
-                        <td style={{ height: '20px' }}>&nbsp;</td>
-                        <td style={{ height: '20px', textAlign: 'right' }}><strong>{data.total.ttotal_et}</strong></td>
-                        <td style={{ height: '20px', textAlign: 'right' }}><strong>{data.total.ttotal_ed}</strong></td>
-                        <td style={{ height: '20px', textAlign: 'right' }}><strong>{data.total.ttotal_ep}</strong></td>
-                      </tr>
-
-                    </tbody>
-                  </table>
-                </div>
-                <div className='col-12  flex flex-column'>
-                  <div className='col-12 pl-5 flex flex-column'>
-                    <label style={{ fontSize: '1.1em' }}>
-                      Arrêté la présente de déclaration à : {manisyLettre(data.total.heuredeclare)} heures ({data.total.heuredeclare + 'h'}) d'enseignement effectuées dont : {manisyLettre(data.total.ttotal_et)} heures ({data.total.ttotal_et + 'h'}) d'ET
-                      ,{manisyLettre(data.total.ttotal_ed)}
-                      <br /> heures ({data.total.ttotal_ed + 'h'})
-                      d'ED et {manisyLettre(data.total.ttotal_ep)} heures ({data.total.ttotal_ep + 'h'}) d'EP.
-                    </label>
-                  </div>
-                  <div className='col-12 pl-5 flex flex-column'>
-                    <center style={{ fontSize: '1.1em' }}>Fait a Fianarantsoa le,</center>
-                  </div>
-                  <div className='flex pl-5 flex-row justify-content-between'>
-                    <label style={{ fontSize: '1.1em' }}>Le Responsable de Mention</label>
+                  <div className='flex flex-column ml-5' >
+                    <label style={{ fontSize: '1.1em', border: '1px solid grey' }} className='pl-3 pr-3' >{data.total.prof_type}</label>
                   </div>
                 </div>
               </div>
-              : <><TableauB setchargementDD={setchargementDD} anne_univ={anne_univ} prof={prof} changeTableau={changeTableau} url={props.url} /> </>
-            }
-          </BlockUI>
-        </div>
-      </div >
-    )
-  }
+              <div className="col-12 sm:flex-column field my-0 flex lg:flex-row flex-column " style={{ justifyContent: 'center', textAlign: 'center' }} >
+                <label className='m-1' style={{ fontSize: '1.1em' }} >
+                  FICHE INDIVIDUELLE DE DECLARATION DES ENSEIGNEMENTS<br />
+                  Voyage d'études ; stages ; mini-projet ; mémoire et Thèses ou obligations <br />
+                  Année Univesitaire : {anne_univ} <br />
+                  Mention :  {data.total.parc_libelle}
+                </label>
+              </div>
+              <div className="col-12 sm:flex-column field my-0 flex lg:flex-row flex-column " >
+                <label className='m-1 pl-5' style={{ fontSize: '1.1em' }} >
+                  NOM : {prof.nomprof} <br />
+                  Prénom : <br />
+                  Grade : {data.total.prof_grade}
+                </label>
+              </div>
+              <div className="col-12 flex-column " style={{ alignItems: 'center' }}>
+                <table style={{ borderCollapse: 'collapse', width: '85.4857%', height: '130.653px' }} border="1">
+
+                  <tbody>
+                    <tr style={{ height: '19.5833px' }}>
+                      <td style={{ height: '19.5833px' }}>P&eacute;riode</td>
+                      <td style={{ height: '19.5833px' }}>Fili&egrave;re</td>
+                      <td style={{ height: '39.1666px', textAlign: 'center' }} rowspan="2">Mati&egrave;res</td>
+                      <td style={{ height: '19.5833px' }}>Type</td>
+                      <td style={{ height: '19.5833px' }}>Horaire</td>
+                      <td style={{ height: '19.5833px' }}>Volume</td>
+                      <td style={{ height: '19.5833px' }} colspan="3">Nombre Groupes</td>
+                      <td style={{ height: '19.5833px' }} colspan="3">Heures effectu&eacute;s</td>
+                    </tr>
+                    <tr style={{ height: '19.5833px' }}>
+                      <td style={{ height: '19.5833px' }}>s&eacute;ances</td>
+                      <td style={{ height: '19.5833px' }}>Niveau</td>
+                      <td style={{ height: '19.5833px' }}>(ET, ED , EP)</td>
+                      <td style={{ height: '19.5833px' }}>(jour/heure)</td>
+                      <td style={{ height: '19.5833px' }}>en HA</td>
+                      <td style={{ height: '19.5833px' }}>ET <label style={{ visibility: 'hidden' }}>(1)</label></td>
+                      <td style={{ height: '19.5833px' }}>ED</td>
+                      <td style={{ height: '19.5833px' }}>EP</td>
+                      <td style={{ height: '19.5833px' }}>ET</td>
+                      <td style={{ height: '19.5833px' }}>ED</td>
+                      <td style={{ height: '19.5833px' }}>EP</td>
+                    </tr>
+                    {data.detail.map((detail, index) => (
+                      <tr key={index} style={{ height: '22.1528px' }}>
+                        <td style={{ height: '22.1528px' }}>&nbsp;</td>
+                        <td style={{ height: '22.1528px' }}>{detail.abbr_niveau}</td>
+                        <td style={{ height: '22.1528px' }}>{detail.mat_libelle}</td>
+                        <td style={{ height: '22.1528px' }}>ET,&nbsp; ED({getResult(detail.nbgroup.count, data.group_tamby.diviser_td)}),&nbsp; EP({getResult(detail.nbgroup.count, data.group_tamby.diviser_tp)})</td>
+                        <td style={{ height: '22.1528px' }}>&nbsp;</td>
+                        <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.vheure}</td>
+                        <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.base_et}</td>
+                        <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.base_ed}</td>
+                        <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.base_ep}</td>
+                        <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.total_et}</td>
+                        <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.total_ed}</td>
+                        <td style={{ height: '22.1528px', textAlign: 'right' }}>{detail.total_ep}</td>
+                      </tr>
+                    ))}
+
+                    <tr style={{ height: '19.5833px' }}>
+                      <td style={{ height: '49.75px', borderLeft: '1px solid white', borderBottom: '1px solid white' }} colspan="4" rowspan="2">&nbsp;</td>
+                      <td style={{ height: '19.5833px' }}>Total</td>
+                      <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{data.total.tvheure}</strong></td>
+                      <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{data.total.tbase_et}</strong></td>
+                      <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{data.total.tbase_ed}</strong></td>
+                      <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{data.total.tbase_ep}</strong></td>
+                      <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{data.total.ttotal_et}</strong></td>
+                      <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{data.total.ttotal_ed}</strong></td>
+                      <td style={{ height: '19.5833px', textAlign: 'right' }}><strong>{data.total.ttotal_ep}</strong></td>
+                    </tr>
+
+                    <tr style={{ height: '20px' }}>
+                      <td style={{ height: '20px' }}>Heures &agrave; declarer</td>
+                      <td style={{ height: '20px', textAlign: 'right' }}><strong>{data.total.heuredeclare}</strong></td>
+                      <td style={{ height: '20px' }}>&nbsp;</td>
+                      <td style={{ height: '20px' }}>&nbsp;</td>
+                      <td style={{ height: '20px' }}>&nbsp;</td>
+                      <td style={{ height: '20px', textAlign: 'right' }}><strong>{data.total.ttotal_et}</strong></td>
+                      <td style={{ height: '20px', textAlign: 'right' }}><strong>{data.total.ttotal_ed}</strong></td>
+                      <td style={{ height: '20px', textAlign: 'right' }}><strong>{data.total.ttotal_ep}</strong></td>
+                    </tr>
+
+                  </tbody>
+                </table>
+              </div>
+              <div className='col-12  flex flex-column'>
+                <div className='col-12 pl-5 flex flex-column'>
+                  <label style={{ fontSize: '1.1em' }}>
+                    Arrêté la présente de déclaration à : {manisyLettre(data.total.heuredeclare)} heures ({data.total.heuredeclare + 'h'}) d'enseignement effectuées dont : {manisyLettre(data.total.ttotal_et)} heures ({data.total.ttotal_et + 'h'}) d'ET
+                    ,{manisyLettre(data.total.ttotal_ed)}
+                    <br /> heures ({data.total.ttotal_ed + 'h'})
+                    d'ED et {manisyLettre(data.total.ttotal_ep)} heures ({data.total.ttotal_ep + 'h'}) d'EP.
+                  </label>
+                </div>
+                <div className='col-12 pl-5 flex flex-column'>
+                  <center style={{ fontSize: '1.1em' }}>Fait a Fianarantsoa le,</center>
+                </div>
+                <div className='flex pl-5 flex-row justify-content-between'>
+                  <label style={{ fontSize: '1.1em' }}>Le Responsable de Mention</label>
+                </div>
+              </div>
+            </div>
+            : <><TableauB setchargementDD={setchargementDD} anne_univ={anne_univ} prof={prof} changeTableau={changeTableau} url={props.url} /> </>
+          }
+        </BlockUI>
+      </div>
+    </div >
+  )
+}
