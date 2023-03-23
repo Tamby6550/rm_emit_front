@@ -57,7 +57,8 @@ export default function Insertion(props) {
         date_engamnt1: '0',
         date_engamnt2: '0',
         annee_univ: '0',
-        grad_id: '0'
+        grad_id: '0',
+        mention:''
     });
     const onVideInfo = () => {
         setanne_univ('0000-0000');
@@ -69,7 +70,8 @@ export default function Insertion(props) {
             date_engamnt1: '0',
             date_engamnt2: '0',
             annee_univ: '0',
-            grad_id: '0'
+            grad_id: '0',
+            mention:''
         });
     }
 
@@ -215,7 +217,7 @@ export default function Insertion(props) {
             <Button icon={PrimeIcons.PLUS} className='p-buttom-sm p-1 ' label='Nouveau' style={stylebtnRec} tooltip='Ajout engagement' tooltipOptions={{ position: 'top' }}
                 onClick={() => {
                     onClick('displayBasic2');
-                    setinfoEngagement({ ...infoEngagement, prof_id: props.prof_id, grad_id: decrypt().data.grad_id })
+                    setinfoEngagement({ ...infoEngagement, prof_id: props.prof_id, grad_id: decrypt().data.grad_id,mention:decrypt().data.mention })
                     setTimeout(() => {
                         anne_univDt();
                     }, 200);

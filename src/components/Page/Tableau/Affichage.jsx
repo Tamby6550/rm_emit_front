@@ -193,6 +193,7 @@ export default function Affichage(props) {
                         }, 3000)
                     }
                     setdata(result.data);
+                    console.log(result.data)
 
                     //Affiche titre tableau d'affichage
                     loadTitreTableau(decrypt().data.rm_id, decrypt().data.mention, niveau, decrypt().data.grad_id, anne_univ);

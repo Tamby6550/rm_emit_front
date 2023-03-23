@@ -212,11 +212,12 @@ export default function AjoutDetails(props) {
                             props.logout();
                         }, 3000)
                     }
-                    if (result.data != "") {
+                    // if (result.data != "") {
 
-                        diviserNbGroupe(props.nbreClasse.nmbre_classe, resultss.data.diviser_td, resultss.data.diviser_tp, result)
+                        diviserNbGroupe(props.nbreClasse.nmbre_classe, resultss.data.diviser_td, resultss.data.diviser_tp, result);
+                       
 
-                    }
+                    // }
                     setchargeDnn(false);
                 }
             ).catch((e) => {
@@ -240,7 +241,7 @@ export default function AjoutDetails(props) {
         setinfoDetails({
             ...infoDetails,
             vheure: props.data.vheure, credit: props.data.credit,
-            anne_univ: props.anne_univ, group_et: resultat.data.group_et, mati_id: props.data.mati_id,
+            anne_univ: props.anne_univ,  mati_id: props.data.mati_id,
             base_ed: resultat.data.base_ed, base_et: resultat.data.base_et, base_ep: resultat.data.base_ep,
             group_ed: getResult(nbreEtud, div_td), group_ep: getResult(nbreEtud, div_tp) 
         });
