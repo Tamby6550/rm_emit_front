@@ -48,6 +48,16 @@ export default function TableauFinale(props) {
             voyages: ""
         }]
     );
+
+    const [totals, setTotals] = useState({
+        ttotal_et: 0,
+        ttotal_ed: 0,
+        ttotal_ep: 0,
+        encadrement: 0,
+        soutenance: 0,
+        voyages: 0
+    });
+
     const onTypesChange = (e) => {
         setanne_univ(e.value);
     }
@@ -106,6 +116,7 @@ export default function TableauFinale(props) {
                         }
                         if (result.data != '') {
                             setdata(result.data);
+                            updateTotals(result.data);
                             console.log(result.data)
                         }
                         setchargementDD(false);
@@ -127,6 +138,13 @@ export default function TableauFinale(props) {
 
 
 
+    function getMontant(totaled, taux) {
+        let parTotaled = parseFloat(totaled);
+        let parTaux = parseFloat(taux);
+        let somme = parTotaled * parTaux;
+
+        return somme;
+    }
     function getTotalED(et, ed, ep, enc, sout, voya) {
         let parseEt = parseFloat(et);
         let parseEd = parseFloat(ed);
@@ -158,10 +176,51 @@ export default function TableauFinale(props) {
         let etConv = (parseEt * 5) / 3;
         let epConv = parseEp / 2;
 
-        let result = etConv + epConv + parseEd + parseenc+parsesout+parsevoya ;
+        let result = etConv + epConv + parseEd + parseenc + parsesout + parsevoya;
         return result;
     }
 
+    function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + ".00";
+    }
+
+    const updateTotals = (data) => {
+        // calculer les totaux
+        const newTotals = data.reduce((acc, curr) => {
+            acc.ttotal_et += parseInt(curr.ttotal_et);
+            acc.ttotal_ed += parseInt(curr.ttotal_ed);
+            acc.ttotal_ep += parseInt(curr.ttotal_ep);
+            acc.encadrement += parseInt(curr.encadrement) || 0;
+            acc.soutenance += parseInt(curr.soutenance) || 0;
+            acc.voyages += parseInt(curr.voyages) || 0;
+            return acc;
+        }, {
+            ttotal_et: 0,
+            ttotal_ed: 0,
+            ttotal_ep: 0,
+            encadrement: 0,
+            soutenance: 0,
+            voyages: 0
+        });
+
+        // mettre à jour les totaux
+        setTotals(newTotals);
+    };
+
+
+    function valeurGarde(prof_grad) {
+        let valeur=0;
+        if (prof_grad=='Pr') {
+            valeur=12000;
+        }
+        else if (prof_grad=='Dr') {
+            valeur=8000;
+        }
+        else{
+            valeur=6000;
+        }
+        return valeur;
+    }
 
     return (
         <div className='content'>
@@ -227,13 +286,27 @@ export default function TableauFinale(props) {
                                             <td style={{ height: '19.5938px' }}>{dt.encadrement === null ? '0.00' : parseFloat(dt.encadrement).toFixed(2)}</td>
                                             <td style={{ height: '19.5938px' }}>{dt.soutenance === null ? '0.00' : parseFloat(dt.soutenance).toFixed(2)}</td>
                                             <td style={{ height: '19.5938px' }}>{dt.voyages === null ? '0.00' : parseFloat(dt.voyages).toFixed(2)}</td>
-                                            <td style={{ height: '19.5938px' }}>{getTotalED(dt.ttotal_et, dt.ttotal_ed, dt.ttotal_ep,dt.encadrement,dt.soutenance,dt.voyages).toFixed(2)}</td>
-                                            <td style={{ height: '19.5938px' }}>1200.00</td>
-                                            <td style={{ height: '19.5938px' }}>null</td>
-                                            <td style={{ height: '19.5938px' }}>null</td>
-                                            <td style={{ height: '19.5938px' }}>null</td>
+                                            <td style={{ height: '19.5938px' }}>{getTotalED(dt.ttotal_et, dt.ttotal_ed, dt.ttotal_ep, dt.encadrement, dt.soutenance, dt.voyages).toFixed(2)}</td>
+                                            <td style={{ height: '19.5938px' }}>{valeurGarde(dt.prof_grade)}</td>
+                                            <td style={{ height: '19.5938px' }}>{formatNumber(getMontant(getTotalED(dt.ttotal_et, dt.ttotal_ed, dt.ttotal_ep, dt.encadrement, dt.soutenance, dt.voyages), valeurGarde(dt.prof_grade)))}</td>
+                                            <td style={{ height: '19.5938px' }}></td>
+                                            <td style={{ height: '19.5938px' }}></td>
                                         </tr>
                                     ))}
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td><strong>{(totals.ttotal_et).toFixed(2)}</strong></td>
+                                        <td><strong>{(totals.ttotal_ed).toFixed(2)}</strong></td>
+                                        <td><strong>{(totals.ttotal_ep).toFixed(2)}</strong></td>
+                                        <td><strong>{(totals.encadrement).toFixed(2)}</strong></td>
+                                        <td><strong>{(totals.soutenance).toFixed(2)}</strong></td>
+                                        <td><strong>{(totals.voyages).toFixed(2)}</strong></td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
                                 </tbody>
                             </table>
 

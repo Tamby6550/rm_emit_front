@@ -16,7 +16,7 @@ export default function MenuAffichage(props) {
           <TabPanel header="TABLEAU A">
             <TableauA url={props.url} urlip={props.urlip} activeIndex={activeIndex} setActiveIndex={setActiveIndex} />
           </TabPanel>
-          <TabPanel header="TABLEAU FINALE">
+          <TabPanel header="TABLEAU GLOBAL">
             <TableauFinale url={props.url} urlip={props.urlip} activeIndex={activeIndex} setActiveIndex={setActiveIndex} />
           </TabPanel>
         </TabView>
