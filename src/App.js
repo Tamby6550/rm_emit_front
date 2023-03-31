@@ -65,7 +65,6 @@ function App() {
             // //local
             let urls ='http://'+ip+':2000/api/'
             seturl(urls);
-            console.log(urls)
     }
 
     const { pathname } = useLocation();
