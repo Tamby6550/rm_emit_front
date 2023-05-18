@@ -288,7 +288,7 @@ export default function TableauB(props) {
 
       <div className="col-12 flex flex-row justify-content-between">
         <div className='col-8 '>
-          <table style={{ borderCollapse: 'collapse', width: '90.6961%', height: '330.254px' }} border="1">
+          <table style={{ borderCollapse: 'collapse', width: '98.6961%', height: '330.254px' }} border="1">
             <tbody>
               <tr style={{ height: '19.5898px' }}>
                 <td style={{ height: '78.3398px', textAlign: 'left' }} rowspan="3">P&eacute;riode</td>
@@ -351,7 +351,7 @@ export default function TableauB(props) {
           </table>
         </div>
         <div className='col-4 '>
-          <table style={{ borderCollapse: 'collapse', width: '54.6961%', height: '330.254px' }} border="1">
+          <table style={{ borderCollapse: 'collapse', width: '60.6961%', height: '330.254px' }} border="1">
             <tbody>
               <tr style={{ height: '0.5px' }}>
                 <td style={{ height: '38.3906px', textAlign: 'center' }} colspan="4" rowspan="2">RECAPITULATIF</td>
@@ -397,7 +397,7 @@ export default function TableauB(props) {
                 <td style={{ height: '27.5469px' }}>Heures de</td>
                 <td style={{ height: '27.5469px', width: '18%', textAlign: 'right' }}>{(calculEd(data.total.ttotal_et, data.total.total_ed_enga, data.total.ttotal_ep).convet).toFixed(0)} </td>
                 <td style={{ height: '27.5469px', textAlign: 'right' }}>{data.total.total_ed_enga}</td>
-                <td style={{ height: '27.5469px', textAlign: 'right' }}>{(calculEd(data.total.ttotal_et, data.total.total_ed_enga, data.total.ttotal_ep).convep).toFixed(0)}</td>
+                <td style={{ height: '27.5469px', textAlign: 'right',width: '32px' }}>{(calculEd(data.total.ttotal_et, data.total.total_ed_enga, data.total.ttotal_ep).convep).toFixed(0)}</td>
               </tr>
               <tr style={{ height: '29.5469px' }}>
                 <td style={{ textAlign: 'center', height: '29.5469px' }} colspan="4">{(calculEd(data.total.ttotal_et, data.total.total_ed_enga, data.total.ttotal_ep).total).toFixed(0)} heures en ED</td>

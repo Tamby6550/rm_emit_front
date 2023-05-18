@@ -60,13 +60,19 @@ function App() {
     const urlip=()=>{
             let ip = window.location.hostname;
             //Serveur emit
-            // let urls ='http://'+ip+'/backRM/api/';
+            let urls ='http://'+ip+'/backRM/api/';
 
             // //local
-            let urls ='http://'+ip+':2000/api/'
+            // let urls ='http://'+ip+':2000/api/'
             seturl(urls);
     }
 
+    useEffect(() => {
+        setTimeout(() => {
+            decrypt();
+        }, 500)
+        urlip()
+    }, [navigate])
     const { pathname } = useLocation();
     const bred = pathname.slice(1);
     const items = [
@@ -88,12 +94,6 @@ function App() {
     const Home = { icon: 'pi pi-home' }
     
   
-  useEffect(() => {
-    setTimeout(() => {
-        decrypt();
-    }, 500)
-    urlip()
-}, [navigate])
 
 
 
@@ -261,7 +261,7 @@ function App() {
                     </div>
                 </div>
                 <footer className='col-12 tete-logo flex justify-content-center h-2em'>
-                    <small>Copyright Tamby Arimisa (EMIT-ITDC Mada)</small>
+                    <small>Copyright 2023  by RASOLONDRAIBE Tamby Arimisa (EMIT- contact: 034 85 253 21)</small>
                 </footer>
             </div>
         </div>
