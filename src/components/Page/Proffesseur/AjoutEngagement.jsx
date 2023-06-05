@@ -101,7 +101,7 @@ export default function AjoutEngagement(props) {
     const loadData = async () => {
         setcharge(true);
         try {
-            await axios.get(props.url + `getEngagement/${props.prof_id}/${decrypt().data.grad_id}`, {
+            await axios.get(props.url + `getEngagement/${props.prof_id}/${decrypt().data.grad_id}/${decrypt().data.mention}`, {
                 headers: {
                     'Content-Type': 'text/html',
                     'X-API-KEY': 'tamby',
