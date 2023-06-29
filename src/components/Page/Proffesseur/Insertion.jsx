@@ -214,7 +214,7 @@ export default function Insertion(props) {
     return (
         <>
             <Toast ref={toastTR} position="top-right" />
-            <Button icon={PrimeIcons.PLUS} className='p-buttom-sm p-1 ' label='Nouveau' style={stylebtnRec} tooltip='Ajout engagement' tooltipOptions={{ position: 'top' }}
+            <Button icon={PrimeIcons.PENCIL} className='p-buttom-sm p-1 ' label='Modifier' style={stylebtnRec} tooltip='Modification engagement' tooltipOptions={{ position: 'top' }}
                 onClick={() => {
                     onClick('displayBasic2');
                     setinfoEngagement({ ...infoEngagement, prof_id: props.prof_id, grad_id: decrypt().data.grad_id,mention:decrypt().data.mention })

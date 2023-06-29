@@ -168,6 +168,7 @@ export default function Affichage(props) {
                 if (e.message == "Network Error") {
                     props.urlip()
                 }
+                setchargementDD(false);
             })
     }
     const loadAfficheTableau = async () => {
@@ -232,6 +233,7 @@ export default function Affichage(props) {
                 if (e.message == "Network Error") {
                     props.urlip()
                 }
+                setchargementDD(false);
 
             })
     }

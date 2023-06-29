@@ -60,6 +60,27 @@ export default function TableauFinale(props) {
 
     const onTypesChange = (e) => {
         setanne_univ(e.value);
+        setdata([
+            {
+                prof_id: "",
+                nom_prof: "",
+                prof_grade: "",
+                attribution: "",
+                ttotal_et: "",
+                ttotal_ed: "",
+                ttotal_ep: "",
+                encadrement: "",
+                soutenance: "",
+                voyages: ""
+            }]);
+        setTotals({
+            ttotal_et: 0,
+            ttotal_ed: 0,
+            ttotal_ep: 0,
+            encadrement: 0,
+            soutenance: 0,
+            voyages: 0
+        })
     }
 
     const toastTR = useRef(null);
@@ -209,15 +230,15 @@ export default function TableauFinale(props) {
 
 
     function valeurGarde(prof_grad) {
-        let valeur=0;
-        if (prof_grad=='Pr') {
-            valeur=12000;
+        let valeur = 0;
+        if (prof_grad == 'Pr') {
+            valeur = 12000;
         }
-        else if (prof_grad=='Dr') {
-            valeur=8000;
+        else if (prof_grad == 'Dr') {
+            valeur = 8000;
         }
-        else{
-            valeur=6000;
+        else {
+            valeur = 6000;
         }
         return valeur;
     }
