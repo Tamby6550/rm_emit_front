@@ -38,7 +38,6 @@ function App() {
         const decryptedData = CryptoJS.AES.decrypt(virus, secret);
         const dataString = decryptedData.toString(CryptoJS.enc.Utf8);
         const data = JSON.parse(dataString);
-        console.log(data)
         setinfoUti({nom:data.nom,mention:data.grad_nom+' '+data.mention});
         setchmdp({...chmdp,rm_id:data.rm_id});
     }

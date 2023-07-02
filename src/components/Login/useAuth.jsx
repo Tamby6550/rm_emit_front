@@ -21,7 +21,6 @@ const useAuth = () => {
                 navigate('/acceuil');
             }else{
                 navigate(pathname);
-                console.log('firsdsfsdt')
             }
         } else {
             setIsAuthenticated(false);

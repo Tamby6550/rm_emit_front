@@ -29,6 +29,10 @@ export default function Affichage(props) {
     const [niveau, setniveau] = useState('0');
     const [selectniveau, setselectniveau] = useState(null);
 
+    const [parcours_, setparcours_] = useState('0');
+    const [selectparcours_, setselectparcours_] = useState(null);
+
+
     const [chargementDD, setchargementDD] = useState(false);
     const [titreAff, settitreAff] = useState({
         nbreClasse: '',
@@ -81,7 +85,14 @@ export default function Affichage(props) {
     const onTypesChangeNiveau = (e) => {
         setniveau(e.value);
     }
+    const onTypesChangeParcours_ = (e) => {
+        setparcours_(e.value);
+    }
 
+    useEffect(() => {
+      setselectparcours_(decrypt().data.parcours_)
+    }, []);
+    
     const toastTR = useRef(null);
     /*Notification Toast */
     const notificationAction = (etat, titre, message) => {
@@ -114,6 +125,8 @@ export default function Affichage(props) {
             })
     }
 
+    
+
 
     const anne_univDt = async () => {
         await axios.get(props.url + `getAnneUniv`, {
@@ -143,7 +156,7 @@ export default function Affichage(props) {
     }
 
     const loadTitreTableau = async (rm_id, mention_nom, niveau, grad_id, anne_univ) => {
-        await axios.get(props.url + `getTitreTableau/${rm_id}/${mention_nom}/${niveau}/${grad_id}/${anne_univ}`, {
+        await axios.get(props.url + `getTitreTableau/${parcours_}/${rm_id}/${mention_nom}/${niveau}/${grad_id}/${anne_univ}`, {
             headers: {
                 'Content-Type': 'text/html',
                 'X-API-KEY': 'tamby',
@@ -178,7 +191,7 @@ export default function Affichage(props) {
         //     niveau:niveau
         // })
         setchargementDD(true);
-        await axios.get(props.url + `getTableauAffiche/${anne_univ}/${decrypt().data.mention}/${niveau}/${decrypt().data.rm_id}`, {
+        await axios.get(props.url + `getTableauAffiche/${parcours_}/${anne_univ}/${decrypt().data.mention}/${niveau}/${decrypt().data.rm_id}`, {
             headers: {
                 'Content-Type': 'text/html',
                 'X-API-KEY': 'tamby',
@@ -194,7 +207,7 @@ export default function Affichage(props) {
                         }, 3000)
                     }
                     setdata(result.data);
-                    console.log(result.data)
+                    // console.log(result.data)
 
                     //Affiche titre tableau d'affichage
                     loadTitreTableau(decrypt().data.rm_id, decrypt().data.mention, niveau, decrypt().data.grad_id, anne_univ);
@@ -210,7 +223,7 @@ export default function Affichage(props) {
     }
     const loadAfficheTableauSommeEtEdEp = async () => {
 
-        await axios.get(props.url + `getTableauAfficheSommeEtEdEp/${anne_univ}/${decrypt().data.mention}/${niveau}/${decrypt().data.rm_id}`, {
+        await axios.get(props.url + `getTableauAfficheSommeEtEdEpParcours/${parcours_}/${anne_univ}/${decrypt().data.mention}/${niveau}/${decrypt().data.rm_id}`, {
             headers: {
                 'Content-Type': 'text/html',
                 'X-API-KEY': 'tamby',
@@ -293,6 +306,10 @@ export default function Affichage(props) {
                 <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
                     <h4 htmlFor="username2" className="m-1">Niveau  :</h4>
                     <Dropdown value={niveau} options={selectniveau} onChange={onTypesChangeNiveau} name="etat" />
+                </div>
+                <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
+                    <h4 htmlFor="username2" className="m-1">Parcours  :</h4>
+                    <Dropdown value={parcours_} options={selectparcours_} onChange={onTypesChangeParcours_} name="etat" />
                 </div>
                 <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
                     <Button icon={PrimeIcons.LIST} className='p-button-sm p-button-success ml-3 ' label={'Afficher'}

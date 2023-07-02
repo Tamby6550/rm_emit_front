@@ -296,25 +296,25 @@ export default function TableauFinale(props) {
                                         <td style={{ height: '17.1875px' }}><strong>Soutenance</strong></td>
                                         <td style={{ height: '17.1875px' }}><strong>Voyage d'etudes</strong></td>
                                         <td style={{ height: '17.1875px' }}><strong>Total en ED</strong></td>
-                                        <td style={{ height: '17.1875px' }}><strong>TAUX</strong></td>
-                                        <td style={{ height: '17.1875px' }}><strong>Montant</strong></td>
+                                        <td style={{ height: '17.1875px' }}><strong>TAUX (Ar) </strong></td>
+                                        <td style={{ height: '17.1875px' }}><strong>Montant (Ar) </strong></td>
                                         <td style={{ height: '17.1875px' }}><strong>IRSA(10%)</strong></td>
                                         <td style={{ height: '17.1875px' }}><strong>Net a payer(Ar)</strong></td>
                                     </tr>
                                     {data.map((dt, index) => (
                                         <tr style={{ height: '19.5938px' }} key={index} >
                                             <td style={{ height: '19.5938px' }}>{dt.nom_prof}</td>
-                                            <td style={{ height: '19.5938px' }}>{parseFloat(dt.ttotal_et).toFixed(2)}</td>
-                                            <td style={{ height: '19.5938px' }}>{parseFloat(dt.ttotal_ed).toFixed(2)}</td>
-                                            <td style={{ height: '19.5938px' }}>{parseFloat(dt.ttotal_ep).toFixed(2)}</td>
-                                            <td style={{ height: '19.5938px' }}>{dt.encadrement === null ? '0.00' : parseFloat(dt.encadrement).toFixed(2)}</td>
-                                            <td style={{ height: '19.5938px' }}>{dt.soutenance === null ? '0.00' : parseFloat(dt.soutenance).toFixed(2)}</td>
-                                            <td style={{ height: '19.5938px' }}>{dt.voyages === null ? '0.00' : parseFloat(dt.voyages).toFixed(2)}</td>
-                                            <td style={{ height: '19.5938px' }}>{getTotalED(dt.ttotal_et, dt.ttotal_ed, dt.ttotal_ep, dt.encadrement, dt.soutenance, dt.voyages).toFixed(2)}</td>
-                                            <td style={{ height: '19.5938px' }}>{valeurGarde(dt.prof_grade)}</td>
-                                            <td style={{ height: '19.5938px' }}>{formatNumber(getMontant(getTotalED(dt.ttotal_et, dt.ttotal_ed, dt.ttotal_ep, dt.encadrement, dt.soutenance, dt.voyages), valeurGarde(dt.prof_grade)))}</td>
-                                            <td style={{ height: '19.5938px' }}></td>
-                                            <td style={{ height: '19.5938px' }}></td>
+                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}>{parseFloat(dt.ttotal_et).toFixed(2)}</td>
+                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}>{parseFloat(dt.ttotal_ed).toFixed(2)}</td>
+                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}>{parseFloat(dt.ttotal_ep).toFixed(2)}</td>
+                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}>{dt.encadrement === null ? '0.00' : parseFloat(dt.encadrement).toFixed(2)}</td>
+                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}>{dt.soutenance === null ? '0.00' : parseFloat(dt.soutenance).toFixed(2)}</td>
+                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}>{dt.voyages === null ? '0.00' : parseFloat(dt.voyages).toFixed(2)}</td>
+                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}>{getTotalED(dt.ttotal_et, dt.ttotal_ed, dt.ttotal_ep, dt.encadrement, dt.soutenance, dt.voyages).toFixed(2)}</td>
+                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}>{valeurGarde(dt.prof_grade)}</td>
+                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}>{formatNumber(getMontant(getTotalED(dt.ttotal_et, dt.ttotal_ed, dt.ttotal_ep, dt.encadrement, dt.soutenance, dt.voyages).toFixed(2), valeurGarde(dt.prof_grade)))}</td>
+                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}></td>
+                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}></td>
                                         </tr>
                                     ))}
                                     <tr>

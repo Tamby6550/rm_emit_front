@@ -378,7 +378,8 @@ export default function Parametre(props) {
                         setCharge(false);
                         setTimeout(() => {
                             onHide('displayBasic2');
-                        }, 500)
+                            alert("NB: N'oubliez pas de mettre à jour les details des matières \n Dans le menu **élément constitutifs / Mise à jour  details** de chaque matières ")
+                        }, 500);
                     })
                     .catch(err => {
                         notificationAction('error', 'Erreur', err.data.message);//message avy @back

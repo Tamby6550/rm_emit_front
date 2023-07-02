@@ -36,6 +36,9 @@ export default function TableauA(props) {
   const [niveau, setniveau] = useState('0');
   const [selectniveau, setselectniveau] = useState(null);
 
+  const [parcours_, setparcours_] = useState('0');
+  const [selectparcours_, setselectparcours_] = useState(null);
+
   const [parcours_libell, setparcours_libell] = useState('')
   const [chargementDD, setchargementDD] = useState(false);
   const [titreAff, settitreAff] = useState({
@@ -104,8 +107,13 @@ export default function TableauA(props) {
   const onTypesChangeNiveau = (e) => {
     setniveau(e.value);
   }
+  const onTypesChangeParcours_ = (e) => {
+    setparcours_(e.value);
+  }
+
 
   useEffect(() => {
+    setselectparcours_(decrypt().data.parcours_)
     if (data.total.heuredeclare != '') {
 
       setdata({
@@ -254,7 +262,7 @@ export default function TableauA(props) {
   const loadAfficheTableau = () => {
     setchargementDD(true);
     setTimeout(async () => {
-      await axios.get(props.url + `getTableauAfficheTableauA/${decrypt().data.rm_id}/${anne_univ}/${decrypt().data.mention}/${prof.idprof}/${decrypt().data.grad_id}`, {
+      await axios.get(props.url + `getTableauAfficheTableauA/${parcours_}/${decrypt().data.rm_id}/${anne_univ}/${decrypt().data.mention}/${prof.idprof}/${decrypt().data.grad_id}`, {
         headers: {
           'Content-Type': 'text/html',
           'X-API-KEY': 'tamby',
@@ -286,7 +294,7 @@ export default function TableauA(props) {
   }
   const loadAfficheTableauSommeEtEdEp = async () => {
 
-    await axios.get(props.url + `getTableauAfficheSommeEtEdEp/${anne_univ}/${decrypt().data.mention}/${niveau}/${decrypt().data.rm_id}`, {
+    await axios.get(props.url + `getTableauAfficheSommeEtEdEpParcours/${parcours_}/${anne_univ}/${decrypt().data.mention}/${niveau}/${decrypt().data.rm_id}`, {
       headers: {
         'Content-Type': 'text/html',
         'X-API-KEY': 'tamby',
@@ -350,6 +358,10 @@ export default function TableauA(props) {
         <div className="lgcol-8 md:col-5   md:flex-column  sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
           <h4 htmlFor="username2" className="m-1">Anne univ :</h4>
           <Dropdown value={anne_univ} options={selectanne} onChange={onTypesChange} name="etat" />
+        </div>
+        <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
+          <h4 htmlFor="username2" className="m-1">Parcours  :</h4>
+          <Dropdown value={parcours_} options={selectparcours_} onChange={onTypesChangeParcours_} name="etat" />
         </div>
 
         <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
@@ -514,7 +526,7 @@ export default function TableauA(props) {
                 </div>
               </div>
             </div>
-            : <><TableauB setchargementDD={setchargementDD} anne_univ={anne_univ} prof={prof} changeTableau={changeTableau} url={props.url} /> </>
+            : <><TableauB setchargementDD={setchargementDD} parcours_={parcours_} anne_univ={anne_univ} prof={prof} changeTableau={changeTableau} url={props.url} /> </>
           }
         </BlockUI>
       </div>

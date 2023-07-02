@@ -119,7 +119,6 @@ export default function Accueil(props) {
                     setselectlgrade(result.data.grade)
                     setselectlmention(result.data.mention)
                     setdtChart(result.data.etat);
-                    console.log(result.data)
                     if (niveau == '0') {
                         schartData({
                             labels: ['Pas encore démarré', 'En cours', 'Terminé(avec SR et SN)'],

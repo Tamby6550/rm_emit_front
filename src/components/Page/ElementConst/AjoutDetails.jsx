@@ -251,7 +251,7 @@ export default function AjoutDetails(props) {
     return (
         <div>
             <Toast ref={toastTR} position="top-right" />
-            <Button icon={PrimeIcons.PLUS} className='p-buttom-sm p-1 ' label='' style={stylebtnRec} tooltip='Ajouter details' tooltipOptions={{ position: 'top' }}
+            <Button icon={PrimeIcons.PLUS} className='p-buttom-sm p-1 ' label='' style={stylebtnRec} tooltip='Mettre à jour  details' tooltipOptions={{ position: 'top' }}
                 onClick={() => {
                     onClick('displayBasic2');
                     setTimeout(() => {
@@ -351,7 +351,7 @@ export default function AjoutDetails(props) {
 
                             </form>
                             <div className='flex mt-3 mr-4 justify-content-center'>
-                                <Button icon={PrimeIcons.SAVE} className='p-button-sm p-button-primary ' label={charge ? 'Enregistrement...' : 'Enregistrer'} onClick={() => {
+                                <Button icon={PrimeIcons.SAVE} className='p-button-sm p-button-primary ' label={charge ? 'Veuiller patienter...' : 'Mettre à jour'} onClick={() => {
                                     controleChampVide()
                                 }} />
                             </div>

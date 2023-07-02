@@ -149,7 +149,7 @@ export default function TableauB(props) {
   const loadAfficheTableau = (anne,prof_id) => {
     props.setchargementDD(true);
     setTimeout(async () => {
-      await axios.get(props.url + `getTableauAfficheTableauB/${decrypt().data.rm_id}/${anne}/${decrypt().data.mention}/${prof_id}/${decrypt().data.grad_id}`, {
+      await axios.get(props.url + `getTableauAfficheTableauB/${props.parcours_}/${decrypt().data.rm_id}/${anne}/${decrypt().data.mention}/${prof_id}/${decrypt().data.grad_id}`, {
         headers: {
           'Content-Type': 'text/html',
           'X-API-KEY': 'tamby',
