@@ -34,14 +34,22 @@ export default function Parametre(props) {
 
     const [list, setlist] = useState([]);
     const [refreshData, setrefreshData] = useState(0);
+    const [nombreEtudiant, setnombreEtudiant] = useState({
+        classe_grade: '',
+        classe_mention: '',
+        classe_annee_univ: '',
+        classe_niveau: '',
+        classe_nbre_etud: 0
+    });
     const [charge, setCharge] = useState(false);
+    const [chargeNombre, setChargeNombre] = useState(false);
     const [niveau, setniveau] = useState('0');
     const [selectniveau, setselectniveau] = useState(null);
     const [anne_univ, setanne_univ] = useState('0000-0000');
     const [selectanne, setselectanne] = useState(null);
 
 
-    const [classe, setclasse] = useState({nom:'',nbre:''})
+    const [classe, setclasse] = useState({ nom: '', nbre: '' })
     const onTypesChange = (e) => {
         setanne_univ(e.value);
     }
@@ -73,7 +81,7 @@ export default function Parametre(props) {
     }
 
     const loadData = async (token, rm_id, mention_nom, grad_id, anne_univ) => {
-        await axios.get(props.url + `getNombreClasse/${rm_id}/${mention_nom}/${grad_id}/${anne_univ}`, {
+        await axios.get(props.url + `getClassetamby/${grad_id}/${mention_nom}/${anne_univ}`, {
             headers: {
                 'Content-Type': 'text/html',
                 'X-API-KEY': 'tamby',
@@ -88,6 +96,7 @@ export default function Parametre(props) {
                             logout();
                         }, 3000)
                     }
+                    // console.log(result.data);
                     setlist(result.data);
                     setselectniveau(result.data.niveau);
 
@@ -105,6 +114,7 @@ export default function Parametre(props) {
                 }
             })
     }
+   
 
     const chargementData = () => {
         const virus = localStorage.getItem('virus');
@@ -199,9 +209,11 @@ export default function Parametre(props) {
 
     /* Modal */
     const [displayBasic2, setDisplayBasic2] = useState(false);
+    const [displayBasic1, setDisplayBasic1] = useState(false);
     const [position, setPosition] = useState('center');
     const dialogFuncMap = {
         'displayBasic2': setDisplayBasic2,
+        'displayBasic1': setDisplayBasic1,
     }
     const onClick = (name, position) => {
         dialogFuncMap[`${name}`](true);
@@ -235,14 +247,28 @@ export default function Parametre(props) {
     const bodyBoutton = (data) => {
         // console.log(data)
         return (
-            <Button icon={PrimeIcons.EYE} className='p-buttom-sm p-button-secondary p-1 ml-4' tooltip="Voir Nombre de Groupe" tooltipOptions={{ position: 'top' }}
-                onClick={() => {
-                    onClick('displayBasic2');
-                    diviserNbGroupe(data.count);
-                    setclasse({nom:data.nom,nbre:data.count})
-                    // loadNbreGroup(decrypt().token, anne_univ, data.nom, decrypt().data.mention,);
-                }}
-            />
+            <>
+                <Button icon={PrimeIcons.EYE} className='p-buttom-sm p-button-secondary p-1 ml-4' tooltip="Voir Nombre de Groupe" tooltipOptions={{ position: 'top' }}
+                    onClick={() => {
+                        onClick('displayBasic2');
+                        diviserNbGroupe(data.classe_nbre_etud);
+                        setclasse({ nom: data.classe_niveau, nbre: data.classe_nbre_etud })
+                        // loadNbreGroup(decrypt().token, anne_univ, data.nom, decrypt().data.mention,);
+                    }}
+                />
+                <Button icon={PrimeIcons.PENCIL} className='p-buttom-sm p-button-warning p-1 ml-4' tooltip="Modifier nombre etudiant" tooltipOptions={{ position: 'top' }}
+                    onClick={() => {
+                        onClick('displayBasic1');
+                        setnombreEtudiant({
+                            classe_annee_univ:anne_univ,
+                            classe_grade:decrypt().data.grad_id,
+                            classe_mention:decrypt().data.mention,
+                            classe_niveau:data.classe_niveau,
+                            classe_nbre_etud:data.classe_nbre_etud
+                        });
+                    }}
+                />
+            </>
 
         );
     }
@@ -287,6 +313,46 @@ export default function Parametre(props) {
                 }
             })
     }
+    const onSaveClasse = async () => {
+        if (nombreEtudiant.classe_nbre_etud === 0) {
+            alert("Champ vide ! ")
+        } else {
+            setChargeNombre(true);
+            try {
+                await axios.post(props.url + 'postClassetambyapp',nombreEtudiant,
+                    {
+                        headers: {
+                            "Content-Type": "application/json; charset=utf-8",
+                            "X-API-KEY": "tamby",
+                            'Authorization': decrypt().token
+                        },
+                    })
+                    .then(res => {
+                        if (res.data.message == 'Token Time Expire.') {
+                            notificationAction('warn', 'Votre token est expiré !', 'Délais de token 4 heures !')
+                            setTimeout(() => {
+                                logout();
+                            }, 3000)
+                        }
+                        //message avy @back
+                        notificationAction(res.data.etat, res.data.situation, res.data.message);
+                        setChargeNombre(false);
+                        setrefreshData(1);
+                        setTimeout(() => {
+                            onHide('displayBasic1');
+                        }, 500)
+                    })
+                    .catch(err => {
+                        notificationAction('error', 'Erreur', err.data.message);//message avy @back
+                        console.log(err);
+                        setCharge(false);
+                    });
+            } catch (error) {
+                notificationAction('error', 'Erreur', error.message);//message avy @back
+            }
+        }
+
+    }
     const onSaveGroupe = async () => {
         if (infoGroup.anne_univ === '') {
             alert("Veulliez choisir l'anné universitaire ! ")
@@ -326,19 +392,24 @@ export default function Parametre(props) {
 
     }
 
+
     function getResult(num, denom) {
         const result = num / denom;
         if (result % 1 !== 0) {
-          return Math.ceil(result);
+            return Math.ceil(result);
         }
         return result;
-      }
+    }
 
-    function diviserNbGroupe( nbreEtud) {
-       setinfoGroup({...infoGroup,td:getResult(nbreEtud,infoGroup.diviser_td),tp:getResult(nbreEtud,infoGroup.diviser_tp)})
+    function diviserNbGroupe(nbreEtud) {
+        setinfoGroup({ ...infoGroup, td: getResult(nbreEtud, infoGroup.diviser_td), tp: getResult(nbreEtud, infoGroup.diviser_tp) })
     }
 
 
+    useEffect(() => {
+      console.log(nombreEtudiant)
+    }, [nombreEtudiant])
+    
     return (
         <>
             <Toast ref={toastTR} position="top-right" />
@@ -368,12 +439,32 @@ export default function Parametre(props) {
                     </div>
                 </div>
             </Dialog>
+            <Dialog header={renderHeader('displayBasic1')} visible={displayBasic1} className="lg:col-3 md:col-5 col-8 p-0" onHide={() => onHide('displayBasic1')}>
+                <div className="p-1  style-modal-tamby">
+                    <div className='flex flex-column'>
+                        <h3 className='m-1'>Classe : {classe.nom}</h3>
+                    </div>
+
+                    <div className='flex flex-column'>
+                        <div className='grid px-4'>
+                            <div className="lg:col-12 col-12 field my-0 flex flex-column">
+                                <label htmlFor="username2" className="label-input-sm">Nombre dans la classe</label>
+                                <InputText id="username2" value={nombreEtudiant.classe_nbre_etud} aria-describedby="username2-help" name='td' onChange={(e) => { setnombreEtudiant({...nombreEtudiant,classe_nbre_etud:e.target.value}) }} />
+                            </div>
+                        </div>
+                        <center>
+                            <Button icon={PrimeIcons.SAVE} className='p-buttom-sm p-1 ml-4' label={chargeNombre?'Enregistrement...':'Enregistrer'} tooltipOptions={{ position: 'top' }}
+                                onClick={() => { onSaveClasse() }} />
+                        </center>
+                    </div>
+                </div>
+            </Dialog>
             <center>
                 {/* <ScrollPanel style={{ height: '750px',width:'100%' }}> */}
                 <DataTable value={list} loading={charge} header={header1} showGridlines={false} globalFilterFields={['matiere', 'unite_ens', 'seme_code', 'abbr_niveau']} filters={filters1} rows={10} rowsPerPageOptions={[10, 20, 50]} paginator autoLayout emptyMessage={'Aucun resultat trouvé'}>
-                    <Column field={'nom'} header={'Classe'} style={{ fontWeight: '600' }}></Column>
-                    <Column field='count' header={'Nombre étudiants'} style={{ fontWeight: '600' }}></Column>
-                    <Column header="Groupe" body={bodyBoutton} align={'center'}></Column>
+                    <Column field={'classe_niveau'} header={'Classe'} style={{ fontWeight: '600' }}></Column>
+                    <Column field='classe_nbre_etud' header={'Nombre étudiants'} style={{ fontWeight: '600' }}></Column>
+                    <Column header="Action" body={bodyBoutton} align={'center'}></Column>
                 </DataTable>
                 {/* </ScrollPanel> */}
             </center>

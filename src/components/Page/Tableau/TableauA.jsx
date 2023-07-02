@@ -105,6 +105,58 @@ export default function TableauA(props) {
     setniveau(e.value);
   }
 
+  useEffect(() => {
+    if (data.total.heuredeclare != '') {
+
+      setdata({
+        total: {
+          parc_libelle: "",
+          prof_type: "",
+          prof_titre: "",
+          tvheure: "",
+          tbase_et: "",
+          tbase_ed: "",
+          tbase_ep: "",
+          ttotal_et: "",
+          ttotal_ed: "",
+          ttotal_ep: "",
+          heuredeclare: ""
+        },
+        detail: [
+          {
+            niv_id: "",
+            abbr_niveau: "",
+            mati_id: "",
+            mat_libelle: "",
+            nom_prof: "",
+            vheure: "",
+            id_details: "",
+            base_et: "",
+            group_et: "",
+            base_ed: "",
+            group_ed: "",
+            base_ep: "",
+            group_ep: "",
+            total_et: "",
+            total_ed: "",
+            total_ep: "",
+            nbgroup: {
+              count: "0"
+            }
+          }
+        ],
+        group_tamby: {
+          id_groupe: "",
+          anne_univ: "",
+          grade: "",
+          mention: "",
+          diviser_td: "",
+          diviser_tp: ""
+        }
+      })
+    }
+  }, [prof])
+
   const toastTR = useRef(null);
   /*Notification Toast */
   const notificationAction = (etat, titre, message) => {

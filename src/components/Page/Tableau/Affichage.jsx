@@ -280,8 +280,6 @@ export default function Affichage(props) {
             parcours: resultat.data.info.parc_libelle,
             groupe_td: getResult(nbreEtud, div_td), groupe_tp: getResult(nbreEtud, div_tp) 
         });
-
-
     }
     return (
         <div className='content'>

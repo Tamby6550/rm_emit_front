@@ -232,6 +232,9 @@ export default function TableauFinale(props) {
     function valeurGarde(prof_grad) {
         let valeur = 0;
         if (prof_grad == 'Pr') {
+            valeur = 10000;
+        }
+        else if (prof_grad == 'Pr_titulaire') {
             valeur = 12000;
         }
         else if (prof_grad == 'Dr') {
