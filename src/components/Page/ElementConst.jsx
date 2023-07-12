@@ -51,6 +51,10 @@ export default function ElementConst(props) {
   const [lgrade, setlgrade] = useState('0');
   const [selectlgrade, setselectlgrade] = useState(null);
 
+
+  const [parcours_, setparcours_] = useState('0');
+  const [selectparcours_, setselectparcours_] = useState(null);
+
   const [etat, setetat] = useState('5');
 
   const [nbreClasse, setnbreClasse] = useState(0);
@@ -70,6 +74,12 @@ export default function ElementConst(props) {
   const onTypesChangeEtat = (e) => {
     setetat(e.value);
   }
+  const onTypesChangeParcours_ = (e) => {
+    setparcours_(e.value);
+}
+useEffect(() => {
+    setselectparcours_(decrypt().data.parcours_)
+}, []);
 
   const onVideMatiere = () => {
     setlistMatiere([{ matiere: '', unite_ens: '', semestre: '', abbr_niveau: '' }])
@@ -91,7 +101,7 @@ export default function ElementConst(props) {
 
 
   const loadData = async (token, rm_id, mention_nom, grad_id, anne_univ, niveau, etat) => {
-    await axios.get(props.url + `getMatiereRm/${rm_id}/${mention_nom}/${grad_id}/${anne_univ}/${niveau}/${etat}`, {
+    await axios.get(props.url + `getMatiereRm/${parcours_}/${rm_id}/${mention_nom}/${grad_id}/${anne_univ}/${niveau}/${etat}`, {
       headers: {
         'Content-Type': 'text/html',
         'X-API-KEY': 'tamby',
@@ -131,9 +141,9 @@ export default function ElementConst(props) {
       decrypt();
       setCharge(true);
 
-        setTimeout(() => {
-          loadData(decrypt().token, decrypt().data.rm_id, decrypt().data.mention, decrypt().data.grad_id, anne_univ, niveau, etat);
-        }, 800)
+      setTimeout(() => {
+        loadData(decrypt().token, decrypt().data.rm_id, decrypt().data.mention, decrypt().data.grad_id, anne_univ, niveau, etat);
+      }, 800)
     }
     else {
       logout();
@@ -146,9 +156,9 @@ export default function ElementConst(props) {
     if (virus) {
       decrypt();
       setCharge(true);
-        setTimeout(() => {
-          loadData(decrypt().token, 'admin', lmention, lgrade, anne_univ, niveau, etat);
-        }, 800)
+      setTimeout(() => {
+        loadData(decrypt().token, 'admin', lmention, lgrade, anne_univ, niveau, etat);
+      }, 800)
     }
     else {
       logout();
@@ -160,20 +170,20 @@ export default function ElementConst(props) {
 
   useEffect(async () => {
     if (decrypt().data.mention == 'Admin') {
-      if ( anne_univ == '0000-0000' || lgrade=='0' || lmention=='0' ) {
+      if (anne_univ == '0000-0000' || lgrade == '0' || lmention == '0') {
         return false;
       } else {
         chargementDataAdm()
       }
-    }else{
-      if (niveau == '0' || anne_univ == '0000-0000' ) {
+    } else {
+      if (niveau == '0' || anne_univ == '0000-0000' && parcours_==='0') {
         return false
       } else {
         chargementData()
       }
 
     }
-  }, [refreshData, anne_univ, niveau, etat,lmention,lgrade]);
+  }, [refreshData, anne_univ, niveau, etat, lmention, lgrade,parcours_]);
 
 
 
@@ -196,7 +206,7 @@ export default function ElementConst(props) {
     return (
       <div className='flex flex-row justify-content-between align-items-center m-0 '>
         <div className='my-0  py-2 flex'>
-          <AjoutDetails nbreClasse={nbreClasse} grad_id={decrypt().data.grad_id} data={data}  anne_univ={anne_univ} mention={decrypt().data.mention} token={decrypt().token}  logout={logout} url={props.url} setrefreshData={setrefreshData}/>
+          <AjoutDetails nbreClasse={nbreClasse} parcours_={parcours_} grad_id={decrypt().data.grad_id} data={data} anne_univ={anne_univ} mention={decrypt().data.mention} token={decrypt().token} logout={logout} url={props.url} setrefreshData={setrefreshData} />
           <ModifierEtat etat={data.etat_mat} anne_univ={anne_univ} nom_mat={data.matiere} mat_id={data.mati_id} url={props.url} setrefreshData={setrefreshData} />
         </div>
       </div>
@@ -310,11 +320,11 @@ export default function ElementConst(props) {
 
       <div className="flex justify-content-between lg:flex-row md:flex-column sm:flex-column flex-column">
         <div className='flex lg:flex-row lg:col-6 md:col-7 md:flex-row sm:flex-row flex-column'>
-          <div className="lgcol-8 md:col-5   md:flex-column  sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
+        <div className="lgcol-4 md:col-4   md:flex-column  sm:col-3 sm:flex-column field my-0 flex lg:flex-column flex-column">
             <h4 htmlFor="username2" className="m-1">Anne univ :</h4>
             <Dropdown value={anne_univ} options={selectanne} onChange={onTypesChange} name="etat" />
           </div>
-          {decrypt().data.mention == 'Admin' ? 
+          {decrypt().data.mention == 'Admin' ?
             <>
               <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
                 <h4 htmlFor="username2" className="m-1">Mention  :</h4>
@@ -325,19 +335,22 @@ export default function ElementConst(props) {
                 <Dropdown value={lgrade} options={selectlgrade} onChange={onTypesChangeGrade} name="etat" />
               </div>
             </>
-            :null
+            : null
           }
-          <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
+          <div className="lgcol-4 md:col-4   md:flex-column  sm:col-3 sm:flex-column field my-0 flex lg:flex-column flex-column">
             <h4 htmlFor="username2" className="m-1">Niveau  :</h4>
             <Dropdown value={niveau} options={selectniveau} onChange={onTypesChangeNiveau} name="etat" />
           </div>
-
-          <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
+          <div className="lgcol-4 md:col-4   md:flex-column  sm:col-3 sm:flex-column field my-0 flex lg:flex-column flex-column">
+            <h4 htmlFor="username2" className="m-1">Parcours  :</h4>
+            <Dropdown value={parcours_} options={selectparcours_} onChange={onTypesChangeParcours_} name="etat" />
+          </div>
+          <div className="lgcol-4 md:col-4   md:flex-column  sm:col-3 sm:flex-column field my-0 flex lg:flex-column flex-column">
             <h4 htmlFor="username2" className="m-1">Afficher :</h4>
             <Dropdown value={etat} options={choixEtat} onChange={onTypesChangeEtat} name="etat" />
           </div>
           {decrypt().data.mention == 'Admin' ? null :
-            <div className="lgcol-8 md:col-5  justify-content-center md:flex-column  sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
+            <div className="lgcol-4 md:col-4   md:flex-column  sm:col-3 sm:flex-column field my-0 flex lg:flex-column flex-column">
               <h4 htmlFor="username2" className="m-1">Recherche :</h4>
               <InputText value={globalFilterValue1} onChange={onGlobalFilterChange1} placeholder="Recherche global..." />
             </div>

@@ -212,12 +212,7 @@ export default function AjoutDetails(props) {
                             props.logout();
                         }, 3000)
                     }
-                    // if (result.data != "") {
-
-                        diviserNbGroupe(props.nbreClasse.nmbre_classe, resultss.data.diviser_td, resultss.data.diviser_tp, result);
-                       
-
-                    // }
+                    diviserNbGroupe(props.nbreClasse.nmbre_classe, resultss.data.diviser_td, resultss.data.diviser_tp, result);
                     setchargeDnn(false);
                 }
             ).catch((e) => {
@@ -247,6 +242,10 @@ export default function AjoutDetails(props) {
         });
     }
 
+    // useEffect(() => {
+    //   console.log(infoDetails)
+    // }, [infoDetails])
+    
 
     return (
         <div>

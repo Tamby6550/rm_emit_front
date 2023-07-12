@@ -39,7 +39,8 @@ export default function Parametre(props) {
         classe_mention: '',
         classe_annee_univ: '',
         classe_niveau: '',
-        classe_nbre_etud: 0
+        classe_nbre_etud: 0,
+        nom_parcours:''
     });
     const [charge, setCharge] = useState(false);
     const [chargeNombre, setChargeNombre] = useState(false);
@@ -47,7 +48,8 @@ export default function Parametre(props) {
     const [selectniveau, setselectniveau] = useState(null);
     const [anne_univ, setanne_univ] = useState('0000-0000');
     const [selectanne, setselectanne] = useState(null);
-
+    const [parcours_, setparcours_] = useState('0');
+    const [selectparcours_, setselectparcours_] = useState(null);
 
     const [classe, setclasse] = useState({ nom: '', nbre: '' })
     const onTypesChange = (e) => {
@@ -79,9 +81,15 @@ export default function Parametre(props) {
                 }
             })
     }
+    const onTypesChangeParcours_ = (e) => {
+        setparcours_(e.value);
+    }
+    useEffect(() => {
+        setselectparcours_(decrypt().data.parcours_)
+    }, []);
 
     const loadData = async (token, rm_id, mention_nom, grad_id, anne_univ) => {
-        await axios.get(props.url + `getClassetamby/${grad_id}/${mention_nom}/${anne_univ}`, {
+        await axios.get(props.url + `getClassetamby/${parcours_}/${grad_id}/${mention_nom}/${anne_univ}`, {
             headers: {
                 'Content-Type': 'text/html',
                 'X-API-KEY': 'tamby',
@@ -99,7 +107,6 @@ export default function Parametre(props) {
                     // console.log(result.data);
                     setlist(result.data);
                     setselectniveau(result.data.niveau);
-
                     setCharge(false);
                     setrefreshData(0);
                     initFilters1();
@@ -114,7 +121,7 @@ export default function Parametre(props) {
                 }
             })
     }
-   
+
 
     const chargementData = () => {
         const virus = localStorage.getItem('virus');
@@ -137,12 +144,12 @@ export default function Parametre(props) {
     }, [props.url]);
 
     useEffect(async () => {
-        if (anne_univ == '0000-0000') {
+        if (anne_univ == '0000-0000' && parcours_==='0' ) {
             return false
         } else {
             chargementData()
         }
-    }, [refreshData, anne_univ]);
+    }, [refreshData, anne_univ,parcours_]);
 
     const toastTR = useRef(null);
     /*Notification Toast */
@@ -181,7 +188,10 @@ export default function Parametre(props) {
                         <h4 htmlFor="username2" className="m-1">Anne univ :</h4>
                         <Dropdown value={anne_univ} options={selectanne} onChange={onTypesChange} name="etat" />
                     </div>
-
+                    <div className="lgcol-4 md:col-4   md:flex-column  sm:col-3 sm:flex-column field my-0 flex lg:flex-column flex-column">
+                        <h4 htmlFor="username2" className="m-1">Parcours  :</h4>
+                        <Dropdown value={parcours_} options={selectparcours_} onChange={onTypesChangeParcours_} name="etat" />
+                    </div>
                     <div className="lgcol-4 md:col-4  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-column flex-column">
                         <label htmlFor="username2" className="label-input-sm">Nbre etudiants par Groupe TD</label>
                         <InputNumber id="username2" value={infoGroup.diviser_td} aria-describedby="username2-help" className="form-input-css-tamby" name='tp' onValueChange={(e) => { setinfoGroup({ ...infoGroup, diviser_td: e.target.value }) }} />
@@ -260,16 +270,16 @@ export default function Parametre(props) {
                     onClick={() => {
                         onClick('displayBasic1');
                         setnombreEtudiant({
-                            classe_annee_univ:anne_univ,
-                            classe_grade:decrypt().data.grad_id,
-                            classe_mention:decrypt().data.mention,
-                            classe_niveau:data.classe_niveau,
-                            classe_nbre_etud:data.classe_nbre_etud
+                            classe_annee_univ: anne_univ,
+                            classe_grade: decrypt().data.grad_id,
+                            classe_mention: decrypt().data.mention,
+                            classe_niveau: data.classe_niveau,
+                            classe_nbre_etud: data.classe_nbre_etud,
+                            nom_parcours:parcours_
                         });
                     }}
                 />
             </>
-
         );
     }
 
@@ -319,7 +329,7 @@ export default function Parametre(props) {
         } else {
             setChargeNombre(true);
             try {
-                await axios.post(props.url + 'postClassetambyapp',nombreEtudiant,
+                await axios.post(props.url + 'postClassetambyapp', nombreEtudiant,
                     {
                         headers: {
                             "Content-Type": "application/json; charset=utf-8",
@@ -408,9 +418,9 @@ export default function Parametre(props) {
 
 
     useEffect(() => {
-      console.log(nombreEtudiant)
+        console.log(nombreEtudiant)
     }, [nombreEtudiant])
-    
+
     return (
         <>
             <Toast ref={toastTR} position="top-right" />
@@ -450,11 +460,11 @@ export default function Parametre(props) {
                         <div className='grid px-4'>
                             <div className="lg:col-12 col-12 field my-0 flex flex-column">
                                 <label htmlFor="username2" className="label-input-sm">Nombre dans la classe</label>
-                                <InputText id="username2" value={nombreEtudiant.classe_nbre_etud} aria-describedby="username2-help" name='td' onChange={(e) => { setnombreEtudiant({...nombreEtudiant,classe_nbre_etud:e.target.value}) }} />
+                                <InputText id="username2" value={nombreEtudiant.classe_nbre_etud} aria-describedby="username2-help" name='td' onChange={(e) => { setnombreEtudiant({ ...nombreEtudiant, classe_nbre_etud: e.target.value }) }} />
                             </div>
                         </div>
                         <center>
-                            <Button icon={PrimeIcons.SAVE} className='p-buttom-sm p-1 ml-4' label={chargeNombre?'Enregistrement...':'Enregistrer'} tooltipOptions={{ position: 'top' }}
+                            <Button icon={PrimeIcons.SAVE} className='p-buttom-sm p-1 ml-4' label={chargeNombre ? 'Enregistrement...' : 'Enregistrer'} tooltipOptions={{ position: 'top' }}
                                 onClick={() => { onSaveClasse() }} />
                         </center>
                     </div>
