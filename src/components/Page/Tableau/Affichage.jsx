@@ -90,9 +90,9 @@ export default function Affichage(props) {
     }
 
     useEffect(() => {
-      setselectparcours_(decrypt().data.parcours_)
+        setselectparcours_(decrypt().data.parcours_)
     }, []);
-    
+
     const toastTR = useRef(null);
     /*Notification Toast */
     const notificationAction = (etat, titre, message) => {
@@ -125,7 +125,7 @@ export default function Affichage(props) {
             })
     }
 
-    
+
 
 
     const anne_univDt = async () => {
@@ -171,8 +171,8 @@ export default function Affichage(props) {
                             logout();
                         }, 3000)
                     }
-                   
-                    diviserNbGroupe(result.data.nbreClasse.count,result.data.group_tamby.diviser_td,result.data.group_tamby.diviser_tp,result);
+
+                    diviserNbGroupe(result.data.nbreClasse.count, result.data.group_tamby.diviser_td, result.data.group_tamby.diviser_tp, result);
                     //Affiche Somme Et Ed, Ep
                     loadAfficheTableauSommeEtEdEp();
                 }
@@ -258,23 +258,23 @@ export default function Affichage(props) {
 
     // Manao Lettre anle heure
     function manisyLettre(nb) {
-        let intNb=parseInt(nb);
+        let intNb = parseInt(nb);
         let ren = NumberToLetter(intNb);
-        
-       return ren.charAt(0).toUpperCase() + ren.slice(1);
+
+        return ren.charAt(0).toUpperCase() + ren.slice(1);
     }
     //Calcul ED
-    function calculEd(et,ed,ep) {
-        let etn=parseInt(et);
-        let epn=parseInt(ep);
-        let edn=parseInt(ed);
-       
-        let convet=(etn*5)/3;
-        let convep=epn/2;
+    function calculEd(et, ed, ep) {
+        let etn = parseInt(et);
+        let epn = parseInt(ep);
+        let edn = parseInt(ed);
 
-        let total=convet+convep +edn;
-        
-       return total.toFixed(0);
+        let convet = (etn * 5) / 3;
+        let convep = epn / 2;
+
+        let total = convet + convep + edn;
+
+        return total.toFixed(0);
     }
 
     function getResult(num, denom) {
@@ -285,13 +285,13 @@ export default function Affichage(props) {
         return result;
     }
 
-    function diviserNbGroupe(nbreEtud, div_td, div_tp,resultat) {
+    function diviserNbGroupe(nbreEtud, div_td, div_tp, resultat) {
         settitreAff({
             nbreClasse: resultat.data.nbreClasse.count,
             nom_mention: resultat.data.info.nom_mention,
             abbre_niveau: resultat.data.info.abbr_niveau,
             parcours: resultat.data.info.parc_libelle,
-            groupe_td: getResult(nbreEtud, div_td), groupe_tp: getResult(nbreEtud, div_tp) 
+            groupe_td: getResult(nbreEtud, div_td), groupe_tp: getResult(nbreEtud, div_tp)
         });
     }
     return (
@@ -450,10 +450,10 @@ export default function Affichage(props) {
                         </div>
                         <div className='col-12  flex flex-column'>
                             <div className='col-12 pl-5 flex flex-column'>
-                                <label style={{ fontSize: '1.1em' }} >{manisyLettre(totalT.ttotal_et)+' heures'}  ({totalT.ttotal_et + 'h'}) en enseignement théorique</label>
-                                <label style={{ fontSize: '1.1em' }}>{manisyLettre(totalT.ttotal_ed)+' heures'}  ({totalT.ttotal_ed + 'h'}) en enseignement dirigé</label>
-                                <label style={{ fontSize: '1.1em' }}>{manisyLettre(totalT.ttotal_ep)+' heures'}  ({totalT.ttotal_ep + 'h'}) en enseignement pratique</label>
-                                <label style={{ fontSize: '1.1em', paddingLeft: '120px', fontWeight: '700' }}>{manisyLettre(calculEd(totalT.ttotal_et,totalT.ttotal_ed,totalT.ttotal_ep))+' heures'} ({calculEd(totalT.ttotal_et,totalT.ttotal_ed,totalT.ttotal_ep) + 'h'}) en enseignement théorique</label>
+                                <label style={{ fontSize: '1.1em' }} >{manisyLettre(totalT.ttotal_et) + ' heures'}  ({totalT.ttotal_et + 'h'}) en enseignement théorique</label>
+                                <label style={{ fontSize: '1.1em' }}>{manisyLettre(totalT.ttotal_ed) + ' heures'}  ({totalT.ttotal_ed + 'h'}) en enseignement dirigé</label>
+                                <label style={{ fontSize: '1.1em' }}>{manisyLettre(totalT.ttotal_ep) + ' heures'}  ({totalT.ttotal_ep + 'h'}) en enseignement pratique</label>
+                                <label style={{ fontSize: '1.1em', paddingLeft: '120px', fontWeight: '700' }}>{manisyLettre(calculEd(totalT.ttotal_et, totalT.ttotal_ed, totalT.ttotal_ep)) + ' heures'} ({calculEd(totalT.ttotal_et, totalT.ttotal_ed, totalT.ttotal_ep) + 'h'}) en enseignement théorique</label>
                                 <center style={{ fontSize: '1.1em' }}>Fait a Fianarantsoa le,</center>
                             </div>
                             <div className='flex pl-5 flex-row justify-content-between'>

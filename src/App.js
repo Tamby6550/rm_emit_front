@@ -23,7 +23,7 @@ import * as Components from './components/Login/Components'
 import { PrimeIcons } from 'primereact/api';
 import { Toast } from 'primereact/toast'; 
 import MenuAffichage from './components/Page/Tableau/MenuAffichage';
-import Parametre from './components/Page/Parametre/Parametre';
+import MenuParametre from './components/Page/Parametre/MenuParametre';
 function App() {
     const { logout, isAuthenticated, secret } = useAuth();
     const [infoUti, setinfoUti] = useState({nom:'',mention:''});
@@ -48,7 +48,7 @@ function App() {
     }
 
 
-    const [url, seturl] = useState('http://192.168.88.2/backRM/api/')
+    const [url, seturl] = useState('http://41.188.47.76/backRM/api/')
     const navigate = useNavigate()
     //   const url = "http://127.0.0.1:2000/api/";
     //   const url = "http://192.168.42.48:2000/api/";
@@ -61,8 +61,10 @@ function App() {
             //Serveur emit
             // let urls ='http://'+ip+'/backRM/api/';
 
-            // //local
-            let urls ='http://'+ip+':2000/api/'
+            // // //local
+            // let urls ='http://'+ip+':2000/api/'
+            //Mitifitra emit
+            let urls ='http://41.188.47.76/backRM/api/'
             seturl(urls);
     }
 
@@ -70,7 +72,7 @@ function App() {
         setTimeout(() => {
             decrypt();
         }, 500)
-        urlip()
+        // urlip()
     }, [navigate])
     const { pathname } = useLocation();
     const bred = pathname.slice(1);
@@ -271,7 +273,7 @@ function App() {
             <Route path='/mention' element={<Mention url={url}  urlip={urlip} />} />
             <Route path='/acceuil' element={<Accueil url={url} urlip={urlip}  />} />
             <Route path='/affichage_tableau' element={<MenuAffichage url={url} urlip={urlip}  />} />
-            <Route path='/parametre' element={<Parametre url={url} urlip={urlip}  />} />
+            <Route path='/parametre' element={<MenuParametre url={url} urlip={urlip}  />} />
         </Route>
 
         <Route path='/' element={<Signin url={url} />} />

@@ -417,9 +417,9 @@ export default function Parametre(props) {
     }
 
 
-    useEffect(() => {
-        console.log(nombreEtudiant)
-    }, [nombreEtudiant])
+    // useEffect(() => {
+    //     console.log(nombreEtudiant)
+    // }, [nombreEtudiant])
 
     return (
         <>

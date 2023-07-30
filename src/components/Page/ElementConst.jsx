@@ -76,10 +76,10 @@ export default function ElementConst(props) {
   }
   const onTypesChangeParcours_ = (e) => {
     setparcours_(e.value);
-}
-useEffect(() => {
+  }
+  useEffect(() => {
     setselectparcours_(decrypt().data.parcours_)
-}, []);
+  }, []);
 
   const onVideMatiere = () => {
     setlistMatiere([{ matiere: '', unite_ens: '', semestre: '', abbr_niveau: '' }])
@@ -176,14 +176,14 @@ useEffect(() => {
         chargementDataAdm()
       }
     } else {
-      if (niveau == '0' || anne_univ == '0000-0000' && parcours_==='0') {
+      if (niveau == '0' || anne_univ == '0000-0000' && parcours_ === '0') {
         return false
       } else {
         chargementData()
       }
 
     }
-  }, [refreshData, anne_univ, niveau, etat, lmention, lgrade,parcours_]);
+  }, [refreshData, anne_univ, niveau, etat, lmention, lgrade, parcours_]);
 
 
 
@@ -320,7 +320,7 @@ useEffect(() => {
 
       <div className="flex justify-content-between lg:flex-row md:flex-column sm:flex-column flex-column">
         <div className='flex lg:flex-row lg:col-6 md:col-7 md:flex-row sm:flex-row flex-column'>
-        <div className="lgcol-4 md:col-4   md:flex-column  sm:col-3 sm:flex-column field my-0 flex lg:flex-column flex-column">
+          <div className="lgcol-4 md:col-4   md:flex-column  sm:col-3 sm:flex-column field my-0 flex lg:flex-column flex-column">
             <h4 htmlFor="username2" className="m-1">Anne univ :</h4>
             <Dropdown value={anne_univ} options={selectanne} onChange={onTypesChange} name="etat" />
           </div>
