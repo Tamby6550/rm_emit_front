@@ -202,7 +202,7 @@ export default function TableauFinale(props) {
     }
 
     function formatNumber(num) {
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + ".00";
+        return (parseFloat(num).toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") 
     }
 
     const updateTotals = (data) => {
@@ -318,13 +318,13 @@ export default function TableauFinale(props) {
                                         </tr>
                                     ))}
                                     <tr>
-                                        <td>&nbsp;</td>
-                                        <td><strong>{(totals.ttotal_et).toFixed(2)}</strong></td>
-                                        <td><strong>{(totals.ttotal_ed).toFixed(2)}</strong></td>
-                                        <td><strong>{(totals.ttotal_ep).toFixed(2)}</strong></td>
-                                        <td><strong>{(totals.encadrement).toFixed(2)}</strong></td>
-                                        <td><strong>{(totals.soutenance).toFixed(2)}</strong></td>
-                                        <td><strong>{(totals.voyages).toFixed(2)}</strong></td>
+                                        <td>Total</td>
+                                        <td style={{textAlign:'right'}}><strong>{(totals.ttotal_et).toFixed(2)}</strong></td>
+                                        <td style={{textAlign:'right'}}><strong>{(totals.ttotal_ed).toFixed(2)}</strong></td>
+                                        <td style={{textAlign:'right'}}><strong>{(totals.ttotal_ep).toFixed(2)}</strong></td>
+                                        <td style={{textAlign:'right'}}><strong>{(totals.encadrement).toFixed(2)}</strong></td>
+                                        <td style={{textAlign:'right'}}><strong>{(totals.soutenance).toFixed(2)}</strong></td>
+                                        <td style={{textAlign:'right'}}><strong>{(totals.voyages).toFixed(2)}</strong></td>
                                         <td>&nbsp;</td>
                                         <td>&nbsp;</td>
                                         <td>&nbsp;</td>

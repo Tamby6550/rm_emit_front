@@ -166,6 +166,7 @@ export default function TableauB(props) {
             }
             if (result.data.total.parc_libelle != '') {
               setdata(result.data);
+              console.log(result.data)
             }
             props.setchargementDD(false);
           }
@@ -213,37 +214,7 @@ export default function TableauB(props) {
   }
 
   return (
-    //  <div className='content'>
-    //  <Toast ref={toastTR} position="top-right" />
-    // <div className='flex lg:flex-row lg:col-6 md:col-7 md:flex-row sm:flex-row flex-column'>
-    //     <div className="lgcol-8 md:col-5   md:flex-column  sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
-    //       <h4 htmlFor="username2" className="m-1">Anne univ :</h4>
-    //       <Dropdown value={anne_univ} options={selectanne} onChange={onTypesChange} name="etat" />
-    //     </div>
-
-
-
-    //     <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
-    //       <div className='m-1 flex flex-row align-items-center '>
-    //         <InputText id="username2" style={{ height: '25px' }} aria-describedby="username2-help" name='code_cli' value={prof.nomprof} readOnly />
-    //         <ListeProf url={props.url} setprof={setprof} />
-    //       </div>
-    //     </div>
-    //     <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
-    //       <Button icon={PrimeIcons.LIST} className='p-button-sm p-button-success ml-3 ' label={'Afficher'}
-    //         onClick={() => {
-    //           loadAfficheTableau();
-    //         }}
-    //       />
-    //     </div>
-    //   </div>
-    //   <hr />
-    //   <center className=' mb-2'>
-    //     <ReactToPrint trigger={() =>
-    //       <Button icon={PrimeIcons.PRINT} className='p-button-sm p-button-primary ml-3 ' label={'Imprimer'} />
-    //     } content={() => document.getElementById("imprimable")} />
-    //   </center>
-    //   <div className='col-12' style={{ border: '1px solid grey' }}>  <BlockUI blocked={chargementDD} template={<ProgressSpinner />}> 
+   
   <>
     <div className='grid h-full imprim' id='imprimable'   >
       <div className="lg:col-6 md:col-6  md:flex-column   sm:col-6 col-6 sm:flex-column field my-0 flex lg:flex-coluln flex-column " style={{ alignItems: 'center' }}>

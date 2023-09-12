@@ -360,7 +360,10 @@ export default function Affichage(props) {
                                 {data.map((obj, index) => (
                                     <tbody>
                                         <tr style={{ height: '19.5833px' }}>
-                                            <td style={{ height: '82.0416px', fontWeight: '600', textTransform: 'uppercase' }} rowspan={'18'}>{obj.semestre} </td>
+                                            <td style={{ height: '82.0416px', fontWeight: '600', textTransform: 'uppercase' }} rowspan={'18'}>
+                                                {/* {obj.semestre}  */}
+                                                SEMESTRE
+                                                </td>
                                             <td style={{ height: '40.0208px', textAlign: 'center' }} rowspan="2">ELEMENTS CONSTITUTIFS(EC)</td>
                                             <td style={{ height: '19.5833px' }}>&nbsp;</td>
                                             <td style={{ height: '19.5833px', textAlign: 'center' }} colspan="4">ET</td>

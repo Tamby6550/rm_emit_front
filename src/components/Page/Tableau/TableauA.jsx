@@ -436,12 +436,13 @@ export default function TableauA(props) {
               <div className="col-12 sm:flex-column field my-0 flex lg:flex-row flex-column " >
                 <label className='m-1 pl-5' style={{ fontSize: '1.1em' }} >
                   NOM : {prof.nomprof} <br />
-                  Grade : 
+                  Grade :
                   {
-                  data.total.prof_titre==='Monsieur'?' Mr':
-                  data.total.prof_titre==='Madame'?' Mme':
-                  data.total.prof_titre==='Professeur'?' Pr':
-                  data.total.prof_titre==='Docteur'?' Dr':null
+                    data.total?.prof_grade
+                    // data.total.prof_titre === 'Monsieur' ? ' Mr' :
+                    //   data.total.prof_titre === 'Madame' ? ' Mme' :
+                    //     data.total.prof_titre === 'Professeur' ? ' Pr' :
+                    //       data.total.prof_titre === 'Docteur' ? ' Dr' : null
                   }
                 </label>
               </div>
@@ -524,11 +525,15 @@ export default function TableauA(props) {
                     d'ED et {manisyLettre(data.total.ttotal_ep)} heures ({data.total.ttotal_ep + 'h'}) d'EP.
                   </label>
                 </div>
-                <div className='col-12 pl-5 flex flex-column'>
+                {/* <div className='col-12 pl-5 flex flex-column'>
                   <center style={{ fontSize: '1.1em' }}>Fait a Fianarantsoa le,</center>
-                </div>
-                <div className='flex pl-5 flex-row justify-content-between'>
+                </div> */}
+                <div className='col-12 pl-5 flex flex-row justify-content-evenly m-0 p-0'>
                   <label style={{ fontSize: '1.1em' }}>Le Responsable de Mention</label>
+                  <label style={{ fontSize: '1.1em' }}>
+                    Fait a Fianarantsoa le,.... <br />
+                    Signature de l'enseignant
+                  </label>
                 </div>
               </div>
             </div>
