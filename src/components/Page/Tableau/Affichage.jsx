@@ -171,7 +171,7 @@ export default function Affichage(props) {
                             logout();
                         }, 3000)
                     }
-                   
+                //    console.log(result.data)
                     diviserNbGroupe(result.data.nbreClasse.count,result.data.group_tamby.diviser_td,result.data.group_tamby.diviser_tp,result);
                     //Affiche Somme Et Ed, Ep
                     loadAfficheTableauSommeEtEdEp();

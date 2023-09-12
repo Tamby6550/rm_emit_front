@@ -48,21 +48,23 @@ function App() {
     }
 
 
-    const [url, seturl] = useState('http://192.168.88.2/backRM/api/')
+    const [url, seturl] = useState('http://41.188.47.76/backRM/api/');
     const navigate = useNavigate()
-    //   const url = "http://127.0.0.1:2000/api/";
+    // const url = "http://127.0.0.1:2000/api/";
+    //   const url = "http://41.188.47.76/backRM/api/";
     //   const url = "http://192.168.42.48:2000/api/";
     //   const url = "http://192.168.88.2/backRM/api/";
-    //   const url = "http://41.188.47.76/backRM/api/";
 
     // Chagment adresse ip
     const urlip=()=>{
             let ip = window.location.hostname;
             //Serveur emit
-            // let urls ='http://'+ip+'/backRM/api/';
+            let urls ='http://'+ip+'/backRM/api/';
 
-            // //local
-            let urls ='http://'+ip+':2000/api/'
+            //local
+            // let urls ='http://'+ip+':2000/api/'
+            //
+            // let urls ='http://41.188.47.76/backRM/api/'
             seturl(urls);
     }
 

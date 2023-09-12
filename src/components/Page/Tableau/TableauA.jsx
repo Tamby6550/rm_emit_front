@@ -279,6 +279,7 @@ export default function TableauA(props) {
             }
             if (result.data.total.parc_libelle != '') {
               setdata(result.data);
+              console.log(result.data)
               setaffficheB(true);
             }
             setchargementDD(false);
@@ -435,8 +436,13 @@ export default function TableauA(props) {
               <div className="col-12 sm:flex-column field my-0 flex lg:flex-row flex-column " >
                 <label className='m-1 pl-5' style={{ fontSize: '1.1em' }} >
                   NOM : {prof.nomprof} <br />
-                  Prénom : <br />
-                  Grade : {data.total.prof_grade}
+                  Grade : 
+                  {
+                  data.total.prof_titre==='Monsieur'?' Mr':
+                  data.total.prof_titre==='Madame'?' Mme':
+                  data.total.prof_titre==='Professeur'?' Pr':
+                  data.total.prof_titre==='Docteur'?' Dr':null
+                  }
                 </label>
               </div>
               <div className="col-12 flex-column " style={{ alignItems: 'center' }}>
@@ -512,7 +518,7 @@ export default function TableauA(props) {
               <div className='col-12  flex flex-column'>
                 <div className='col-12 pl-5 flex flex-column'>
                   <label style={{ fontSize: '1.1em' }}>
-                    Arrêté la présente de déclaration à : {manisyLettre(data.total.heuredeclare)} heures ({data.total.heuredeclare + 'h'}) d'enseignement effectuées dont : {manisyLettre(data.total.ttotal_et)} heures ({data.total.ttotal_et + 'h'}) d'ET
+                    Arrêté la présente déclaration à : {manisyLettre(data.total.heuredeclare)} heures ({data.total.heuredeclare + 'h'}) d'enseignement effectuées dont : {manisyLettre(data.total.ttotal_et)} heures ({data.total.ttotal_et + 'h'}) d'ET
                     ,{manisyLettre(data.total.ttotal_ed)}
                     <br /> heures ({data.total.ttotal_ed + 'h'})
                     d'ED et {manisyLettre(data.total.ttotal_ep)} heures ({data.total.ttotal_ep + 'h'}) d'EP.
