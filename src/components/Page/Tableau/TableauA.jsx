@@ -435,7 +435,7 @@ export default function TableauA(props) {
               </div>
               <div className="col-12 sm:flex-column field my-0 flex lg:flex-row flex-column " >
                 <label className='m-1 pl-5' style={{ fontSize: '1.1em' }} >
-                  NOM : {prof.nomprof} <br />
+                  Nom : {prof.nomprof} <br />
                   Grade :
                   {
                     data.total?.prof_grade

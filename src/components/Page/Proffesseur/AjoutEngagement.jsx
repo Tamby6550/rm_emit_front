@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Button } from 'primereact/button'
-import { PrimeIcons } from 'primereact/api';
+import { FilterMatchMode, PrimeIcons } from 'primereact/api';
 import { InputText } from 'primereact/inputtext'
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
@@ -118,8 +118,7 @@ export default function AjoutEngagement(props) {
                         }
                         setlistEngag(result.data);
                         setcharge(false);
-                        console.log(result)
-
+                        initFilters1();
                     }
                 );
         } catch (error) {
@@ -199,6 +198,45 @@ export default function AjoutEngagement(props) {
             </div>
         )
     }
+
+
+    
+    const [filters1, setFilters1] = useState(null);
+    const [globalFilterValue1, setGlobalFilterValue1] = useState('');
+    const onGlobalFilterChange1 = (e) => {
+        const value = e.target.value;
+        let _filters1 = { ...filters1 };
+        _filters1['global'].value = value;
+
+        setFilters1(_filters1);
+        setGlobalFilterValue1(value);
+    }
+    const initFilters1 = () => {
+        setFilters1({
+            'global': { value: null, matchMode: FilterMatchMode.CONTAINS }
+        });
+        setGlobalFilterValue1('');
+    }
+    const clearFilter1 = () => {
+        initFilters1();
+    }
+    const renderHeader1 = () => {
+        return (
+            <div className='flex flex-row justify-content-between align-items-center m-0 '>
+            <div className='my-0 ml-2 py-2 flex'>
+                <Insertion url={props.url} prof_id={props.prof_id} loadData={loadData} />
+            </div>
+            <>
+                <label >Liste Engagements</label>
+                <h2 className='m-1'> <u>{props.nom}</u> </h2>
+                <span className="p-input-icon-left global-tamby">
+                    <i className="pi pi-search" />
+                    <InputText value={globalFilterValue1} onChange={onGlobalFilterChange1} placeholder="Recherche global..." />
+                </span>
+            </>
+        </div>
+        )
+    }
     return (
         <div>
             <Toast ref={toastTR} position="top-right" />
@@ -215,7 +253,7 @@ export default function AjoutEngagement(props) {
                 <Dialog header={renderHeader('displayBasic2')} visible={displayBasic2} className="lg:col-7 md:col-9 col-12 p-0" footer={renderFooter('displayBasic2')} onHide={() => onHide('displayBasic2')}>
                     <BlockUI blocked={chargeDnn} template={<ProgressSpinner />}>
                         <div className="flex flex-column justify-content-center">
-                            <DataTable header={header} value={listEngag} loading={charge} responsiveLayout="scroll" scrollable scrollHeight="500px" rows={10} rowsPerPageOptions={[10, 20, 50]} paginator className='bg-white' emptyMessage={'Aucun resultat trouvé'}>
+                            <DataTable header={renderHeader1} value={listEngag} loading={charge} globalFilterFields={['nom_enga', 'nbre_etu', 'annee_univ']} filters={filters1} responsiveLayout="scroll" scrollable scrollHeight="500px" rows={10} rowsPerPageOptions={[10, 20, 50]} paginator className='bg-white' emptyMessage={'Aucun resultat trouvé'}>
                                 <Column field='nom_enga' header="Nom"></Column>
                                 <Column field={'nbre_etu'} header="Nombre d'étudiant ou groupes"></Column>
                                 <Column field={'valeur'} header="ED"></Column>
