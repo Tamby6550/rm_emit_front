@@ -17,3 +17,12 @@
     margin: 15mm;
 }
 
+div.globale-imprimer{
+    page:special;
+
+}
+@page special{
+    margin: 10mm;
+    size: landscape;
+
+}
