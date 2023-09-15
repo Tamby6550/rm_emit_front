@@ -17,6 +17,7 @@ import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
 import Insertion from './Insertion';
 import moment from 'moment/moment';
+import { Dropdown } from 'primereact/dropdown';
 export default function AjoutEngagement(props) {
 
     const { logout, isAuthenticated, secret } = useAuth();
@@ -48,6 +49,12 @@ export default function AjoutEngagement(props) {
     const [verfChamp, setverfChamp] = useState({ vheure: false });
     const [charge, setcharge] = useState(false);
 
+    const [parcours_, setparcours_] = useState('0');
+    const [selectparcours_, setselectparcours_] = useState(null);
+
+    const onTypesChangeParcours_ = (e) => {
+        setparcours_(e.value);
+    }
 
     //Affichage notification Toast primereact (del :3s )
     const toastTR = useRef(null);
@@ -98,10 +105,12 @@ export default function AjoutEngagement(props) {
     }
     /** Fin modal */
 
+
     const loadData = async () => {
+        setselectparcours_(decrypt().data.parcours_)
         setcharge(true);
         try {
-            await axios.get(props.url + `getEngagement/${props.prof_id}/${decrypt().data.grad_id}/${decrypt().data.mention}`, {
+            await axios.get(props.url + `getEngagement/${props.prof_id}/${decrypt().data.grad_id}/${decrypt().data.mention}/${parcours_}`, {
                 headers: {
                     'Content-Type': 'text/html',
                     'X-API-KEY': 'tamby',
@@ -128,6 +137,12 @@ export default function AjoutEngagement(props) {
             }
         }
     }
+    useEffect(() => {
+      if (parcours_!='0') {
+        loadData();
+      }
+    }, [parcours_])
+    
 
 
     const header = (
@@ -146,7 +161,7 @@ export default function AjoutEngagement(props) {
             {
                 data.date_engamnt1 == null || data.date_engamnt1 == '0' ? '' :
                     data.date_engamnt2 == null || data.date_engamnt2 == '0' ?
-                       moment(data.date_engamnt1).format('DD/MM/YYYY') :
+                        moment(data.date_engamnt1).format('DD/MM/YYYY') :
                         moment(data.date_engamnt1).format('DD/MM/YYYY') + ' jusqu\'au ' + moment(data.date_engamnt2).format('DD/MM/YYYY')
             }
         </div>
@@ -161,13 +176,13 @@ export default function AjoutEngagement(props) {
 
                             const accept = () => {
                                 axios.delete(props.url + `deleteEngagement`, {
-                                   
+
                                     headers: {
                                         'Content-Type': 'text/html',
                                         'X-API-KEY': 'tamby',
                                         'Authorization': decrypt().token
                                     },
-                                    data:{
+                                    data: {
                                         id_enga: props.prof_id + '' + decrypt().data.grad_id + '' + data.nom_enga
                                     }
                                 })
@@ -200,7 +215,7 @@ export default function AjoutEngagement(props) {
     }
 
 
-    
+
     const [filters1, setFilters1] = useState(null);
     const [globalFilterValue1, setGlobalFilterValue1] = useState('');
     const onGlobalFilterChange1 = (e) => {
@@ -223,18 +238,22 @@ export default function AjoutEngagement(props) {
     const renderHeader1 = () => {
         return (
             <div className='flex flex-row justify-content-between align-items-center m-0 '>
-            <div className='my-0 ml-2 py-2 flex'>
-                <Insertion url={props.url} prof_id={props.prof_id} loadData={loadData} />
+                <div className='my-0 ml-2 py-2 flex'>
+                    <Insertion url={props.url} prof_id={props.prof_id} loadData={loadData} parcours_={parcours_} />
+                </div>
+                <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
+                    <h4 htmlFor="username2" className="m-1">Parcours  :</h4>
+                    <Dropdown value={parcours_} options={selectparcours_} onChange={onTypesChangeParcours_} name="etat" />
+                </div>
+                <>
+                    <label >Liste Engagements</label>
+                    <h2 className='m-1'> <u>{props.nom}</u> </h2>
+                    <span className="p-input-icon-left global-tamby">
+                        <i className="pi pi-search" />
+                        <InputText value={globalFilterValue1} onChange={onGlobalFilterChange1} placeholder="Recherche global..." />
+                    </span>
+                </>
             </div>
-            <>
-                <label >Liste Engagements</label>
-                <h2 className='m-1'> <u>{props.nom}</u> </h2>
-                <span className="p-input-icon-left global-tamby">
-                    <i className="pi pi-search" />
-                    <InputText value={globalFilterValue1} onChange={onGlobalFilterChange1} placeholder="Recherche global..." />
-                </span>
-            </>
-        </div>
         )
     }
     return (
