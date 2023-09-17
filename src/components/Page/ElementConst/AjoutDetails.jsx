@@ -178,6 +178,7 @@ export default function AjoutDetails(props) {
                         }, 3000)
                     }
                     if (result.data != "") {
+                        console.log(result.data)
                         setinfoDetails({
                             ...infoDetails, diviser_td: result.data.diviser_td, diviser_tp: result.data.diviser_tp,
                             anne_univ: props.anne_univ, mati_id: props.data.mati_id
@@ -212,6 +213,7 @@ export default function AjoutDetails(props) {
                             props.logout();
                         }, 3000)
                     }
+                    console.log(props.nbreClasse)
                     diviserNbGroupe(props.nbreClasse.nmbre_classe, resultss.data.diviser_td, resultss.data.diviser_tp, result);
                     setchargeDnn(false);
                 }

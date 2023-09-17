@@ -156,6 +156,7 @@ export default function Affichage(props) {
     }
 
     const loadTitreTableau = async (rm_id, mention_nom, niveau, grad_id, anne_univ) => {
+        console.log(rm_id,mention_nom,niveau,grad_id,anne_univ);
         await axios.get(props.url + `getTitreTableau/${parcours_}/${rm_id}/${mention_nom}/${niveau}/${grad_id}/${anne_univ}`, {
             headers: {
                 'Content-Type': 'text/html',
@@ -171,8 +172,8 @@ export default function Affichage(props) {
                             logout();
                         }, 3000)
                     }
-
-                    diviserNbGroupe(result.data.nbreClasse.count, result.data.group_tamby.diviser_td, result.data.group_tamby.diviser_tp, result);
+                //    console.log(result.data)
+                    diviserNbGroupe(result.data.nbreClasse.count,result.data.group_tamby.diviser_td,result.data.group_tamby.diviser_tp,result);
                     //Affiche Somme Et Ed, Ep
                     loadAfficheTableauSommeEtEdEp();
                 }
@@ -207,7 +208,7 @@ export default function Affichage(props) {
                         }, 3000)
                     }
                     setdata(result.data);
-                    // console.log(result.data)
+                    console.log(result.data)
 
                     //Affiche titre tableau d'affichage
                     loadTitreTableau(decrypt().data.rm_id, decrypt().data.mention, niveau, decrypt().data.grad_id, anne_univ);
@@ -239,6 +240,7 @@ export default function Affichage(props) {
                         }, 3000)
                     }
                     settotalT(result.data);
+                    console.log(result.data);
                     setchargementDD(false);
                 }
             ).catch((e) => {
@@ -360,7 +362,10 @@ export default function Affichage(props) {
                                 {data.map((obj, index) => (
                                     <tbody>
                                         <tr style={{ height: '19.5833px' }}>
-                                            <td style={{ height: '82.0416px', fontWeight: '600', textTransform: 'uppercase' }} rowspan={'18'}>{obj.semestre} </td>
+                                            <td style={{ height: '82.0416px', fontWeight: '600', textTransform: 'uppercase' }} rowspan={'40'}>
+                                                {/* {obj.semestre}  */}
+                                                SEMESTRE
+                                                </td>
                                             <td style={{ height: '40.0208px', textAlign: 'center' }} rowspan="2">ELEMENTS CONSTITUTIFS(EC)</td>
                                             <td style={{ height: '19.5833px' }}>&nbsp;</td>
                                             <td style={{ height: '19.5833px', textAlign: 'center' }} colspan="4">ET</td>

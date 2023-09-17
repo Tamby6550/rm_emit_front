@@ -220,7 +220,7 @@ export default function Signin(props) {
                             <Components.Paragraph>
                                 <img src={emit} alt="" width={"148px"} />
                             </Components.Paragraph>
-                            <Components.GhostButton style={{ display: 'none' }} onClick={() => toggle(false)}>
+                            <Components.GhostButton style={{ display: 'block' }} onClick={() => toggle(false)}>
                                 S'inscrire
                             </Components.GhostButton>
                         </Components.RightOverlayPanel>

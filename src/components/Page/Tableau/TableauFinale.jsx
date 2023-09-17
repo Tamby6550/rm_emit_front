@@ -31,6 +31,11 @@ export default function TableauFinale(props) {
     const [anne_univ, setanne_univ] = useState('0000-0000');
     const [selectanne, setselectanne] = useState(null);
 
+    const [totalMontant, setTotalMontant] = useState(0);
+
+
+    const [parcours_, setparcours_] = useState('0');
+    const [selectparcours_, setselectparcours_] = useState(null);
 
     const [chargementDD, setchargementDD] = useState(false);
 
@@ -82,7 +87,9 @@ export default function TableauFinale(props) {
             voyages: 0
         })
     }
-
+    const onTypesChangeParcours_ = (e) => {
+        setparcours_(e.value);
+      }
     const toastTR = useRef(null);
     /*Notification Toast */
     const notificationAction = (etat, titre, message) => {
@@ -107,6 +114,7 @@ export default function TableauFinale(props) {
                         }, 3000)
                     }
                     setselectanne(result.data);
+                    setselectparcours_(decrypt().data.parcours_);
                 }
             ).catch((e) => {
                 // console.log(e.message)
@@ -119,8 +127,10 @@ export default function TableauFinale(props) {
 
     const loadAfficheTableau = () => {
         setchargementDD(true);
+        let totalMontant = 0; // Ajoutez cette ligne
+    
         setTimeout(async () => {
-            await axios.get(props.url + `getTableauAfficheTableauFinale/${decrypt().data.rm_id}/${anne_univ}/${decrypt().data.mention}/${prof.idprof}/${decrypt().data.grad_id}`, {
+            await axios.get(props.url + `getTableauAfficheTableauFinale/${decrypt().data.rm_id}/${anne_univ}/${decrypt().data.mention}/${prof.idprof}/${decrypt().data.grad_id}/${parcours_}`, {
                 headers: {
                     'Content-Type': 'text/html',
                     'X-API-KEY': 'tamby',
@@ -130,27 +140,32 @@ export default function TableauFinale(props) {
                 .then(
                     (result) => {
                         if (result.data.message == 'Token Time Expire.') {
-                            notificationAction('warn', 'Votre token est expiré !', 'Délais de token 4 heures !')
+                            notificationAction('warn', 'Votre token est expiré !', 'Délai de token de 4 heures !')
                             setTimeout(() => {
                                 logout();
                             }, 3000)
                         }
                         if (result.data != '') {
                             setdata(result.data);
+                            totalMontant = result.data.reduce((acc, curr) => {
+                                const montant = getMontant(getTotalED(curr.ttotal_et, curr.ttotal_ed, curr.ttotal_ep, curr.encadrement, curr.soutenance, curr.voyages).toFixed(2), valeurGarde(curr.prof_grade));
+                                return acc + montant;
+                            }, 0);
+                            setTotalMontant(totalMontant); // Mettez à jour la somme totale des montants
                             updateTotals(result.data);
-                            console.log(result.data)
                         }
                         setchargementDD(false);
                     }
                 ).catch((e) => {
                     // console.log(e.message)
                     if (e.message == "Network Error") {
-                        props.urlip()
+                        props.urlip();
                     }
                     setchargementDD(false);
-                })
-        }, 800)
-    }
+                });
+        }, 800);
+    };
+    
 
 
     useEffect(() => {
@@ -163,7 +178,7 @@ export default function TableauFinale(props) {
         let parTotaled = parseFloat(totaled);
         let parTaux = parseFloat(taux);
         let somme = parTotaled * parTaux;
-
+    
         return somme;
     }
     function getTotalED(et, ed, ep, enc, sout, voya) {
@@ -202,7 +217,7 @@ export default function TableauFinale(props) {
     }
 
     function formatNumber(num) {
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + ".00";
+        return (parseFloat(num).toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
     }
 
     const updateTotals = (data) => {
@@ -255,6 +270,10 @@ export default function TableauFinale(props) {
                     <Dropdown value={anne_univ} options={selectanne} onChange={onTypesChange} name="etat" />
                 </div>
                 <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
+                    <h4 htmlFor="username2" className="m-1">Parcours  :</h4>
+                    <Dropdown value={parcours_} options={selectparcours_} onChange={onTypesChangeParcours_} name="etat" />
+                </div>
+                <div className="lgcol-8 md:col-5  md:flex-column   sm:col-3 sm:flex-column field my-0 flex lg:flex-row flex-column">
                     <Button icon={PrimeIcons.LIST} className='p-button-sm p-button-success ml-3 ' label={'Afficher'}
                         onClick={() => {
                             loadAfficheTableau();
@@ -271,14 +290,14 @@ export default function TableauFinale(props) {
             <div className='col-12' style={{ border: '1px solid grey' }}>
 
                 <BlockUI blocked={chargementDD} template={<ProgressSpinner />}>
-                    <div className='grid h-full ' id='imprimable'  >
+                    <div className='grid h-full globale-imprimer' id='imprimable'   >
                         <div className="lg:col-12 md:col-12  md:flex-column   sm:col-12 col-12 sm:flex-column field my-0 flex lg:flex-coluln flex-column " style={{ alignItems: 'center' }}>
                             <div className='flex flex-column '>
                                 <center>
                                     <label className='m-1' style={{ fontSize: '1.1em' }} >
                                         Annee Universitaire : {anne_univ} <br />
                                         Etat de paiement des heures complementaires <br />
-                                        Mention  {decrypt().data.grad_nom + ' ' + decrypt().data.mention}
+                                        Mention  {decrypt().data.grad_nom + ' ' + decrypt().data.mention+'( Parcours : '+parcours_+')'}
                                     </label>
                                 </center>
                             </div>
@@ -292,42 +311,42 @@ export default function TableauFinale(props) {
                                         <td style={{ height: '17.1875px' }}><strong>Heures en ET</strong></td>
                                         <td style={{ height: '17.1875px' }}><strong>Heures en ED</strong></td>
                                         <td style={{ height: '17.1875px' }}><strong>Heures en EP</strong></td>
-                                        <td style={{ height: '17.1875px' }}><strong>Encadrement</strong></td>
-                                        <td style={{ height: '17.1875px' }}><strong>Soutenance</strong></td>
-                                        <td style={{ height: '17.1875px' }}><strong>Voyage d'etudes</strong></td>
-                                        <td style={{ height: '17.1875px' }}><strong>Total en ED</strong></td>
-                                        <td style={{ height: '17.1875px' }}><strong>TAUX (Ar) </strong></td>
-                                        <td style={{ height: '17.1875px' }}><strong>Montant (Ar) </strong></td>
+                                        <td style={{ height: '17.1875px',width:'5%' }}><strong>Encadrement</strong></td>
+                                        <td style={{ height: '17.1875px',width:'5%' }}><strong>Soutenance</strong></td>
+                                        <td style={{ height: '17.1875px',width:'5%' }}><strong>Voyage d'etudes</strong></td>
+                                        <td style={{ height: '17.1875px',width:'5%' }}><strong>Total en ED</strong></td>
+                                        <td style={{ height: '17.1875px',width:'5%' }}><strong>TAUX (Ar) </strong></td>
+                                        <td style={{ height: '18.1875px',width:'12%' }}><strong>Montant (Ar) </strong></td>
                                         <td style={{ height: '17.1875px' }}><strong>IRSA(10%)</strong></td>
                                         <td style={{ height: '17.1875px' }}><strong>Net a payer(Ar)</strong></td>
                                     </tr>
                                     {data.map((dt, index) => (
                                         <tr style={{ height: '19.5938px' }} key={index} >
                                             <td style={{ height: '19.5938px' }}>{dt.nom_prof}</td>
-                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}>{parseFloat(dt.ttotal_et).toFixed(2)}</td>
-                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}>{parseFloat(dt.ttotal_ed).toFixed(2)}</td>
-                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}>{parseFloat(dt.ttotal_ep).toFixed(2)}</td>
-                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}>{dt.encadrement === null ? '0.00' : parseFloat(dt.encadrement).toFixed(2)}</td>
-                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}>{dt.soutenance === null ? '0.00' : parseFloat(dt.soutenance).toFixed(2)}</td>
-                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}>{dt.voyages === null ? '0.00' : parseFloat(dt.voyages).toFixed(2)}</td>
-                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}>{getTotalED(dt.ttotal_et, dt.ttotal_ed, dt.ttotal_ep, dt.encadrement, dt.soutenance, dt.voyages).toFixed(2)}</td>
-                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}>{valeurGarde(dt.prof_grade)}</td>
-                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}>{formatNumber(getMontant(getTotalED(dt.ttotal_et, dt.ttotal_ed, dt.ttotal_ep, dt.encadrement, dt.soutenance, dt.voyages).toFixed(2), valeurGarde(dt.prof_grade)))}</td>
-                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}></td>
-                                            <td style={{ height: '19.5938px' ,textAlign: 'right'}}></td>
+                                            <td style={{ height: '19.5938px', textAlign: 'right' }}>{parseFloat(dt.ttotal_et).toFixed(2)}</td>
+                                            <td style={{ height: '19.5938px', textAlign: 'right' }}>{parseFloat(dt.ttotal_ed).toFixed(2)}</td>
+                                            <td style={{ height: '19.5938px', textAlign: 'right' }}>{parseFloat(dt.ttotal_ep).toFixed(2)}</td>
+                                            <td style={{ height: '19.5938px', textAlign: 'right' }}>{dt.encadrement === null ? '0.00' : parseFloat(dt.encadrement).toFixed(2)}</td>
+                                            <td style={{ height: '19.5938px', textAlign: 'right' }}>{dt.soutenance === null ? '0.00' : parseFloat(dt.soutenance).toFixed(2)}</td>
+                                            <td style={{ height: '19.5938px', textAlign: 'right' }}>{dt.voyages === null ? '0.00' : parseFloat(dt.voyages).toFixed(2)}</td>
+                                            <td style={{ height: '19.5938px', textAlign: 'right' }}>{getTotalED(dt.ttotal_et, dt.ttotal_ed, dt.ttotal_ep, dt.encadrement, dt.soutenance, dt.voyages).toFixed(2)}</td>
+                                            <td style={{ height: '19.5938px', textAlign: 'right' }}>{valeurGarde(dt.prof_grade)}</td>
+                                            <td style={{ height: '19.5938px', textAlign: 'right' }}>{formatNumber(getMontant(getTotalED(dt.ttotal_et, dt.ttotal_ed, dt.ttotal_ep, dt.encadrement, dt.soutenance, dt.voyages).toFixed(2), valeurGarde(dt.prof_grade)))}</td>
+                                            <td style={{ height: '19.5938px', textAlign: 'right' }}></td>
+                                            <td style={{ height: '19.5938px', textAlign: 'right' }}></td>
                                         </tr>
                                     ))}
                                     <tr>
+                                        <td>Total</td>
+                                        <td style={{ textAlign: 'right' }}><strong>{(totals.ttotal_et).toFixed(2)}</strong></td>
+                                        <td style={{ textAlign: 'right' }}><strong>{(totals.ttotal_ed).toFixed(2)}</strong></td>
+                                        <td style={{ textAlign: 'right' }}><strong>{(totals.ttotal_ep).toFixed(2)}</strong></td>
+                                        <td style={{ textAlign: 'right' }}><strong>{(totals.encadrement).toFixed(2)}</strong></td>
+                                        <td style={{ textAlign: 'right' }}><strong>{(totals.soutenance).toFixed(2)}</strong></td>
+                                        <td style={{ textAlign: 'right' }}><strong>{(totals.voyages).toFixed(2)}</strong></td>
                                         <td>&nbsp;</td>
-                                        <td><strong>{(totals.ttotal_et).toFixed(2)}</strong></td>
-                                        <td><strong>{(totals.ttotal_ed).toFixed(2)}</strong></td>
-                                        <td><strong>{(totals.ttotal_ep).toFixed(2)}</strong></td>
-                                        <td><strong>{(totals.encadrement).toFixed(2)}</strong></td>
-                                        <td><strong>{(totals.soutenance).toFixed(2)}</strong></td>
-                                        <td><strong>{(totals.voyages).toFixed(2)}</strong></td>
                                         <td>&nbsp;</td>
-                                        <td>&nbsp;</td>
-                                        <td>&nbsp;</td>
+                                        <td style={{ textAlign: 'right' }}><strong>{formatNumber(totalMontant.toFixed(2))}</strong></td> {/* Affichez la somme totale */}
                                         <td>&nbsp;</td>
                                         <td>&nbsp;</td>
                                     </tr>

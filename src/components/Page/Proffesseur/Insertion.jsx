@@ -58,7 +58,8 @@ export default function Insertion(props) {
         date_engamnt2: '0',
         annee_univ: '0',
         grad_id: '0',
-        mention:''
+        mention:'',
+        parcours_:''
     });
     const onVideInfo = () => {
         setanne_univ('0000-0000');
@@ -71,7 +72,8 @@ export default function Insertion(props) {
             date_engamnt2: '0',
             annee_univ: '0',
             grad_id: '0',
-            mention:''
+            mention:'',
+            parcours_:''
         });
     }
 
@@ -93,17 +95,30 @@ export default function Insertion(props) {
     }
     const changeNomEngag = (e) => {
         let heure = e.target.value;
-        if (infoEngagement.nom_enga === 'Encadrement L2' || infoEngagement.nom_enga === 'Encadrement L3' || infoEngagement.nom_enga === 'Encadrement M2' || infoEngagement.nom_enga === 'Encadrement M1') {
-
+        if (infoEngagement.nom_enga === 'Encadrement L2' || infoEngagement.nom_enga === 'Encadrement L3' ) {
             heure = heure * 25;
-        } else if (infoEngagement.nom_enga === 'Soutenance L2' || infoEngagement.nom_enga === 'Soutenance L3' || infoEngagement.nom_enga === 'Soutenance M2' || infoEngagement.nom_enga === 'Soutenance M1') {
+        } 
+        else if (infoEngagement.nom_enga === 'Encadrement M1') {
+            heure = heure * 40;
+        }
+        else if (infoEngagement.nom_enga === 'Encadrement M2') {
+            heure = heure * 75;
+        }
+        else if (infoEngagement.nom_enga === 'Soutenance M1') {
+            heure = heure * 5;
+        }
+        else if (infoEngagement.nom_enga === 'Soutenance M2') {
+            heure = heure * 7;
+        }
+        else if (infoEngagement.nom_enga === 'Soutenance L2' || infoEngagement.nom_enga === 'Soutenance L3' ) {
             heure = heure * 4;
         }
-        else {
+        else {//Voyage d'etude
             heure = heure * 25;
         }
         setinfoEngagement({ ...infoEngagement, nbre_etu: e.target.value, valeur: heure })
     }
+
     /* Modal */
     const [displayBasic2, setDisplayBasic2] = useState(false);
     const [position, setPosition] = useState('center');
@@ -217,7 +232,7 @@ export default function Insertion(props) {
             <Button icon={PrimeIcons.PENCIL} className='p-buttom-sm p-1 ' label='Modifier' style={stylebtnRec} tooltip='Modification engagement' tooltipOptions={{ position: 'top' }}
                 onClick={() => {
                     onClick('displayBasic2');
-                    setinfoEngagement({ ...infoEngagement, prof_id: props.prof_id, grad_id: decrypt().data.grad_id,mention:decrypt().data.mention })
+                    setinfoEngagement({ ...infoEngagement, parcours_:props.parcours_,prof_id: props.prof_id, grad_id: decrypt().data.grad_id,mention:decrypt().data.mention })
                     setTimeout(() => {
                         anne_univDt();
                     }, 200);
